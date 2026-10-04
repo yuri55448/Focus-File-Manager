@@ -1,0 +1,10 @@
+{
+  "id": "focus-file-manager",
+  "name": "Focus File Manager",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "File Management Area + Focus Area (Shortcuts), cross-library copy and paste, batch renaming, manual sorting, and opening tags.文件管理區 + 專注區（捷徑）、跨庫複製貼上、批量重新命名、手動排序、開啟標記。",
+  "author": "yuri55448",
+  "authorUrl": "https://github.com/yuri55448/Focus-File-Manager",
+  "isDesktopOnly": false
+}
