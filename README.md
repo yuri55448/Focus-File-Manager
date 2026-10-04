@@ -1,6 +1,6 @@
 # Focus File Manager
 
-[Version] [Downloads]
+[![Version](https://img.shields.io/github/v/release/yuri55448/Focus-File-Manager)](https://github.com/yuri55448/Focus-File-Manager/releases)[![Downloads](https://img.shields.io/github/downloads/yuri55448/Focus-File-Manager/total)](https://github.com/yuri55448/Focus-File-Manager/releases)
 
 **English** | [繁體中文](README.zh-TW.md) | [簡體中文](README.zh-CN.md) | [日本語](README.ja.md)
 
