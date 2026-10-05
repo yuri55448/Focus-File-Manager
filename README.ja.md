@@ -6,6 +6,9 @@ Obsidian 用のファイル管理プラグインです。左に**ファイル管
 
 ![](image/screenshot-01.png)
 ![](image/screenshot-02.png)
+![](image/screenshot-03.png)
+![](image/screenshot-04.png)
+![](image/screenshot-05.png)
 
 ## 機能
 

@@ -6,6 +6,9 @@ Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注�
 
 ![](image/screenshot-01.png)
 ![](image/screenshot-02.png)
+![](image/screenshot-03.png)
+![](image/screenshot-04.png)
+![](image/screenshot-05.png)
 
 ## 功能
 

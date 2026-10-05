@@ -8,6 +8,9 @@ A file manager for Obsidian that puts a **file pane** next to a **focus pane**. 
 
 ![](image/screenshot-01.png)
 ![](image/screenshot-02.png)
+![](image/screenshot-03.png)
+![](image/screenshot-04.png)
+![](image/screenshot-05.png)
 
 ## Features
 
