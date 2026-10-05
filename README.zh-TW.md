@@ -4,11 +4,18 @@
 
 Obsidian 檔案管理插件：左邊是**文件管理區**，右邊是**專注區**。專注區用來放現在最需要的文件與文件夾捷徑，不必一直在文件夾樹裡翻找。
 
-![](image/screenshot-01.png)
-![](image/screenshot-02.png)
+<div>
+  <img src="image/screenshot-01.png" width="300">
+  <img src="image/screenshot-02.png" width="600">
+</div>
+
 ![](image/screenshot-03.png)
-![](image/screenshot-04.png)
-![](image/screenshot-05.png)
+
+<div>
+  <img src="image/screenshot-04.png" width="400">
+  <img src="image/screenshot-05.png" width="400">
+</div>
+
 
 ## 功能
 
@@ -82,4 +89,6 @@ Obsidian 檔案管理插件：左邊是**文件管理區**，右邊是**專注�
 - 用到少數 Obsidian 未公開的內部介面（核心書籤外掛、快捷鍵設定頁），可能隨 Obsidian 版本變動。
 - 手機版仍屬實驗性質：跨庫功能只有桌面版，觸控螢幕不支援拖曳。
 
+## 問題回報與建議
 
+如果遇到問題或有任何建議，歡迎到 GitHub 專案中[提交 Issues](https://github.com/yuri55448/Focus-File-Manager/issues)。回報時若能附上 Obsidian 版本、插件版本、使用的主題與重現步驟（或截圖），會更容易處理。

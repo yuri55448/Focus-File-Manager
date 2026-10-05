@@ -6,11 +6,18 @@
 
 A file manager for Obsidian that puts a **file pane** next to a **focus pane**. Focus zones hold shortcuts to the files and folders you are working on right now, so you don't have to dig through the folder tree again and again.
 
-![](image/screenshot-01.png)
-![](image/screenshot-02.png)
+<div>
+  <img src="image/screenshot-01.png" width="300">
+  <img src="image/screenshot-02.png" width="600">
+</div>
+
 ![](image/screenshot-03.png)
-![](image/screenshot-04.png)
-![](image/screenshot-05.png)
+
+<div>
+  <img src="image/screenshot-04.png" width="400">
+  <img src="image/screenshot-05.png" width="400">
+</div>
+
 
 ## Features
 
@@ -84,4 +91,6 @@ Open it from the ribbon icon or from the command palette ("Open Focus File Manag
 - Uses a few undocumented Obsidian internals (the core Bookmarks plugin, the hotkey settings tab). They may change between Obsidian versions.
 - Mobile support is experimental: cross-vault features are desktop only and drag and drop does not work on touch screens.
 
+## Feedback
 
+Found a bug or have a suggestion? Please [open an issue](https://github.com/yuri55448/Focus-File-Manager/issues) in the GitHub project. Including your Obsidian version, the plugin version, your theme and the steps to reproduce (or a screenshot) makes it much easier to help.

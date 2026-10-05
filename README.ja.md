@@ -4,11 +4,17 @@
 
 Obsidian 用のファイル管理プラグインです。左に**ファイル管理ペイン**、右に**フォーカスペイン**を並べて表示します。フォーカスゾーンには、今まさに作業しているファイルやフォルダへのショートカットを置けるので、フォルダツリーを何度もたどる必要がありません。
 
-![](image/screenshot-01.png)
-![](image/screenshot-02.png)
+<div>
+  <img src="image/screenshot-01.png" width="300">
+  <img src="image/screenshot-02.png" width="600">
+</div>
+
 ![](image/screenshot-03.png)
-![](image/screenshot-04.png)
-![](image/screenshot-05.png)
+
+<div>
+  <img src="image/screenshot-04.png" width="400">
+  <img src="image/screenshot-05.png" width="400">
+</div>
 
 ## 機能
 
@@ -82,4 +88,6 @@ Obsidian 用のファイル管理プラグインです。左に**ファイル管
 - Obsidian の非公開の内部機能（コアのブックマークプラグイン、ホットキー設定画面）を一部使用しています。Obsidian のバージョンによって変わる可能性があります。
 - モバイル対応は実験的です：保管庫をまたぐ機能はデスクトップ版のみで、タッチ画面ではドラッグ＆ドロップは動作しません。
 
+## 不具合報告・ご提案
 
+問題やご提案がありましたら、GitHub プロジェクトの [Issues](https://github.com/yuri55448/Focus-File-Manager/issues) からお知らせください。Obsidian のバージョン、プラグインのバージョン、使用しているテーマ、再現手順（またはスクリーンショット）を添えていただけると、対応しやすくなります。

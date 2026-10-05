@@ -4,11 +4,18 @@
 
 Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注区**。专注区用来放当前最需要的文件和文件夹快捷方式，不必反复在文件夹树里翻找。
 
-![](image/screenshot-01.png)
-![](image/screenshot-02.png)
+<div>
+  <img src="image/screenshot-01.png" width="300">
+  <img src="image/screenshot-02.png" width="600">
+</div>
+
 ![](image/screenshot-03.png)
-![](image/screenshot-04.png)
-![](image/screenshot-05.png)
+
+<div>
+  <img src="image/screenshot-04.png" width="400">
+  <img src="image/screenshot-05.png" width="400">
+</div>
+
 
 ## 功能
 
@@ -82,4 +89,6 @@ Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注�
 - 使用了少量 Obsidian 未公开的内部接口（核心书签插件、快捷键设置页），可能随 Obsidian 版本变化。
 - 手机端仍属实验性质：跨库功能仅限桌面版，触摸屏不支持拖动。
 
+## 问题反馈与建议
 
+如果遇到问题或有任何建议，欢迎到 GitHub 项目中[提交 Issues](https://github.com/yuri55448/Focus-File-Manager/issues)。反馈时如果能附上 Obsidian 版本、插件版本、使用的主题和复现步骤（或截图），会更容易处理。
