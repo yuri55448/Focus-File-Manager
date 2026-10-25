@@ -4,6 +4,8 @@
 
 Obsidian 用のファイル管理プラグインです。左に**ファイル管理ペイン**、右に**フォーカスペイン**を並べて表示します。フォーカスゾーンには、今まさに作業しているファイルやフォルダへのショートカットを置けるので、フォルダツリーを何度もたどる必要がありません。2.0.0 からは、左側を**タグ管理**と**プロパティ管理**に切り替えて、保管庫全体のタグとプロパティを整理することもできます。
 
+![](image/screenshot-06.png)
+
 <div>
   <img src="image/screenshot-01.png" width="220">
   <img src="image/screenshot-02.png" width="420">
@@ -15,6 +17,7 @@ Obsidian 用のファイル管理プラグインです。左に**ファイル管
   <img src="image/screenshot-04.png" width="320">
   <img src="image/screenshot-05.png" width="320">
 </div>
+
 
 ## 更新履歴
 
