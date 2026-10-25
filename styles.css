@@ -256,3 +256,150 @@ body.is-mobile .ffm-btn { padding: 4px 10px; }
 .ffm-tpl-icon svg { width: 14px; height: 14px; }
 .ffm-tpl-x { color: var(--text-faint); margin-left: 2px; }
 .ffm-tpl-x:hover { color: var(--text-error); }
+
+/* ---- 新增項目後的高亮 ---- */
+@keyframes ffm-new-fade {
+  from { background-color: var(--ffm-new-hl, color-mix(in srgb, var(--interactive-accent) 35%, transparent)); }
+  to { background-color: transparent; }
+}
+.ffm-row.is-new { animation: ffm-new-fade 3.5s ease-out; }
+/* ---- 開啟符號跟隨側邊欄（固定在可見範圍右側） ---- */
+.ffm-open-sticky .ffm-open {
+  position: sticky; right: 0; z-index: 1; padding-left: 8px;
+  background: linear-gradient(to right, transparent, var(--ffm-open-bg, var(--background-secondary)) 8px);
+}
+/* ---- 批量重新命名：排序 ---- */
+.ffm-drag-handle { cursor: grab; color: var(--text-faint); width: 18px; user-select: none; text-align: center; }
+.ffm-preview tr.is-dragging { opacity: 0.4; }
+.ffm-preview tr.drop-above td { box-shadow: inset 0 2px 0 var(--interactive-accent); }
+.ffm-preview tr.drop-below td { box-shadow: inset 0 -2px 0 var(--interactive-accent); }
+.ffm-x:disabled { opacity: 0.3; cursor: default; }
+.ffm-row-ctl { white-space: nowrap; }
+/* ---- 設定頁搜尋 ---- */
+.ffm-settings-search-wrap { position: sticky; top: 0; z-index: 3; padding: 4px 0 8px; background: var(--background-primary); }
+.ffm-settings-search { width: 100%; }
+
+/* ---- 排除（隱藏）項目：顯示時變淡 ---- */
+.ffm-row.is-excluded { opacity: 0.5; font-style: italic; }
+/* ---- 批量重新命名：名單警告 ---- */
+.ffm-warn { color: var(--text-warning, var(--color-orange)); font-size: 12px; margin-bottom: 6px; }
+.ffm-warn:empty { display: none; }
+/* ---- YAML 批量修改 ---- */
+.ffm-yaml-modal { width: 980px; max-width: 96vw; }
+.ffm-yaml-body { display: flex; gap: 14px; align-items: flex-start; }
+.ffm-yaml-left { flex: 0 0 370px; max-height: 66vh; overflow: auto; padding-right: 4px; }
+.ffm-yaml-right { flex: 1 1 0; min-width: 0; max-height: 66vh; overflow: auto; }
+.ffm-yaml-tabs { display: flex; gap: 2px; margin-bottom: 6px; flex-wrap: wrap; }
+.ffm-yaml-tab { padding: 3px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; color: var(--text-muted); }
+.ffm-yaml-tab:hover { background: var(--background-modifier-hover); }
+.ffm-yaml-tab.is-active { background: var(--interactive-accent); color: var(--text-on-accent); }
+.ffm-yaml-files { max-height: 130px; overflow: auto; border: 1px solid var(--background-modifier-border); border-radius: 4px; padding: 4px 6px; margin-bottom: 6px; }
+.ffm-yaml-file { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+.ffm-yaml-chip-label { font-size: 11px; color: var(--text-faint); margin: 6px 0 2px; }
+.ffm-yaml-chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.ffm-yaml-chip { padding: 1px 8px; border: 1px solid var(--background-modifier-border); border-radius: 10px; font-size: 11px; cursor: pointer; }
+.ffm-yaml-chip:hover { border-color: var(--interactive-accent); color: var(--text-accent); }
+.ffm-yaml-chip.is-dim { color: var(--text-muted); }
+.ffm-yaml-queue { margin-top: 10px; border-top: 1px solid var(--background-modifier-border); padding-top: 6px; }
+.ffm-yaml-op { display: flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 12px; }
+.ffm-yaml-op-text { flex: 1 1 auto; word-break: break-all; }
+.ffm-yaml-viewbar { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; position: sticky; top: 0; background: var(--background-primary); padding: 2px 0; z-index: 1; }
+.ffm-yaml-only { margin-left: auto; display: flex; gap: 4px; align-items: center; font-size: 12px; }
+.ffm-yaml-card { border: 1px solid var(--background-modifier-border); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+.ffm-yaml-card-head { display: flex; justify-content: space-between; gap: 8px; padding: 4px 8px; background: var(--background-secondary); font-size: 12px; }
+.ffm-yaml-card-name { word-break: break-all; }
+.ffm-yaml-badge { color: var(--text-faint); white-space: nowrap; }
+.ffm-yaml-badge.is-changed { color: var(--text-accent); }
+.ffm-yaml-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ffm-yaml-table th, .ffm-yaml-table td { padding: 2px 8px; border-bottom: 1px solid var(--background-modifier-border); text-align: left; word-break: break-all; }
+.ffm-yaml-table tr.is-add td { background: color-mix(in srgb, var(--color-green, #3a3) 22%, transparent); }
+.ffm-yaml-table tr.is-edit td { background: color-mix(in srgb, var(--color-yellow, #cc3) 22%, transparent); }
+.ffm-yaml-table tr.is-del td { background: color-mix(in srgb, var(--color-red, #c33) 20%, transparent); text-decoration: line-through; }
+.ffm-yaml-src { margin: 0; padding: 4px 0; font-size: 12px; overflow: auto; }
+.ffm-yaml-line { padding: 0 8px; white-space: pre-wrap; word-break: break-all; font-family: var(--font-monospace); }
+.ffm-yaml-line.is-add { background: color-mix(in srgb, var(--color-green, #3a3) 22%, transparent); }
+.ffm-yaml-line.is-del { background: color-mix(in srgb, var(--color-red, #c33) 20%, transparent); }
+
+/* ---- YAML：值建議、獨立輸入、拖動排序 ---- */
+.ffm-suggest { position: absolute; left: 0; right: 0; top: 100%; z-index: 20; max-height: 220px; overflow: auto; background: var(--background-primary); border: 1px solid var(--background-modifier-border); border-radius: 4px; box-shadow: var(--shadow-s, 0 2px 8px rgba(0,0,0,.25)); }
+.ffm-suggest-item { padding: 3px 8px; font-size: 12px; cursor: pointer; }
+.ffm-suggest-item:hover { background: var(--background-modifier-hover); color: var(--text-accent); }
+.ffm-yaml-each { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; max-height: 240px; overflow: auto; }
+.ffm-yaml-each-row { display: flex; align-items: center; gap: 8px; }
+.ffm-yaml-each-name { flex: 0 0 38%; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); }
+.ffm-yaml-each-wrap { position: relative; flex: 1 1 auto; min-width: 0; }
+.ffm-yaml-each-input { width: 100%; }
+.ffm-yaml-sortlist { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; max-height: 260px; overflow: auto; }
+.ffm-yaml-sort-row { display: flex; align-items: center; gap: 6px; padding: 2px 6px; border: 1px solid var(--background-modifier-border); border-radius: 4px; background: var(--background-primary); }
+.ffm-yaml-sort-row.is-dragging { opacity: 0.4; }
+.ffm-yaml-sort-row.drop-above { box-shadow: inset 0 2px 0 var(--interactive-accent); }
+.ffm-yaml-sort-row.drop-below { box-shadow: inset 0 -2px 0 var(--interactive-accent); }
+.ffm-yaml-sort-name { flex: 1 1 auto; font-size: 12px; word-break: break-all; }
+
+/* ---- 標籤／屬性管理 ---- */
+.ffm-left.ffm-left-panel > .ffm-pathbar, .ffm-left.ffm-left-panel > .ffm-tree { display: none; }
+.ffm-panel-host { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ffm-panel { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.ffm-panel-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 6px; border-bottom: 1px solid var(--background-modifier-border); flex: none; }
+.ffm-panel-search { padding: 4px 6px; flex: none; }
+.ffm-panel-search-input { width: 100%; }
+.ffm-panel-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; outline: none; }
+.ffm-panel-head { display: grid; position: sticky; top: 0; z-index: 2; background: var(--background-secondary); border-bottom: 1px solid var(--background-modifier-border); font-size: 12px; color: var(--text-muted); }
+.ffm-panel-hcell { position: relative; padding: 3px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.ffm-col-grip { position: absolute; top: 0; right: 0; width: 6px; height: 100%; cursor: col-resize; }
+.ffm-col-grip:hover { background: var(--interactive-accent); opacity: 0.5; }
+.ffm-panel-row { display: grid; align-items: center; font-size: var(--ffm-font-size, var(--font-ui-small)); cursor: pointer; border-bottom: 1px solid transparent; }
+.ffm-panel-row:hover { background: var(--background-modifier-hover); }
+.ffm-panel-row.is-selected { background: var(--background-modifier-active-hover); }
+.ffm-panel-row.drop-above { box-shadow: inset 0 2px 0 var(--interactive-accent); }
+.ffm-panel-row.drop-below { box-shadow: inset 0 -2px 0 var(--interactive-accent); }
+.ffm-panel-row.drop-inside { outline: 2px solid var(--interactive-accent); }
+.ffm-cell { padding: 2px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: flex; align-items: center; min-width: 0; }
+.ffm-cell-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.ffm-num-cell, .ffm-last-cell, .ffm-count-cell { color: var(--text-muted); justify-content: flex-end; font-variant-numeric: tabular-nums; }
+.ffm-state-cell { justify-content: center; }
+.ffm-lock { display: inline-flex; color: var(--text-faint); cursor: pointer; }
+.ffm-lock:hover { color: var(--text-normal); }
+.ffm-lock.is-locked { color: var(--text-error, #e5484d); }
+.ffm-lock svg, .ffm-ptype svg { width: 14px; height: 14px; }
+.ffm-ptype { display: inline-flex; color: var(--text-muted); }
+.ffm-note-cell { color: var(--text-muted); }
+.ffm-name-text.is-value { color: var(--text-muted); }
+.ffm-dedupe-list { max-height: 50vh; overflow: auto; margin-bottom: 8px; }
+.ffm-dedupe-card { border: 1px solid var(--background-modifier-border); border-radius: 6px; padding: 6px 8px; margin-bottom: 8px; }
+.ffm-dedupe-row { display: flex; align-items: center; gap: 8px; padding: 1px 0; }
+.ffm-dedupe-name { flex: 1 1 auto; }
+.ffm-dedupe-count { color: var(--text-muted); font-size: 12px; }
+.ffm-move-chips { max-height: 140px; overflow: auto; margin-bottom: 6px; }
+.ffm-yaml-chip.is-inc { border-color: var(--color-green, #3a3); background: color-mix(in srgb, var(--color-green, #3a3) 22%, transparent); }
+.ffm-yaml-chip.is-exc { border-color: var(--color-red, #c33); background: color-mix(in srgb, var(--color-red, #c33) 20%, transparent); text-decoration: line-through; }
+.ffm-move-list { max-height: 200px; }
+.ffm-move-cond { border: 1px solid var(--background-modifier-border); border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; }
+.ffm-move-cond-top { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; }
+.ffm-move-range { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 12px; }
+
+/* ---- 第 16 輪：面板 + 按鈕、屬性對話框複製、檔案列 ---- */
+.ffm-push-right { margin-left: auto; }
+.ffm-props td { user-select: text; }
+.ffm-props-v { cursor: text; }
+.ffm-props-copy { width: 28px; text-align: right; }
+.ffm-copy-btn { display: inline-flex; cursor: pointer; color: var(--text-faint); }
+.ffm-copy-btn:hover { color: var(--text-accent); }
+.ffm-copy-btn svg { width: 14px; height: 14px; }
+.ffm-panel-row.ffm-file-row { color: var(--text-muted); }
+.ffm-panel-row.ffm-file-row .ffm-name-text { font-style: italic; }
+
+/* ---- 第 17 輪 ---- */
+.ffm-files-toggle { flex: none; display: inline-flex; margin-left: 4px; opacity: 0.55; cursor: pointer; }
+.ffm-files-toggle:hover { opacity: 1; color: var(--text-accent); }
+.ffm-files-toggle.is-open { opacity: 1; color: var(--text-accent); }
+.ffm-files-toggle svg { width: 14px; height: 14px; }
+.ffm-menu-ico { display: inline-flex; vertical-align: middle; margin-right: 6px; color: var(--text-muted); }
+.ffm-menu-ico svg { width: 16px; height: 16px; }
+.ffm-menu-sep-row .setting-item-name { color: var(--text-faint); font-size: 12px; letter-spacing: 1px; }
+.ffm-settings-toc { max-height: 40vh; overflow: auto; margin-top: 4px; border: 1px solid var(--background-modifier-border); border-radius: 6px; background: var(--background-primary); }
+.ffm-settings-toc-item { padding: 5px 12px; cursor: pointer; }
+.ffm-settings-toc-item:hover { background: var(--background-modifier-hover); color: var(--text-accent); }
+
+/* ---- 第 18 輪：展開符號移到標籤名稱左邊 ---- */
+.ffm-files-toggle { margin-left: 0; margin-right: 4px; }
