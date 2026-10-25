@@ -11,20 +11,6 @@ Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注�
   <img src="image/screenshot-02.png" width="420">
 </div>
 
-<<<<<<< HEAD
-<div>
-  <img src="image/screenshot-01.png" width="300">
-  <img src="image/screenshot-02.png" width="600">
-</div>
-
-![](image/screenshot-03.png)
-
-<div>
-  <img src="image/screenshot-04.png" width="400">
-  <img src="image/screenshot-05.png" width="400">
-</div>
-
-=======
 ![](image/screenshot-03.png)
 
 <div>
@@ -68,7 +54,6 @@ Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注�
 ### 1.0.0
 
 首次发布：文件管理区与专注区、批量重命名、手动排序、打开标记与书签联动、主题兼容、缩进线、多语言。
->>>>>>> dev2
 
 ## 功能
 
@@ -253,8 +238,4 @@ Obsidian 文件管理插件：左边是**文件管理区**，右边是**专注�
 
 ## 问题反馈与建议
 
-<<<<<<< HEAD
-如果遇到问题或有任何建议，欢迎到 GitHub 项目中[提交 Issues](https://github.com/yuri55448/Focus-File-Manager/issues)。反馈时如果能附上 Obsidian 版本、插件版本、使用的主题和复现步骤（或截图），会更容易处理。
-=======
 如果遇到问题或有任何建议，欢迎到 GitHub 项目中[提交 Issues](https://github.com/yuri55448/Focus-File-Manager/issues)。反馈时如果能附上 Obsidian 版本、插件版本、使用的主题与复现步骤（或截图），会更容易处理。
->>>>>>> dev2

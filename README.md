@@ -13,20 +13,6 @@ A file manager for Obsidian that puts a **file pane** next to a **focus pane**. 
   <img src="image/screenshot-02.png" width="420">
 </div>
 
-<<<<<<< HEAD
-<div>
-  <img src="image/screenshot-01.png" width="300">
-  <img src="image/screenshot-02.png" width="600">
-</div>
-
-![](image/screenshot-03.png)
-
-<div>
-  <img src="image/screenshot-04.png" width="400">
-  <img src="image/screenshot-05.png" width="400">
-</div>
-
-=======
 ![](image/screenshot-03.png)
 
 <div>
@@ -70,7 +56,6 @@ This release adds tools for tidying tags and properties, batch operations, and m
 ### 1.0.0
 
 First release: file pane and focus zones, batch rename, manual sorting, open markers and bookmark sync, theme compatibility, indent guides, multiple languages.
->>>>>>> dev2
 
 ## Features
 

@@ -11,20 +11,6 @@ Obsidian 檔案管理插件：左邊是**文件管理區**，右邊是**專注�
   <img src="image/screenshot-02.png" width="420">
 </div>
 
-<<<<<<< HEAD
-<div>
-  <img src="image/screenshot-01.png" width="300">
-  <img src="image/screenshot-02.png" width="600">
-</div>
-
-![](image/screenshot-03.png)
-
-<div>
-  <img src="image/screenshot-04.png" width="400">
-  <img src="image/screenshot-05.png" width="400">
-</div>
-
-=======
 ![](image/screenshot-03.png)
 
 <div>
@@ -68,7 +54,6 @@ Obsidian 檔案管理插件：左邊是**文件管理區**，右邊是**專注�
 ### 1.0.0
 
 首次發布：文件管理區與專注區、批量重新命名、手動排序、開啟標記與書籤連動、主題相容、縮排線、多語言。
->>>>>>> dev2
 
 ## 功能
 
