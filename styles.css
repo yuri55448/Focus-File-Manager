@@ -403,3 +403,36 @@ body.is-mobile .ffm-btn { padding: 4px 10px; }
 
 /* ---- 第 18 輪：展開符號移到標籤名稱左邊 ---- */
 .ffm-files-toggle { margin-left: 0; margin-right: 4px; }
+
+/* ---- 第 19 輪：貼上／創建位置詢問、設定頁跳轉 ---- */
+.ffm-place-row { display: flex; gap: 8px; margin: 8px 0; }
+.ffm-place-remember { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
+@keyframes ffm-flash { 0% { background: var(--text-selection); } 100% { background: transparent; } }
+.ffm-flash { animation: ffm-flash 1.8s ease-out; }
+
+/* ---- 第 21 輪：Vim 按鍵說明 ---- */
+.ffm-vim-help { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.ffm-vim-help td { padding: 2px 8px; border-bottom: 1px solid var(--background-modifier-border); }
+.ffm-vim-help .ffm-vim-key { font-family: var(--font-monospace); color: var(--text-accent); white-space: nowrap; width: 90px; }
+
+/* ---- 第 22 輪：浮動視窗、勾選列 ---- */
+.ffm-floating { pointer-events: none; }
+.ffm-floating .modal-bg { display: none; }
+.ffm-floating .modal { pointer-events: auto; box-shadow: var(--shadow-l, 0 8px 30px rgba(0,0,0,.4)); }
+.ffm-floating-box { resize: both; overflow: auto; max-height: 92vh; max-width: 96vw; }
+.ffm-drag-title { cursor: move; user-select: none; }
+.ffm-check-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
+.ffm-check-count { color: var(--text-muted); font-size: 12px; margin-right: 6px; }
+.ffm-check-filter { flex: 1 1 140px; min-width: 120px; }
+.ffm-check-cell { width: 24px; }
+.ffm-preview tr.is-unchecked { opacity: 0.45; }
+.ffm-pending-note { color: var(--text-accent); }
+
+/* ---- 第 24 輪：設定頁分類 ---- */
+.ffm-settings-cats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.ffm-cat-btn { padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.ffm-cat-btn.is-active { background: var(--interactive-accent); color: var(--text-on-accent); border-color: var(--interactive-accent); }
+
+/* ---- 第 25 輪：子選單管理 ---- */
+.ffm-menu-folder-row .setting-item-name { min-width: 0; }
+.ffm-menu-folder-row { background: var(--background-secondary-alt, transparent); border-radius: 6px; }

@@ -91,7 +91,25 @@ const DEFAULT_SETTINGS = {
   showExcluded: false,
   menuOrder: [],
   menuIcons: {},
+  menuFolders: [],
+  menuAssign: {},
+  menuExtSeen: {},
   menuSepExplicit: false,
+  pastePlace: 'ask', // ask | below | above
+  vimMode: 'follow', // follow | on | off
+  vimTimeout: 1000,
+  vimrcEnabled: false,
+  vimrcPath: '.obsidian.vimrc',
+  vimKeymap: DEFAULT_VIM_KEYMAP(),
+  createPlace: 'ask',
+  floatingDialogs: true,
+  sortChineseNumerals: true,
+  includeOtherPluginItems: true,
+  closeTabTo: 'last', // last | left | right | default
+  contextMenuKey: 'Alt+M',
+  lastModEnabled: false,
+  lastModKey: 'updated',
+  lastModFormat: 'YYYY-MM-DD HH:mm:ss',
   menuHidden: [],
   yamlSchemes: [],
   batchCreateMax: 10,
@@ -122,7 +140,6 @@ const DEFAULT_SETTINGS = {
   pinIcon: 'pin',
   showBookmarkMark: true,
   bookmarkIcon: 'bookmark',
-  newFileTypes: '',
   icons: { collapsed: 'chevron-right', expanded: 'chevron-down', folder: 'folder', folderOpen: 'folder-open', file: 'file' },
   extIcons: '',
   showFolderIcon: true,
@@ -190,7 +207,7 @@ const LANG_DATA = {
     "Imported style": "匯入的樣式",
     "Common": "常用",
     "Files": "檔案",
-    "Folders": "資料夾",
+    "Folders": "文件夾",
     "Arrows": "箭頭",
     "Marks": "標記",
     "Tools": "工具",
@@ -272,11 +289,11 @@ const LANG_DATA = {
     "Extension": "副檔名",
     "Size": "大小",
     "Contents": "內容",
-    "{0} files, {1} subfolders (including all levels)": "{0} 個檔案、{1} 個子資料夾（含所有子層）",
+    "{0} files, {1} subfolders (including all levels)": "{0} 個檔案、{1} 個子文件夾（含所有子層）",
     "Created": "建立時間",
     "Last modified": "最後修改",
     "Selected": "已選取",
-    "{0} items ({1} folders, {2} files)": "{0} 個項目（{1} 個資料夾、{2} 個檔案）",
+    "{0} items ({1} folders, {2} files)": "{0} 個項目（{1} 個文件夾、{2} 個檔案）",
     "Total size": "總大小",
     "Batch create": "批量創建",
     "Note": "筆記",
@@ -484,7 +501,7 @@ const LANG_DATA = {
     "Values to add": "要添加的值",
     "Append": "添加",
     "Move to": "移動到",
-    "Enter or choose the destination folder path (created automatically if it does not exist; / means the vault root)": "輸入或選擇目標資料夾路徑（不存在時會自動建立；/ 代表庫根目錄）",
+    "Enter or choose the destination folder path (created automatically if it does not exist; / means the vault root)": "輸入或選擇目標文件夾路徑（不存在時會自動建立；/ 代表庫根目錄）",
     "Matching files ({0})": "符合條件的檔案（{0}）",
     "Please enter the destination path first": "請先填寫目標路徑",
     "Moved {0} files, skipped {1}": "已移動 {0} 個檔案，略過 {1} 個",
@@ -536,12 +553,12 @@ const LANG_DATA = {
     "Create daily note from template": "創建模板日記",
     "Batch create…": "批量創建…",
     "Paste to root": "貼上到根目錄",
-    "Paste to current folder": "貼上到目前資料夾",
+    "Paste to current folder": "貼上到目前文件夾",
     "Select all (visible)": "全選（可見項目）",
     "Tag manager": "標籤管理",
     "Property manager": "屬性管理",
     "Focus File Manager": "專注文件管理器",
-    "(This folder is empty)": "（此資料夾是空的）",
+    "(This folder is empty)": "（此文件夾是空的）",
     "(The vault is empty)": "（庫是空的）",
     "Select files/folders on the left, then right-click \"Add to focus zone\"": "在左側選取文件／文件夾，右鍵「加入專注區」",
     "Right-click here to create a focus zone": "在此處按右鍵，新增一個專注區",
@@ -596,7 +613,7 @@ const LANG_DATA = {
     "Imported {0} styles; choose one from \"Style template\"": "已導入 {0} 個樣式，請從「樣式範本」選用",
     "Open in new tab at the end": "在末尾新分頁開啟",
     "Open in new tab to the right": "在右側新分頁開啟",
-    "Showing in folder is not supported on this platform": "此平台無法在資料夾中顯示",
+    "Showing in folder is not supported on this platform": "此平台無法在文件夾中顯示",
     "Last modified: {0}\nCreated: {1}": "最後修改：{0}\n建立：{1}",
     "Manual order reset": "已重置手動排序",
     "Switched to manual order": "已切換為手動排序",
@@ -631,7 +648,7 @@ const LANG_DATA = {
     "Open in new tab": "在新分頁開啟",
     "Open to the right": "在右側開啟",
     "Open in new window": "在新視窗開啟",
-    "Show in folder": "在資料夾中顯示",
+    "Show in folder": "在文件夾中顯示",
     "Selection mode (enter / exit)": "選取狀態（進入／取消）",
     "Add to focus zone…": "加入專注區…",
     "Remove from focus zone": "從專注區移除",
@@ -646,8 +663,8 @@ const LANG_DATA = {
     "Add bookmark": "加入書籤",
     "Batch rename…": "批量重新命名…",
     "Batch rename… ({0})": "批量重新命名…（{0}）",
-    "Batch rename files inside folder…": "批量重新命名資料夾內的檔案…",
-    "This folder has no files": "此資料夾內沒有檔案",
+    "Batch rename files inside folder…": "批量重新命名文件夾內的檔案…",
+    "This folder has no files": "此文件夾內沒有檔案",
     "Batch edit YAML…": "批量修改 YAML…",
     "Move files by tags…": "根據標籤移動文件…",
     "Move files by YAML…": "根據 YAML 移動文件…",
@@ -669,7 +686,7 @@ const LANG_DATA = {
     "There is no folder above to move it into": "上方沒有可放入的文件夾",
     "This version of Obsidian does not support setting property types from a plugin": "此版本的 Obsidian 不支援從插件設定屬性類型",
     "Set the type of {0} properties": "已設定 {0} 個屬性的類型",
-    "Folder not found": "找不到該資料夾",
+    "Folder not found": "找不到該文件夾",
     "Please create a focus zone first": "請先新增專注區",
     "Delete temporary folder \"{0}\"? Its shortcuts will move back to the top level of the focus zone (real files are not deleted).": "確定刪除臨時文件夾「{0}」？裡面的捷徑會移回專注區頂層（不會刪除實際檔案）。",
     "Only shortcuts inside a focus zone can be moved": "只能移動專注區裡的捷徑",
@@ -694,16 +711,16 @@ const LANG_DATA = {
     "Remove": "移除",
     "Behavior": "操作",
     "File manager style": "文件管理樣式",
-    "Default: tree (expandable subfolders). Explorer: path bar on top, one level at a time, click a folder to enter it (focus zones are unaffected)": "預設：樹狀（可展開子資料夾）。電腦式：上方顯示路徑，一次只顯示一層，點資料夾進入下一層（專注區不受影響）",
+    "Default: tree (expandable subfolders). Explorer: path bar on top, one level at a time, click a folder to enter it (focus zones are unaffected)": "預設：樹狀（可展開子文件夾）。電腦式：上方顯示路徑，一次只顯示一層，點文件夾進入下一層（專注區不受影響）",
     "Default (tree)": "預設（樹狀）",
     "Explorer (level by level)": "電腦式（逐層進入）",
-    "You can also switch with the sort button on the toolbar. For time-based sorting, a folder uses the time of the newest (modified) or oldest (created) file inside it": "也可以用工具列的排序按鈕切換。時間排序時，資料夾以其內容中最新（編輯）或最舊（創建）的檔案時間為準",
-    "Folders before files when sorting": "排序時資料夾排在檔案前面",
+    "You can also switch with the sort button on the toolbar. For time-based sorting, a folder uses the time of the newest (modified) or oldest (created) file inside it": "也可以用工具列的排序按鈕切換。時間排序時，文件夾以其內容中最新（編輯）或最舊（創建）的檔案時間為準",
+    "Folders before files when sorting": "排序時文件夾排在檔案前面",
     "On by default (same as Obsidian)": "預設開啟（與 Obsidian 相同）",
     "Exclude items from \"Expand all / Collapse all\"": "「全部展開／全部收合」排除指定項目",
-    "When enabled, folders matching the list below are not affected by Expand all or Collapse all and keep their current state": "啟用後，符合下方清單的資料夾不會被全部展開或全部收合影響，保持原本的展開狀態",
+    "When enabled, folders matching the list below are not affected by Expand all or Collapse all and keep their current state": "啟用後，符合下方清單的文件夾不會被全部展開或全部收合影響，保持原本的展開狀態",
     "Exclusion list": "排除清單",
-    "One per line. A name only (e.g. Attachments) = any folder with that name; a path (e.g. Projects/Archive) = the folder at that path. Wildcards * and ? are supported": "每行一個。只填名稱（例如 Attachments）＝任何位置的同名資料夾；填路徑（例如 Projects/Archive）＝該路徑的資料夾。可使用 * 與 ? 萬用字元",
+    "One per line. A name only (e.g. Attachments) = any folder with that name; a path (e.g. Projects/Archive) = the folder at that path. Wildcards * and ? are supported": "每行一個。只填名稱（例如 Attachments）＝任何位置的同名文件夾；填路徑（例如 Projects/Archive）＝該路徑的文件夾。可使用 * 與 ? 萬用字元",
     "Top view-mode button style": "頂部顯示選項按鈕樣式",
     "\"File manager / Focus zone / Both\": separate buttons, or one merged icon button that cycles": "「文件管理／專注區／兩者」：獨立按鈕，或合併為一個循環切換的圖示按鈕",
     "Separate buttons": "獨立按鈕",
@@ -715,8 +732,8 @@ const LANG_DATA = {
     "Icon + text label": "圖示 + 文字描述",
     "Merge \"Collapse all / Expand all\" into one button": "「全部收合／全部展開」合併為一個按鈕",
     "Like the built-in file explorer: the button reads \"Collapse all\" when something is expanded, otherwise \"Expand all\"": "像內建檔案管理器：目前有展開的項目時按鈕為「全部收合」，否則為「全部展開」",
-    "Clicking a folder does not expand/collapse": "點擊資料夾不展開／收合",
-    "When enabled, only the arrow beside a folder expands or collapses it": "啟用後，只有點資料夾旁邊的箭頭符號才會展開或收合",
+    "Clicking a folder does not expand/collapse": "點擊文件夾不展開／收合",
+    "When enabled, only the arrow beside a folder expands or collapses it": "啟用後，只有點文件夾旁邊的箭頭符號才會展開或收合",
     "Single click does not open files": "單擊文件不開啟",
     "When enabled, a single click only selects; open files with the open icons below (or the right-click menu)": "啟用後，單擊只會選取；請搭配下方的開啟符號（或右鍵選單）來開啟文件",
     "How files open": "開啟文件的方式",
@@ -741,7 +758,7 @@ const LANG_DATA = {
     "Next to the current tab (default)": "在目前分頁旁邊開啟（預設）",
     "At the end of the tabs": "在分頁末尾開啟",
     "Show times on hover": "滑鼠停留時顯示時間",
-    "Hover over a file or folder to see its last modified and created times (also available via right-click \"Properties\")": "停留在檔案或資料夾上，顯示最後修改時間與建立時間（也可右鍵「屬性」查看）",
+    "Hover over a file or folder to see its last modified and created times (also available via right-click \"Properties\")": "停留在檔案或文件夾上，顯示最後修改時間與建立時間（也可右鍵「屬性」查看）",
     "Dim other levels while dragging when cross-level move is off": "跨層級移動關閉時，拖曳讓其他層級變灰",
     "While dragging, items not on the same level are dimmed": "拖曳項目時，不屬於同一層級的項目會變灰",
     "Dim level": "變灰程度",
@@ -771,9 +788,9 @@ const LANG_DATA = {
     "Locate the file when clicking the file name under the tab bar": "點擊分頁欄下方的檔名時定位該文件",
     "A single click on the file name locates and highlights the file in this plugin; a double click starts renaming (on by default)": "單擊檔名會在本插件中定位並高亮該文件；雙擊則進入重新命名（預設開啟）",
     "Prefer this plugin when clicking the path under the tab bar": "點擊分頁欄下方的路徑時優先使用本插件",
-    "When you click a folder name in the path above a note's title, this plugin locates and shows that folder (on by default)": "點擊筆記標題上方的路徑（資料夾名稱）時，改由本插件定位並顯示該資料夾（預設開啟）",
+    "When you click a folder name in the path above a note's title, this plugin locates and shows that folder (on by default)": "點擊筆記標題上方的路徑（文件夾名稱）時，改由本插件定位並顯示該文件夾（預設開啟）",
     "Daily note template paths": "日記模板路徑",
-    "One path per line; each can be a template file or a folder (every .md inside a folder is listed as a template). Supports {{date}}, {{date:FORMAT}}, {{time}} and {{title}}": "每行一個路徑，可以是模板檔案或資料夾（資料夾內所有 .md 都會列為模板）。支援 {{date}}、{{date:格式}}、{{time}}、{{title}}",
+    "One path per line; each can be a template file or a folder (every .md inside a folder is listed as a template). Supports {{date}}, {{date:FORMAT}}, {{time}} and {{title}}": "每行一個路徑，可以是模板檔案或文件夾（文件夾內所有 .md 都會列為模板）。支援 {{date}}、{{date:格式}}、{{time}}、{{title}}",
     "Daily note file name format": "日記檔名格式",
     "Uses moment.js format tokens; default YYYY-MM-DD": "使用 moment 格式，預設 YYYY-MM-DD",
     "Displayed info": "顯示資訊",
@@ -797,10 +814,10 @@ const LANG_DATA = {
     "Unit": "單位",
     "Auto": "自動",
     "Decimal places": "小數位數",
-    "Base": "進位基數",
+    "Base": "Base",
     "1024 (KiB style)": "1024（KiB 式）",
     "1000 (SI style)": "1000（SI 式）",
-    "Show full folder names": "資料夾顯示完整名稱",
+    "Show full folder names": "文件夾顯示完整名稱",
     "When off, names that don't fit are truncated with \"…\" (off by default)": "關閉時，空間不足的名稱會以「…」截斷（預設關閉）",
     "Show full file names": "檔案顯示完整名稱",
     "Wrap full names to the sidebar width": "完整名稱依側邊欄寬度自動換行",
@@ -810,7 +827,7 @@ const LANG_DATA = {
     "Use Obsidian's native style classes": "使用 Obsidian 原生樣式類別",
     "Compatible with themes and CSS snippets; turn off if the layout looks wrong": "相容主題與 CSS 片段；若版面異常可關閉",
     "Show indent guides": "顯示縮排線",
-    "Show a line to the left of child items when a folder is expanded (on by default)": "展開資料夾時，子項目左側顯示一條線（預設開啟）",
+    "Show a line to the left of child items when a folder is expanded (on by default)": "展開文件夾時，子項目左側顯示一條線（預設開啟）",
     "Indent guide color": "縮排線顏色",
     "Leave empty to follow the theme. Accepts color names, RGB or HEX": "留空 = 跟隨主題。可填顏色名稱、RGB、HEX",
     "Indent guide opacity": "縮排線透明度",
@@ -828,9 +845,9 @@ const LANG_DATA = {
     "Style name": "樣式名稱",
     "Written to the file on export; after import it also appears in the template list under this name": "導出時寫入檔案，導入後也會以此名稱出現在範本清單",
     "Export / import path": "導出／導入路徑",
-    "Relative path = a file in the vault; on desktop you can also enter a full path (e.g. D:\\\\styles\\\\guide.json). Folders are created automatically on export": "相對路徑 = 庫內的檔案；桌面版也可填完整路徑（例如 D:\\styles\\guide.json）。導出時會自動建立資料夾",
+    "Relative path = a file in the vault; on desktop you can also enter a full path (e.g. D:\\\\styles\\\\guide.json). Folders are created automatically on export": "相對路徑 = 庫內的檔案；桌面版也可填完整路徑（例如 D:\\styles\\guide.json）。導出時會自動建立文件夾",
     "Export / import": "導出／導入",
-    "\"Export template reference\" writes guide-style-templates.json to the same folder, containing all built-in templates, as a reference for custom styles": "「導出範本參考」會在同一個資料夾寫出 guide-style-templates.json，內含所有內建範本，可當作自訂樣式的參考檔",
+    "\"Export template reference\" writes guide-style-templates.json to the same folder, containing all built-in templates, as a reference for custom styles": "「導出範本參考」會在同一個文件夾寫出 guide-style-templates.json，內含所有內建範本，可當作自訂樣式的參考檔",
     "Export current style": "導出目前樣式",
     "Export template reference": "導出範本參考",
     "Manage imported styles": "管理導入的樣式",
@@ -845,23 +862,23 @@ const LANG_DATA = {
     "Bookmark icon": "書籤符號",
     "Other file types for right-click \"New\"": "右鍵「新增」的其他檔案類型",
     "Base and Canvas are built in; Excalidraw also appears if the plugin is enabled. Other types: one per line in the format Name|extension|initial content (\\n = line break)": "Base、畫布已內建；若已啟用 Excalidraw 插件也會出現。其他類型每行一個，格式：名稱|副檔名|初始內容（\\n 代表換行）",
-    "Show icons beside folders": "顯示資料夾旁的圖示",
+    "Show icons beside folders": "顯示文件夾旁的圖示",
     "On by default": "預設開啟",
     "Show icons beside files": "顯示檔案旁的圖示",
     "Icon source": "圖示來源",
-    "Some themes (e.g. Rathgar Gold) draw their own folder and file icons. Auto: use the theme's icons when detected to avoid duplicates; you can also force the theme's or the plugin's icons": "有些主題（例如 Rathgar Gold）會自己畫資料夾與檔案圖示。自動：偵測到主題有畫就用主題的，避免重複；也可強制使用主題或插件的圖示",
+    "Some themes (e.g. Rathgar Gold) draw their own folder and file icons. Auto: use the theme's icons when detected to avoid duplicates; you can also force the theme's or the plugin's icons": "有些主題（例如 Rathgar Gold）會自己畫文件夾與檔案圖示。自動：偵測到主題有畫就用主題的，避免重複；也可強制使用主題或插件的圖示",
     "Auto (detect theme)": "自動（偵測主題）",
     "Use theme icons": "使用主題圖示",
     "Use plugin icons (customizable below)": "使用插件圖示（下方可自訂）",
     "Expand / collapse arrow": "展開／收合符號",
-    "Auto: if the theme hides the expand arrow, it is hidden too (you can still click the folder row to expand); always shown when \"Clicking a folder does not expand/collapse\" is on": "自動：主題若隱藏了展開符號就跟著隱藏（仍可點資料夾列展開）；若已開啟「點擊資料夾不展開」則一定顯示",
+    "Auto: if the theme hides the expand arrow, it is hidden too (you can still click the folder row to expand); always shown when \"Clicking a folder does not expand/collapse\" is on": "自動：主題若隱藏了展開符號就跟著隱藏（仍可點文件夾列展開）；若已開啟「點擊文件夾不展開」則一定顯示",
     "Auto (follow theme)": "自動（跟隨主題）",
     "Always show": "一律顯示",
     "Always hide": "一律隱藏",
     "Collapsed arrow": "收合狀態的符號",
     "Expanded arrow": "展開狀態的符號",
-    "Folder icon": "資料夾圖示",
-    "Folder icon (expanded)": "資料夾圖示（展開時）",
+    "Folder icon": "文件夾圖示",
+    "Folder icon (expanded)": "文件夾圖示（展開時）",
     "File icon": "檔案圖示",
     "File icons by extension": "依副檔名指定檔案圖示",
     "One per line, format: extension=icon. E.g. md=file-text, png=image, pdf=📕": "每行一個，格式：副檔名=圖示。例如 md=file-text、png=image、pdf=📕",
@@ -908,15 +925,15 @@ const LANG_DATA = {
     "Column format…": "欄位格式…",
     "Show files using this tag": "展開使用此標籤的文件",
     "Hide files using this tag": "收合使用此標籤的文件",
-    "Sort this folder…": "排序此資料夾…",
-    "{0} (including all subfolders)": "{0}（含所有子資料夾）",
+    "Sort this folder…": "排序此文件夾…",
+    "{0} (including all subfolders)": "{0}（含所有子文件夾）",
     "Sorted \"{0}\"": "已排序「{0}」",
-    "Folders at the top": "資料夾在最上方",
-    "Folders at the bottom": "資料夾在最下方",
-    "Mixed by name: folder before its file": "依名稱混合：資料夾排在同名前綴的文件之前",
-    "Mixed by name: folder after its file": "依名稱混合：資料夾排在同名前綴的文件之後",
-    "Folder position": "資料夾位置",
-    "Where folders go when sorting. \"Mixed by name\" sorts files and folders together; a folder whose name starts with a file's name (for example A-image and A.md) goes right before or after that file.": "排序時資料夾的位置。「依名稱混合」會把文件與資料夾一起依名稱排序；名稱以某個文件名稱開頭的資料夾（例如 A-image 與 A.md）會緊接在該文件之前或之後。",
+    "Folders at the top": "文件夾在最上方",
+    "Folders at the bottom": "文件夾在最下方",
+    "Mixed by name: folder before its file": "依名稱混合：文件夾排在同名前綴的文件之前",
+    "Mixed by name: folder after its file": "依名稱混合：文件夾排在同名前綴的文件之後",
+    "Folder position": "文件夾位置",
+    "Where folders go when sorting. \"Mixed by name\" sorts files and folders together; a folder whose name starts with a file's name (for example A-image and A.md) goes right before or after that file.": "排序時文件夾的位置。「依名稱混合」會把文件與文件夾一起依名稱排序；名稱以某個文件名稱開頭的文件夾（例如 A-image 與 A.md）會緊接在該文件之前或之後。",
     "Copy names": "複製名稱",
     "Copied {0} names": "已複製 {0} 個名稱",
     "Not in any category": "未分類（排除已有文件夾分類）",
@@ -928,7 +945,277 @@ const LANG_DATA = {
     "Remove separator": "移除分隔線",
     "Add separator": "新增分隔線",
     "Search settings… (type # to jump to a section)": "搜尋設定…（輸入 # 可跳到功能區塊）",
-    "No matching sections": "沒有符合的功能區塊"
+    "No matching sections": "沒有符合的功能區塊",
+    "Create note here": "在此處創建 筆記",
+    "Create folder here": "在此處創建 文件夾",
+    "Create {0} here": "在此處創建 {0}",
+    "Create daily note here (template)": "在此處創建 模板日記",
+    "Batch create here…": "在此處批量創建…",
+    "Paste above this item": "貼上到此項目之上",
+    "Paste below this item": "貼上到此項目之下",
+    "Quick move up / down…": "快速往上／往下…",
+    "Where to paste?": "貼上的位置",
+    "Where to create?": "創建的位置",
+    "Place it above or below \"{0}\"?": "要放在「{0}」的上方還是下方？",
+    "Above": "上方",
+    "Below": "下方",
+    "Remember my choice (don't ask again)": "記住我的選擇（之後不再詢問）",
+    "You can change this in the plugin settings.": "可以在插件設定中修改這個行為。",
+    "Go to the setting": "前往設定位置",
+    "When pasting": "貼上時",
+    "In manual sort mode, pasting while a file is selected can place the pasted items below or above that file": "在手動排序狀態下，選取某個文件後貼上，可以把貼上的項目放在該文件的下方或上方",
+    "Paste below the file": "貼上在某文件下",
+    "Paste above the file": "貼上在某文件上",
+    "Ask when pasting": "貼上時詢問",
+    "When creating here": "在此處創建某文件時",
+    "In manual sort mode, creating from a file's right-click menu can place the new item below or above that file": "在手動排序狀態下，從某個文件的右鍵選單創建項目時，可以把新項目放在該文件的下方或上方",
+    "Create below the file": "在某文件下創建",
+    "Create above the file": "在某文件上創建",
+    "Ask when creating": "創建時詢問",
+    "Quick move up / down": "快速往上／往下",
+    "Items to move: {0}": "要移動的項目：{0}",
+    "Destination folder": "目標文件夾",
+    "Defaults to the current folder; type or pick another path to move the items there": "預設是目前所在的文件夾；也可以輸入或選擇其他路徑，把項目移到那裡",
+    "Reference item": "參考項目（放在它的上方或下方）",
+    "Position": "位置",
+    "Above the item": "放在該項目之上",
+    "Below the item": "放在該項目之下",
+    "This folder does not exist yet": "這個文件夾還不存在",
+    "No items in this folder": "此文件夾沒有其他項目",
+    "Moved {0} items": "已移動 {0} 個項目",
+    "Create other file types (right-click)": "右鍵創建其他檔案類型",
+    "One per line: name|extension|initial content (\\n = line break). Each line adds a \"Create … here\" item to the right-click menu, which you can reorder, hide or give another icon in the list below. Examples are shown in the box; the button inserts them": "每行一個：名稱|副檔名|初始內容（\\n 代表換行）。每一行都會在右鍵選單新增一個「在此處創建 …」項目，可以在下方的清單調整位置、隱藏或更換圖示。範例會顯示在輸入框裡，也可以按按鈕插入",
+    "Insert examples": "插入範例",
+    "Move below the separator above": "移到上方分隔線之下",
+    "Move below the separator below": "移到下方分隔線之下",
+    "Template": "模板",
+    "Pick a saved template to load its steps (none by default). Manage templates in the plugin settings": "選擇已儲存的模板來載入它的步驟（預設不使用模板）。模板可在插件設定中管理",
+    "None (no template)": "無（不使用模板）",
+    "Edit format": "編輯格式",
+    "Name format / numbering": "名稱格式／編號",
+    "Remove name format / numbering": "刪除名稱格式／編號",
+    "Change case": "修改大小寫",
+    "Characters / strings": "字符／字符串",
+    "Save as template": "儲存為模板",
+    "From character N": "從第 N 個字符",
+    "Character N": "第 N 個字符",
+    "To character M": "到第 M 個字符",
+    "Count from the end": "從結尾開始計算",
+    "Format": "格式",
+    "Tokens: {n} number, {a} / {A} letters, {name} current name, {i} order, {time} time, {folder} folder name, {ext} extension. For groups: {n1} {n2} {a1} {A1} {a2} {A2}": "可用標記：{n} 編號、{a}／{A} 字母、{name} 目前名稱、{i} 順序、{time} 時間、{folder} 文件夾名、{ext} 副檔名；分組用：{n1} {n2} {a1} {A1} {a2} {A2}",
+    "Insert token": "插入標記",
+    "Replace the whole name": "取代整個名稱",
+    "At the start": "開頭",
+    "At the end": "結尾",
+    "Before character N": "第 N 個字符之前",
+    "After character N": "第 N 個字符之後",
+    "Between characters N and M (replaces that range)": "第 N 到第 M 個字符之間（取代該範圍）",
+    "Numbering": "編號設定",
+    "Start value": "起始值",
+    "A number, or a letter (a, A, Z…) for letter sequences": "可填數字；要用字母序列時填字母（a、A、Z…）",
+    "Negative values count down (for example -1 with start Z gives Z Y X…)": "負數表示遞減（例如起始值 Z、增減值 -1 會得到 Z Y X…）",
+    "Numbers to skip": "要跳過的編號",
+    "Comma separated; ranges allowed, e.g. 300-500, 900": "用逗號分隔，可寫範圍，例如 300-500, 900",
+    "Cycle: use N in a row": "循環：連續使用 N 個",
+    "With \"skip M\" below: use 1 and skip 1 gives 1 3 5 7…; 0 turns the cycle off": "搭配下面的「跳過 M 個」：使用 1 個、跳過 1 個會得到 1 3 5 7…；填 0 代表不循環",
+    "Cycle: then skip M": "循環：然後跳過 M 個",
+    "Group size": "分組大小",
+    "Splits the order into groups. For example size 3 with {A2}{n1} gives A1 A2 A3 B1 B2 B3…": "把順序分成一組一組。例如大小 3、格式 {A2}{n1} 會得到 A1 A2 A3 B1 B2 B3…",
+    "Time": "時間",
+    "Time format": "時間格式",
+    "YYYY year, MM month, DD day, HH hour, mm minute, ss second, ddd weekday, WW week number": "YYYY 年、MM 月、DD 日、HH 時、mm 分、ss 秒、ddd 星期、WW 第幾週",
+    "Time source": "時間來源",
+    "File created time": "檔案創建時間",
+    "File modified time": "檔案修改時間",
+    "Pick the formats to take out of the names. Separators left over are tidied up, and a name is never emptied completely.": "選擇要從名稱中移除的格式。留下的分隔符會一併整理，名稱也不會被清空。",
+    "Leading number (e.g. 001 , 1. , 01-)": "開頭的編號（例如 001 、1. 、01-）",
+    "Trailing number (e.g. _01, -3)": "結尾的編號（例如 _01、-3）",
+    "Date (e.g. 2026-10-26, 20261026, 2026.10.26)": "日期（例如 2026-10-26、20261026、2026.10.26）",
+    "Time (e.g. 09-30-15, 09:30, 093015)": "時間（例如 09-30-15、09:30、093015）",
+    "Text in brackets ( ) [ ] （ ） 【 】": "括號內的文字 ( ) [ ] （ ） 【 】",
+    "Extra spaces (collapse and trim)": "多餘的空白（合併並去除頭尾）",
+    "Custom regular expression": "自訂正規表示式",
+    "Regular expression": "正規表示式",
+    "Everything it matches is removed": "符合的內容都會被移除",
+    "Case": "大小寫",
+    "UPPERCASE": "全部大寫",
+    "lowercase": "全部小寫",
+    "Capitalize the first letter": "首字母大寫（其餘小寫）",
+    "Capitalize Each Word": "每個單字首字母大寫",
+    "sWAP cASE": "大小寫互換",
+    "Action": "操作",
+    "Replace": "取代",
+    "Delete characters": "刪除字符",
+    "Move a string": "移動字符串",
+    "Delete mode": "刪除方式",
+    "Delete everything before character N": "刪除第 N 個字符之前的全部",
+    "Delete everything after character N": "刪除第 N 個字符之後的全部",
+    "Delete characters N to M": "刪除第 N 到第 M 個字符",
+    "Keep only characters N to M (delete the rest)": "只保留第 N 到第 M 個字符（其餘刪除）",
+    "What to move": "要移動的內容",
+    "A specific string (first match)": "指定的字符串（第一個符合的）",
+    "Characters N to M": "第 N 到第 M 個字符",
+    "Matches of a regular expression": "符合正規表示式的內容",
+    "A number / date / time format": "編號／日期／時間格式",
+    "String": "字符串",
+    "For example move 33 in Apple33 to get App33le": "例如把 Apple33 裡的 33 移動，就會變成 App33le",
+    "Format to move": "要移動的格式",
+    "leading number": "開頭編號",
+    "trailing number": "結尾編號",
+    "date": "日期",
+    "time": "時間",
+    "the start": "開頭",
+    "the end": "結尾",
+    "before character N": "第 N 個字符之前",
+    "after character N": "第 N 個字符之後",
+    "Please fill in this step first": "請先填寫這個步驟",
+    "Steps to apply ({0})": "待套用的步驟（{0}）",
+    "No steps yet. Fill in the form above and press Convert.": "尚未新增任何步驟。填寫上面的表單後按「轉化」。",
+    "Edit this step": "編輯此步驟",
+    "Remove this step": "移除此步驟",
+    "Add at least one step first": "請先新增至少一個步驟",
+    " (counted from the end)": "（從結尾開始計算）",
+    "Before character {0}": "第 {0} 個字符之前",
+    "After character {0}": "第 {0} 個字符之後",
+    "Replace characters {0} to {1}": "取代第 {0} 到第 {1} 個字符",
+    "Name format \"{0}\" ({1})": "名稱格式「{0}」（{1}）",
+    "Remove formats: {0}": "刪除格式：{0}",
+    "brackets": "括號",
+    "spaces": "空白",
+    "custom pattern": "自訂規則",
+    "Change case: {0}": "修改大小寫：{0}",
+    "List replace ({0} names)": "名單替換（{0} 個名稱）",
+    "Replace \"{0}\" with \"{1}\"": "將「{0}」取代為「{1}」",
+    "Delete characters ({0})": "刪除字符（{0}）",
+    "everything before": "之前的全部",
+    "everything after": "之後的全部",
+    "range": "範圍",
+    "keep range only": "只保留範圍",
+    "Characters {0} to {1}": "第 {0} 到第 {1} 個字符",
+    "Move string ({0} → {1})": "移動字符串（{0} → {1}）",
+    "before character {0}": "第 {0} 個字符之前",
+    "after character {0}": "第 {0} 個字符之後",
+    "Batch rename templates": "批量重新命名模板",
+    "Templates are saved from the batch rename dialog with \"Save as template\". Rename, duplicate or delete them here": "模板是在批量重新命名視窗按「儲存為模板」存下來的，在這裡可以重新命名、複製或刪除",
+    "Duplicate this template": "複製此模板",
+    "(no steps)": "（沒有步驟）",
+    "Cursor down": "游標往下",
+    "Cursor up": "游標往上",
+    "Collapse folder / go to the parent": "收合文件夾／跳到上一層",
+    "Expand folder / open": "展開文件夾／開啟",
+    "Go to the first item (or item N)": "跳到第一項（前面有數字時跳到第 N 項）",
+    "Go to the last item (or item N)": "跳到最後一項（前面有數字時跳到第 N 項）",
+    "Half page down": "往下半頁",
+    "Half page up": "往上半頁",
+    "Expand": "展開",
+    "Collapse": "收合",
+    "Visual mode (extend the selection)": "視覺模式（延伸選取範圍）",
+    "Toggle selection of the current item": "切換目前項目的選取",
+    "Clear selection / cancel": "取消選取／取消輸入",
+    "Cut (delete in the tag and property managers)": "剪下（在標籤與屬性管理中為刪除）",
+    "Paste above": "貼上到上方",
+    "Move item down (manual order)": "項目往下移（手動排序）",
+    "Move item up (manual order)": "項目往上移（手動排序）",
+    "Show the key help": "顯示按鍵說明",
+    "Vim-style keys": "Vim 風格按鍵",
+    "Vim keys in the panels": "面板中的 Vim 按鍵",
+    "Keyboard navigation for the file manager, tag manager and property manager (j k h l, gg, G, dd, yy, p, 5j …). Obsidian's own Vim mode is currently {0}": "用鍵盤操作文件管理、標籤管理與屬性管理（j k h l、gg、G、dd、yy、p、5j …）。Obsidian 本身的 Vim 模式目前是「{0}」",
+    "on": "開啟",
+    "off": "關閉",
+    "Follow Obsidian's Vim setting": "跟隨 Obsidian 的 Vim 設定",
+    "Always on": "一律開啟",
+    "Multi-key timeout (ms)": "多鍵序列等待時間（毫秒）",
+    "How long to wait for the next key of a sequence such as gg or dd": "輸入 gg、dd 這類序列時，等待下一個按鍵的時間",
+    "{0} mappings loaded": "已載入 {0} 個對應",
+    "Read mappings from a vimrc file": "讀取 vimrc 檔案裡的按鍵對應",
+    "Reads nmap / nnoremap / map / noremap / unmap lines (and let mapleader) from the file below, for example the .obsidian.vimrc used by Vimrc Support. Only key-to-key mappings are used": "從下面的檔案讀取 nmap／nnoremap／map／noremap／unmap（以及 let mapleader），例如 Vimrc Support 使用的 .obsidian.vimrc。只會使用「按鍵對應按鍵」的設定",
+    "vimrc file path": "vimrc 檔案路徑",
+    "Reload": "重新載入",
+    "Key mappings": "按鍵對應表",
+    "Keys can be single keys (j), sequences (gg, dd, zR) or special keys such as <CR>, <Esc>, <Space>, <C-d>": "按鍵可以是單一按鍵（j）、序列（gg、dd、zR），或特殊按鍵，例如 <CR>、<Esc>、<Space>、<C-d>",
+    "Remove this mapping": "移除此對應",
+    "Add mapping": "新增對應",
+    "Reset to defaults": "還原預設",
+    "From the vimrc file": "來自 vimrc 檔案",
+    "A number before a command repeats it (5j), and keys such as gg or dd are typed one after another. Customize them in the plugin settings.": "指令前面加數字會重複執行（例如 5j），gg、dd 這類按鍵要依序輸入。可以在插件設定中自訂。",
+    "Batch create ({0} items)": "批量創建（{0} 個項目）",
+    "No items are selected": "沒有勾選任何項目",
+    "{0} of {1} selected": "已勾選 {0} / {1} 個",
+    "Check all": "全部勾選",
+    "Uncheck all": "全部取消勾選",
+    "Invert selection": "反向選取",
+    "Check names containing…": "勾選名稱包含…（按 Enter）",
+    "The preview includes the settings above that are not converted yet. Press Convert to add them as a step.": "預覽包含上方尚未轉化的設定。按「轉化」才會把它加入步驟。",
+    "Common formats (click to fill in)": "常用格式（點一下填入）",
+    "Leading digits": "開頭的數字",
+    "Trailing digits": "結尾的數字",
+    "Date (2026-10-26, 20261026)": "日期（2026-10-26、20261026）",
+    "Time (09-30-15, 09:30)": "時間（09-30-15、09:30）",
+    "Text in ( )": "( ) 內的文字",
+    "Text in [ ]": "[ ] 內的文字",
+    "Text in （ ） 【 】": "（ ） 【 】內的文字",
+    "Extra spaces": "多餘的空白",
+    "Chinese characters": "中文字",
+    "Letters": "英文字母",
+    "Digits": "數字",
+    "Symbols and punctuation": "符號與標點",
+    "Custom pattern": "自訂正規則",
+    "Pattern (regular expression)": "規則（正規表示式）",
+    "A number, a letter (a, A, Z…) or a Chinese numeral (一, 二, 三… or 壹, 貳, 參…); the sequence continues in the same style": "可填數字、字母（a、A、Z…）或中文數字（一、二、三… 或 壹、貳、參…），序列會用同樣的樣式接下去",
+    "Number style": "數字樣式",
+    "Automatic (follows the start value)": "自動（依起始值）",
+    "1 2 3 (Arabic digits)": "1 2 3（阿拉伯數字）",
+    "一 二 三 (Chinese numerals)": "一 二 三（中文數字）",
+    "壹 貳 參 (formal Chinese numerals)": "壹 貳 參（大寫中文數字）",
+    "Movable dialogs": "可移動的視窗",
+    "Large dialogs such as batch rename and batch YAML edit open as floating windows: drag the title to move them, and you can keep reading and working in your notes behind them": "批量重新命名、批量修改 YAML 這類大視窗會變成浮動視窗：拖曳標題就能移動，後面的筆記仍然可以閱讀與操作",
+    "Leading and trailing spaces": "開頭與結尾的空白",
+    "Copy device path": "複製設備路徑",
+    "Focus the file manager": "聚焦到文件管理",
+    "Focus the note editor": "聚焦到筆記編輯區",
+    "Switch focus between the note and the file manager": "在筆記與文件管理之間切換焦點",
+    "Open the right-click menu": "開啟右鍵選單",
+    "Key to open the right-click menu": "開啟右鍵選單的按鍵",
+    "Opens the right-click menu of the selected items in the file manager, tag manager and property manager. Write it like Alt+M or Ctrl+Shift+K; leave it empty to turn it off. Hotkeys that move the focus between the note and the file manager are set in Obsidian's Hotkeys settings (search for \"Focus\")": "在文件管理、標籤管理與屬性管理中，為選取的項目開啟右鍵選單。寫法例如 Alt+M、Ctrl+Shift+K；留空代表不使用。在筆記與文件管理之間切換焦點的快捷鍵，請到 Obsidian 的「快速鍵」設定裡搜尋「聚焦」來設定",
+    "When closing a tab": "關閉分頁時",
+    "Which tab becomes active after the current tab is closed": "決定關閉目前分頁後，要切換到哪一個分頁",
+    "Back to the last used tab (the leftmost one if there is none)": "返回上次使用的分頁（沒有時回到最左邊第一個）",
+    "The tab on the left": "左邊的分頁",
+    "The tab on the right (the left one if there is none)": "右邊的分頁（右邊沒有時用左邊）",
+    "Obsidian's default": "Obsidian 預設",
+    "Update a last-modified property": "更新「最後修改時間」屬性",
+    "When you edit a note, the property below is set to the current time, a few seconds after you stop typing. Only the note you are editing is touched": "編輯筆記時，下面的屬性會在你停止輸入幾秒後更新成目前時間。只會更新你正在編輯的那篇筆記",
+    "Last-modified property name": "最後修改時間的屬性名稱",
+    "Last-modified time format": "最後修改時間的格式",
+    "Moment.js format, for example YYYY-MM-DD HH:mm:ss": "Moment.js 格式，例如 YYYY-MM-DD HH:mm:ss",
+    "Show items added by other plugins": "顯示其他插件加入的項目",
+    "Like Obsidian's own file explorer, the right-click menu also lists the items other plugins add to file menus (for example Excalidraw, Templater, Git). They appear after the built-in items": "跟 Obsidian 原本的文件管理一樣，右鍵選單也會列出其他插件加到文件選單的項目（例如 Excalidraw、Templater、Git），顯示在內建項目的後面",
+    "Chinese numerals in name sorting": "名稱排序支援中文數字",
+    "Sort names with Chinese numerals by their value, for example 第二章 before 第十章, and 一, 二, 十, 十一, 一百零一, 壹貳參 in numeric order": "名稱裡的中文數字會依數值排序，例如「第二章」排在「第十章」之前，一、二、十、十一、一百零一、壹貳參也會依大小排列",
+    "General": "一般",
+    "Display & markers": "顯示與標記",
+    "Appearance": "外觀",
+    "Keys & Vim": "快速鍵與 Vim",
+    "Batch & templates": "批量與模板",
+    "Add submenu": "新增子選單",
+    "New submenu": "新子選單",
+    "Submenu name": "子選單名稱",
+    "Move into a submenu…": "移入子選單…",
+    "(top level)": "（最上層）",
+    "Delete this submenu (its items return to the menu)": "刪除此子選單（裡面的功能會回到原本的選單）",
+    "Enabled (when off, the items inside go back to the main menu)": "啟用（停用時，裡面的功能會回到原本的選單）",
+    "Added by another plugin": "由其他插件加入",
+    "Submenus and items of other plugins": "子選單與其他插件的項目",
+    "Group items into submenus that open when you hover them (like the Windows right-click menu). Items that other plugins add are found when you right-click; the button looks for them now using the open note and its folder": "可以把功能收進子選單，滑鼠停在上面就會展開（像 Windows 的右鍵選單）。其他插件加進選單的項目會在你按右鍵時自動記錄；也可以按右邊的按鈕，用目前開啟的筆記與它所在的文件夾立刻掃描",
+    "Scan items of other plugins": "掃描其他插件的項目",
+    "Found {0} items from other plugins": "找到 {0} 個其他插件的項目",
+    "Reorder the items of the file and folder right-click menu, turn off the ones you don't need (all on by default), and group them into submenus. Items added by other plugins are listed too, so this list always matches the real menu. Separator lines are items as well: move or remove them, or add your own": "調整文件與文件夾右鍵選單的項目順序、關閉不需要的功能（預設全部開啟），也可以收進子選單。其他插件加入的項目也會列在這裡，所以這份清單會和實際的右鍵選單一致。分隔線也是項目：可以移動、移除，或自行新增",
+    "Check names containing… (separate several words with spaces or commas)": "勾選名稱包含…（可輸入多個字段，用空白或逗號分隔）",
+    "Match any word": "符合任一字段",
+    "Match all words": "同時符合所有字段",
+    "Confirm": "確認",
+    "Built into Obsidian": "Obsidian 自帶功能",
+    "Added by another plugin: {0}": "由其他插件加入：{0}"
   },
   "zh-CN": {
     "Numbering (100, 200…)": "编号（100、200…）",
@@ -1575,7 +1862,7 @@ const LANG_DATA = {
     "Unit": "单位",
     "Auto": "自动",
     "Decimal places": "小数位数",
-    "Base": "进位基数",
+    "Base": "Base",
     "1024 (KiB style)": "1024（KiB 式）",
     "1000 (SI style)": "1000（SI 式）",
     "Show full folder names": "文件夹显示完整名称",
@@ -1708,7 +1995,277 @@ const LANG_DATA = {
     "Remove separator": "移除分隔线",
     "Add separator": "添加分隔线",
     "Search settings… (type # to jump to a section)": "搜索设置…（输入 # 可跳转到功能区块）",
-    "No matching sections": "没有符合的功能区块"
+    "No matching sections": "没有符合的功能区块",
+    "Create note here": "在此处创建 笔记",
+    "Create folder here": "在此处创建 文件夹",
+    "Create {0} here": "在此处创建 {0}",
+    "Create daily note here (template)": "在此处创建 模板日记",
+    "Batch create here…": "在此处批量创建…",
+    "Paste above this item": "粘贴到此项目之上",
+    "Paste below this item": "粘贴到此项目之下",
+    "Quick move up / down…": "快速往上／往下…",
+    "Where to paste?": "粘贴的位置",
+    "Where to create?": "创建的位置",
+    "Place it above or below \"{0}\"?": "要放在「{0}」的上方还是下方？",
+    "Above": "上方",
+    "Below": "下方",
+    "Remember my choice (don't ask again)": "记住我的选择（之后不再询问）",
+    "You can change this in the plugin settings.": "可以在插件设置中修改这个行为。",
+    "Go to the setting": "前往设置位置",
+    "When pasting": "粘贴时",
+    "In manual sort mode, pasting while a file is selected can place the pasted items below or above that file": "在手动排序状态下，选取某个文件后粘贴，可以把粘贴的项目放在该文件的下方或上方",
+    "Paste below the file": "粘贴在某文件下",
+    "Paste above the file": "粘贴在某文件上",
+    "Ask when pasting": "粘贴时询问",
+    "When creating here": "在此处创建某文件时",
+    "In manual sort mode, creating from a file's right-click menu can place the new item below or above that file": "在手动排序状态下，从某个文件的右键菜单创建项目时，可以把新项目放在该文件的下方或上方",
+    "Create below the file": "在某文件下创建",
+    "Create above the file": "在某文件上创建",
+    "Ask when creating": "创建时询问",
+    "Quick move up / down": "快速往上／往下",
+    "Items to move: {0}": "要移动的项目：{0}",
+    "Destination folder": "目标文件夹",
+    "Defaults to the current folder; type or pick another path to move the items there": "默认是当前所在的文件夹；也可以输入或选择其他路径，把项目移到那里",
+    "Reference item": "参考项目（放在它的上方或下方）",
+    "Position": "位置",
+    "Above the item": "放在该项目之上",
+    "Below the item": "放在该项目之下",
+    "This folder does not exist yet": "这个文件夹还不存在",
+    "No items in this folder": "此文件夹没有其他项目",
+    "Moved {0} items": "已移动 {0} 个项目",
+    "Create other file types (right-click)": "右键创建其他文件类型",
+    "One per line: name|extension|initial content (\\n = line break). Each line adds a \"Create … here\" item to the right-click menu, which you can reorder, hide or give another icon in the list below. Examples are shown in the box; the button inserts them": "每行一个：名称|扩展名|初始内容（\\n 代表换行）。每一行都会在右键菜单新增一个「在此处创建 …」项目，可以在下方的列表调整位置、隐藏或更换图标。示例会显示在输入框里，也可以按按钮插入",
+    "Insert examples": "插入示例",
+    "Move below the separator above": "移到上方分隔线之下",
+    "Move below the separator below": "移到下方分隔线之下",
+    "Template": "模板",
+    "Pick a saved template to load its steps (none by default). Manage templates in the plugin settings": "选择已保存的模板来加载它的步骤（默认不使用模板）。模板可在插件设置中管理",
+    "None (no template)": "无（不使用模板）",
+    "Edit format": "编辑格式",
+    "Name format / numbering": "名称格式／编号",
+    "Remove name format / numbering": "删除名称格式／编号",
+    "Change case": "修改大小写",
+    "Characters / strings": "字符／字符串",
+    "Save as template": "保存为模板",
+    "From character N": "从第 N 个字符",
+    "Character N": "第 N 个字符",
+    "To character M": "到第 M 个字符",
+    "Count from the end": "从结尾开始计算",
+    "Format": "格式",
+    "Tokens: {n} number, {a} / {A} letters, {name} current name, {i} order, {time} time, {folder} folder name, {ext} extension. For groups: {n1} {n2} {a1} {A1} {a2} {A2}": "可用标记：{n} 编号、{a}／{A} 字母、{name} 当前名称、{i} 顺序、{time} 时间、{folder} 文件夹名、{ext} 扩展名；分组用：{n1} {n2} {a1} {A1} {a2} {A2}",
+    "Insert token": "插入标记",
+    "Replace the whole name": "替换整个名称",
+    "At the start": "开头",
+    "At the end": "结尾",
+    "Before character N": "第 N 个字符之前",
+    "After character N": "第 N 个字符之后",
+    "Between characters N and M (replaces that range)": "第 N 到第 M 个字符之间（替换该范围）",
+    "Numbering": "编号设置",
+    "Start value": "起始值",
+    "A number, or a letter (a, A, Z…) for letter sequences": "可填数字；要用字母序列时填字母（a、A、Z…）",
+    "Negative values count down (for example -1 with start Z gives Z Y X…)": "负数表示递减（例如起始值 Z、增减值 -1 会得到 Z Y X…）",
+    "Numbers to skip": "要跳过的编号",
+    "Comma separated; ranges allowed, e.g. 300-500, 900": "用逗号分隔，可写范围，例如 300-500, 900",
+    "Cycle: use N in a row": "循环：连续使用 N 个",
+    "With \"skip M\" below: use 1 and skip 1 gives 1 3 5 7…; 0 turns the cycle off": "搭配下面的「跳过 M 个」：使用 1 个、跳过 1 个会得到 1 3 5 7…；填 0 代表不循环",
+    "Cycle: then skip M": "循环：然后跳过 M 个",
+    "Group size": "分组大小",
+    "Splits the order into groups. For example size 3 with {A2}{n1} gives A1 A2 A3 B1 B2 B3…": "把顺序分成一组一组。例如大小 3、格式 {A2}{n1} 会得到 A1 A2 A3 B1 B2 B3…",
+    "Time": "时间",
+    "Time format": "时间格式",
+    "YYYY year, MM month, DD day, HH hour, mm minute, ss second, ddd weekday, WW week number": "YYYY 年、MM 月、DD 日、HH 时、mm 分、ss 秒、ddd 星期、WW 第几周",
+    "Time source": "时间来源",
+    "File created time": "文件创建时间",
+    "File modified time": "文件修改时间",
+    "Pick the formats to take out of the names. Separators left over are tidied up, and a name is never emptied completely.": "选择要从名称中移除的格式。留下的分隔符会一并整理，名称也不会被清空。",
+    "Leading number (e.g. 001 , 1. , 01-)": "开头的编号（例如 001 、1. 、01-）",
+    "Trailing number (e.g. _01, -3)": "结尾的编号（例如 _01、-3）",
+    "Date (e.g. 2026-10-26, 20261026, 2026.10.26)": "日期（例如 2026-10-26、20261026、2026.10.26）",
+    "Time (e.g. 09-30-15, 09:30, 093015)": "时间（例如 09-30-15、09:30、093015）",
+    "Text in brackets ( ) [ ] （ ） 【 】": "括号内的文字 ( ) [ ] （ ） 【 】",
+    "Extra spaces (collapse and trim)": "多余的空白（合并并去除头尾）",
+    "Custom regular expression": "自定义正则表达式",
+    "Regular expression": "正则表达式",
+    "Everything it matches is removed": "匹配的内容都会被移除",
+    "Case": "大小写",
+    "UPPERCASE": "全部大写",
+    "lowercase": "全部小写",
+    "Capitalize the first letter": "首字母大写（其余小写）",
+    "Capitalize Each Word": "每个单词首字母大写",
+    "sWAP cASE": "大小写互换",
+    "Action": "操作",
+    "Replace": "替换",
+    "Delete characters": "删除字符",
+    "Move a string": "移动字符串",
+    "Delete mode": "删除方式",
+    "Delete everything before character N": "删除第 N 个字符之前的全部",
+    "Delete everything after character N": "删除第 N 个字符之后的全部",
+    "Delete characters N to M": "删除第 N 到第 M 个字符",
+    "Keep only characters N to M (delete the rest)": "只保留第 N 到第 M 个字符（其余删除）",
+    "What to move": "要移动的内容",
+    "A specific string (first match)": "指定的字符串（第一个匹配的）",
+    "Characters N to M": "第 N 到第 M 个字符",
+    "Matches of a regular expression": "匹配正则表达式的内容",
+    "A number / date / time format": "编号／日期／时间格式",
+    "String": "字符串",
+    "For example move 33 in Apple33 to get App33le": "例如把 Apple33 里的 33 移动，就会变成 App33le",
+    "Format to move": "要移动的格式",
+    "leading number": "开头编号",
+    "trailing number": "结尾编号",
+    "date": "日期",
+    "time": "时间",
+    "the start": "开头",
+    "the end": "结尾",
+    "before character N": "第 N 个字符之前",
+    "after character N": "第 N 个字符之后",
+    "Please fill in this step first": "请先填写这个步骤",
+    "Steps to apply ({0})": "待应用的步骤（{0}）",
+    "No steps yet. Fill in the form above and press Convert.": "尚未添加任何步骤。填写上面的表单后按「转换」。",
+    "Edit this step": "编辑此步骤",
+    "Remove this step": "移除此步骤",
+    "Add at least one step first": "请先添加至少一个步骤",
+    " (counted from the end)": "（从结尾开始计算）",
+    "Before character {0}": "第 {0} 个字符之前",
+    "After character {0}": "第 {0} 个字符之后",
+    "Replace characters {0} to {1}": "替换第 {0} 到第 {1} 个字符",
+    "Name format \"{0}\" ({1})": "名称格式「{0}」（{1}）",
+    "Remove formats: {0}": "删除格式：{0}",
+    "brackets": "括号",
+    "spaces": "空白",
+    "custom pattern": "自定义规则",
+    "Change case: {0}": "修改大小写：{0}",
+    "List replace ({0} names)": "名单替换（{0} 个名称）",
+    "Replace \"{0}\" with \"{1}\"": "将「{0}」替换为「{1}」",
+    "Delete characters ({0})": "删除字符（{0}）",
+    "everything before": "之前的全部",
+    "everything after": "之后的全部",
+    "range": "范围",
+    "keep range only": "只保留范围",
+    "Characters {0} to {1}": "第 {0} 到第 {1} 个字符",
+    "Move string ({0} → {1})": "移动字符串（{0} → {1}）",
+    "before character {0}": "第 {0} 个字符之前",
+    "after character {0}": "第 {0} 个字符之后",
+    "Batch rename templates": "批量重命名模板",
+    "Templates are saved from the batch rename dialog with \"Save as template\". Rename, duplicate or delete them here": "模板是在批量重命名窗口按「保存为模板」存下来的，在这里可以重命名、复制或删除",
+    "Duplicate this template": "复制此模板",
+    "(no steps)": "（没有步骤）",
+    "Cursor down": "光标向下",
+    "Cursor up": "光标向上",
+    "Collapse folder / go to the parent": "折叠文件夹／跳到上一层",
+    "Expand folder / open": "展开文件夹／打开",
+    "Go to the first item (or item N)": "跳到第一项（前面有数字时跳到第 N 项）",
+    "Go to the last item (or item N)": "跳到最后一项（前面有数字时跳到第 N 项）",
+    "Half page down": "向下半页",
+    "Half page up": "向上半页",
+    "Expand": "展开",
+    "Collapse": "折叠",
+    "Visual mode (extend the selection)": "可视模式（扩展选取范围）",
+    "Toggle selection of the current item": "切换当前项目的选取",
+    "Clear selection / cancel": "取消选取／取消输入",
+    "Cut (delete in the tag and property managers)": "剪切（在标签与属性管理中为删除）",
+    "Paste above": "粘贴到上方",
+    "Move item down (manual order)": "项目往下移（手动排序）",
+    "Move item up (manual order)": "项目往上移（手动排序）",
+    "Show the key help": "显示按键说明",
+    "Vim-style keys": "Vim 风格按键",
+    "Vim keys in the panels": "面板中的 Vim 按键",
+    "Keyboard navigation for the file manager, tag manager and property manager (j k h l, gg, G, dd, yy, p, 5j …). Obsidian's own Vim mode is currently {0}": "用键盘操作文件管理、标签管理与属性管理（j k h l、gg、G、dd、yy、p、5j …）。Obsidian 本身的 Vim 模式目前是「{0}」",
+    "on": "开启",
+    "off": "关闭",
+    "Follow Obsidian's Vim setting": "跟随 Obsidian 的 Vim 设置",
+    "Always on": "一律开启",
+    "Multi-key timeout (ms)": "多键序列等待时间（毫秒）",
+    "How long to wait for the next key of a sequence such as gg or dd": "输入 gg、dd 这类序列时，等待下一个按键的时间",
+    "{0} mappings loaded": "已加载 {0} 个映射",
+    "Read mappings from a vimrc file": "读取 vimrc 文件里的按键映射",
+    "Reads nmap / nnoremap / map / noremap / unmap lines (and let mapleader) from the file below, for example the .obsidian.vimrc used by Vimrc Support. Only key-to-key mappings are used": "从下面的文件读取 nmap／nnoremap／map／noremap／unmap（以及 let mapleader），例如 Vimrc Support 使用的 .obsidian.vimrc。只会使用「按键映射按键」的设置",
+    "vimrc file path": "vimrc 文件路径",
+    "Reload": "重新加载",
+    "Key mappings": "按键映射表",
+    "Keys can be single keys (j), sequences (gg, dd, zR) or special keys such as <CR>, <Esc>, <Space>, <C-d>": "按键可以是单一按键（j）、序列（gg、dd、zR），或特殊按键，例如 <CR>、<Esc>、<Space>、<C-d>",
+    "Remove this mapping": "移除此映射",
+    "Add mapping": "添加映射",
+    "Reset to defaults": "还原默认",
+    "From the vimrc file": "来自 vimrc 文件",
+    "A number before a command repeats it (5j), and keys such as gg or dd are typed one after another. Customize them in the plugin settings.": "指令前面加数字会重复执行（例如 5j），gg、dd 这类按键要依次输入。可以在插件设置中自定义。",
+    "Batch create ({0} items)": "批量创建（{0} 个项目）",
+    "No items are selected": "没有勾选任何项目",
+    "{0} of {1} selected": "已勾选 {0} / {1} 个",
+    "Check all": "全部勾选",
+    "Uncheck all": "全部取消勾选",
+    "Invert selection": "反向选取",
+    "Check names containing…": "勾选名称包含…（按 Enter）",
+    "The preview includes the settings above that are not converted yet. Press Convert to add them as a step.": "预览包含上方尚未转换的设置。按「转换」才会把它加入步骤。",
+    "Common formats (click to fill in)": "常用格式（点一下填入）",
+    "Leading digits": "开头的数字",
+    "Trailing digits": "结尾的数字",
+    "Date (2026-10-26, 20261026)": "日期（2026-10-26、20261026）",
+    "Time (09-30-15, 09:30)": "时间（09-30-15、09:30）",
+    "Text in ( )": "( ) 内的文字",
+    "Text in [ ]": "[ ] 内的文字",
+    "Text in （ ） 【 】": "（ ） 【 】内的文字",
+    "Extra spaces": "多余的空白",
+    "Chinese characters": "中文字",
+    "Letters": "英文字母",
+    "Digits": "数字",
+    "Symbols and punctuation": "符号与标点",
+    "Custom pattern": "自定义正则",
+    "Pattern (regular expression)": "规则（正则表达式）",
+    "A number, a letter (a, A, Z…) or a Chinese numeral (一, 二, 三… or 壹, 貳, 參…); the sequence continues in the same style": "可填数字、字母（a、A、Z…）或中文数字（一、二、三… 或 壹、贰、叁…），序列会用同样的样式接下去",
+    "Number style": "数字样式",
+    "Automatic (follows the start value)": "自动（按起始值）",
+    "1 2 3 (Arabic digits)": "1 2 3（阿拉伯数字）",
+    "一 二 三 (Chinese numerals)": "一 二 三（中文数字）",
+    "壹 貳 參 (formal Chinese numerals)": "壹 贰 叁（大写中文数字）",
+    "Movable dialogs": "可移动的窗口",
+    "Large dialogs such as batch rename and batch YAML edit open as floating windows: drag the title to move them, and you can keep reading and working in your notes behind them": "批量重命名、批量修改 YAML 这类大窗口会变成浮动窗口：拖动标题就能移动，后面的笔记仍然可以阅读与操作",
+    "Leading and trailing spaces": "开头与结尾的空白",
+    "Copy device path": "复制设备路径",
+    "Focus the file manager": "聚焦到文件管理",
+    "Focus the note editor": "聚焦到笔记编辑区",
+    "Switch focus between the note and the file manager": "在笔记与文件管理之间切换焦点",
+    "Open the right-click menu": "打开右键菜单",
+    "Key to open the right-click menu": "打开右键菜单的按键",
+    "Opens the right-click menu of the selected items in the file manager, tag manager and property manager. Write it like Alt+M or Ctrl+Shift+K; leave it empty to turn it off. Hotkeys that move the focus between the note and the file manager are set in Obsidian's Hotkeys settings (search for \"Focus\")": "在文件管理、标签管理与属性管理中，为选取的项目打开右键菜单。写法例如 Alt+M、Ctrl+Shift+K；留空代表不使用。在笔记与文件管理之间切换焦点的快捷键，请到 Obsidian 的「快捷键」设置里搜索「聚焦」来设置",
+    "When closing a tab": "关闭标签页时",
+    "Which tab becomes active after the current tab is closed": "决定关闭当前标签页后，要切换到哪一个标签页",
+    "Back to the last used tab (the leftmost one if there is none)": "返回上次使用的标签页（没有时回到最左边第一个）",
+    "The tab on the left": "左边的标签页",
+    "The tab on the right (the left one if there is none)": "右边的标签页（右边没有时用左边）",
+    "Obsidian's default": "Obsidian 默认",
+    "Update a last-modified property": "更新「最后修改时间」属性",
+    "When you edit a note, the property below is set to the current time, a few seconds after you stop typing. Only the note you are editing is touched": "编辑笔记时，下面的属性会在你停止输入几秒后更新成当前时间。只会更新你正在编辑的那篇笔记",
+    "Last-modified property name": "最后修改时间的属性名称",
+    "Last-modified time format": "最后修改时间的格式",
+    "Moment.js format, for example YYYY-MM-DD HH:mm:ss": "Moment.js 格式，例如 YYYY-MM-DD HH:mm:ss",
+    "Show items added by other plugins": "显示其他插件加入的项目",
+    "Like Obsidian's own file explorer, the right-click menu also lists the items other plugins add to file menus (for example Excalidraw, Templater, Git). They appear after the built-in items": "跟 Obsidian 原本的文件管理一样，右键菜单也会列出其他插件加到文件菜单的项目（例如 Excalidraw、Templater、Git），显示在内置项目的后面",
+    "Chinese numerals in name sorting": "名称排序支持中文数字",
+    "Sort names with Chinese numerals by their value, for example 第二章 before 第十章, and 一, 二, 十, 十一, 一百零一, 壹貳參 in numeric order": "名称里的中文数字会按数值排序，例如「第二章」排在「第十章」之前，一、二、十、十一、一百零一、壹贰叁也会按大小排列",
+    "General": "常规",
+    "Display & markers": "显示与标记",
+    "Appearance": "外观",
+    "Keys & Vim": "快捷键与 Vim",
+    "Batch & templates": "批量与模板",
+    "Add submenu": "添加子菜单",
+    "New submenu": "新子菜单",
+    "Submenu name": "子菜单名称",
+    "Move into a submenu…": "移入子菜单…",
+    "(top level)": "（最上层）",
+    "Delete this submenu (its items return to the menu)": "删除此子菜单（里面的功能会回到原本的菜单）",
+    "Enabled (when off, the items inside go back to the main menu)": "启用（停用时，里面的功能会回到原本的菜单）",
+    "Added by another plugin": "由其他插件添加",
+    "Submenus and items of other plugins": "子菜单与其他插件的项目",
+    "Group items into submenus that open when you hover them (like the Windows right-click menu). Items that other plugins add are found when you right-click; the button looks for them now using the open note and its folder": "可以把功能收进子菜单，鼠标停在上面就会展开（像 Windows 的右键菜单）。其他插件添加进菜单的项目会在你按右键时自动记录；也可以按右边的按钮，用当前打开的笔记与它所在的文件夹立刻扫描",
+    "Scan items of other plugins": "扫描其他插件的项目",
+    "Found {0} items from other plugins": "找到 {0} 个其他插件的项目",
+    "Reorder the items of the file and folder right-click menu, turn off the ones you don't need (all on by default), and group them into submenus. Items added by other plugins are listed too, so this list always matches the real menu. Separator lines are items as well: move or remove them, or add your own": "调整文件与文件夹右键菜单的项目顺序、关闭不需要的功能（默认全部开启），也可以收进子菜单。其他插件添加的项目也会列在这里，所以这份清单会和实际的右键菜单一致。分隔线也是项目：可以移动、移除，或自行添加",
+    "Check names containing… (separate several words with spaces or commas)": "勾选名称包含…（可输入多个字段，用空格或逗号分隔）",
+    "Match any word": "匹配任一字段",
+    "Match all words": "同时匹配所有字段",
+    "Confirm": "确认",
+    "Built into Obsidian": "Obsidian 自带功能",
+    "Added by another plugin: {0}": "由其他插件添加：{0}"
   },
   "ja": {
     "Numbering (100, 200…)": "連番（100、200…）",
@@ -2355,7 +2912,7 @@ const LANG_DATA = {
     "Unit": "単位",
     "Auto": "自動",
     "Decimal places": "小数桁数",
-    "Base": "基数",
+    "Base": "Base",
     "1024 (KiB style)": "1024（KiB 方式）",
     "1000 (SI style)": "1000（SI 方式）",
     "Show full folder names": "フォルダ名を省略せずに表示",
@@ -2488,7 +3045,277 @@ const LANG_DATA = {
     "Remove separator": "区切り線を削除",
     "Add separator": "区切り線を追加",
     "Search settings… (type # to jump to a section)": "設定を検索…（# で各セクションへジャンプ）",
-    "No matching sections": "一致するセクションがありません"
+    "No matching sections": "一致するセクションがありません",
+    "Create note here": "ここにノートを作成",
+    "Create folder here": "ここにフォルダを作成",
+    "Create {0} here": "ここに {0} を作成",
+    "Create daily note here (template)": "ここにテンプレートのデイリーノートを作成",
+    "Batch create here…": "ここに一括作成…",
+    "Paste above this item": "この項目の上に貼り付け",
+    "Paste below this item": "この項目の下に貼り付け",
+    "Quick move up / down…": "すばやく上／下へ移動…",
+    "Where to paste?": "貼り付ける位置",
+    "Where to create?": "作成する位置",
+    "Place it above or below \"{0}\"?": "「{0}」の上と下のどちらに置きますか？",
+    "Above": "上",
+    "Below": "下",
+    "Remember my choice (don't ask again)": "選択を記憶する（今後は確認しない）",
+    "You can change this in the plugin settings.": "この動作はプラグインの設定で変更できます。",
+    "Go to the setting": "設定の場所へ移動",
+    "When pasting": "貼り付け時",
+    "In manual sort mode, pasting while a file is selected can place the pasted items below or above that file": "手動並べ替えのとき、ファイルを選択して貼り付けると、貼り付けた項目をそのファイルの下または上に置けます",
+    "Paste below the file": "ファイルの下に貼り付け",
+    "Paste above the file": "ファイルの上に貼り付け",
+    "Ask when pasting": "貼り付け時に確認",
+    "When creating here": "ここに作成するとき",
+    "In manual sort mode, creating from a file's right-click menu can place the new item below or above that file": "手動並べ替えのとき、ファイルの右クリックメニューから作成すると、新しい項目をそのファイルの下または上に置けます",
+    "Create below the file": "ファイルの下に作成",
+    "Create above the file": "ファイルの上に作成",
+    "Ask when creating": "作成時に確認",
+    "Quick move up / down": "すばやく上／下へ移動",
+    "Items to move: {0}": "移動する項目：{0}",
+    "Destination folder": "移動先フォルダ",
+    "Defaults to the current folder; type or pick another path to move the items there": "既定は現在のフォルダです。別のパスを入力または選択すると、そこへ移動します",
+    "Reference item": "基準にする項目（その上または下に置く）",
+    "Position": "位置",
+    "Above the item": "項目の上",
+    "Below the item": "項目の下",
+    "This folder does not exist yet": "このフォルダはまだ存在しません",
+    "No items in this folder": "このフォルダに他の項目はありません",
+    "Moved {0} items": "{0} 件の項目を移動しました",
+    "Create other file types (right-click)": "右クリックで作成するその他のファイル形式",
+    "One per line: name|extension|initial content (\\n = line break). Each line adds a \"Create … here\" item to the right-click menu, which you can reorder, hide or give another icon in the list below. Examples are shown in the box; the button inserts them": "1行に1つ：名前|拡張子|初期内容（\\n は改行）。各行が右クリックメニューに「ここに … を作成」の項目を追加し、下の一覧で並べ替え、非表示、アイコン変更ができます。例は入力欄に表示され、ボタンで挿入もできます",
+    "Insert examples": "例を挿入",
+    "Move below the separator above": "上の区切り線の下へ移動",
+    "Move below the separator below": "下の区切り線の下へ移動",
+    "Template": "テンプレート",
+    "Pick a saved template to load its steps (none by default). Manage templates in the plugin settings": "保存済みのテンプレートを選ぶと、その手順を読み込みます（デフォルトでは使用しません）。テンプレートはプラグインの設定で管理できます",
+    "None (no template)": "なし（テンプレートを使わない）",
+    "Edit format": "書式の編集",
+    "Name format / numbering": "名前の書式／連番",
+    "Remove name format / numbering": "名前の書式／連番を削除",
+    "Change case": "大文字・小文字の変更",
+    "Characters / strings": "文字／文字列",
+    "Save as template": "テンプレートとして保存",
+    "From character N": "N 文字目から",
+    "Character N": "N 文字目",
+    "To character M": "M 文字目まで",
+    "Count from the end": "末尾から数える",
+    "Format": "書式",
+    "Tokens: {n} number, {a} / {A} letters, {name} current name, {i} order, {time} time, {folder} folder name, {ext} extension. For groups: {n1} {n2} {a1} {A1} {a2} {A2}": "使えるトークン：{n} 連番、{a}／{A} アルファベット、{name} 現在の名前、{i} 順番、{time} 時刻、{folder} フォルダ名、{ext} 拡張子。グループ用：{n1} {n2} {a1} {A1} {a2} {A2}",
+    "Insert token": "トークンを挿入",
+    "Replace the whole name": "名前全体を置き換える",
+    "At the start": "先頭",
+    "At the end": "末尾",
+    "Before character N": "N 文字目の前",
+    "After character N": "N 文字目の後",
+    "Between characters N and M (replaces that range)": "N〜M 文字目の間（その範囲を置き換える）",
+    "Numbering": "連番の設定",
+    "Start value": "開始値",
+    "A number, or a letter (a, A, Z…) for letter sequences": "数字、またはアルファベットの連番にする場合は文字（a、A、Z…）",
+    "Negative values count down (for example -1 with start Z gives Z Y X…)": "負の値は減らしていきます（例：開始値 Z、増減 -1 で Z Y X…）",
+    "Numbers to skip": "飛ばす番号",
+    "Comma separated; ranges allowed, e.g. 300-500, 900": "カンマ区切り。範囲も指定できます（例：300-500, 900）",
+    "Cycle: use N in a row": "繰り返し：連続して使う数 N",
+    "With \"skip M\" below: use 1 and skip 1 gives 1 3 5 7…; 0 turns the cycle off": "下の「飛ばす数 M」と組み合わせます：1 つ使って 1 つ飛ばすと 1 3 5 7…。0 で繰り返しなし",
+    "Cycle: then skip M": "繰り返し：その後に飛ばす数 M",
+    "Group size": "グループのサイズ",
+    "Splits the order into groups. For example size 3 with {A2}{n1} gives A1 A2 A3 B1 B2 B3…": "順番をグループに分けます。例：サイズ 3、書式 {A2}{n1} で A1 A2 A3 B1 B2 B3…",
+    "Time": "時刻",
+    "Time format": "時刻の書式",
+    "YYYY year, MM month, DD day, HH hour, mm minute, ss second, ddd weekday, WW week number": "YYYY 年、MM 月、DD 日、HH 時、mm 分、ss 秒、ddd 曜日、WW 週番号",
+    "Time source": "時刻の取得元",
+    "File created time": "ファイルの作成日時",
+    "File modified time": "ファイルの更新日時",
+    "Pick the formats to take out of the names. Separators left over are tidied up, and a name is never emptied completely.": "名前から取り除く書式を選びます。残った区切り文字は整理され、名前が空になることはありません。",
+    "Leading number (e.g. 001 , 1. , 01-)": "先頭の番号（例：001 、1. 、01-）",
+    "Trailing number (e.g. _01, -3)": "末尾の番号（例：_01、-3）",
+    "Date (e.g. 2026-10-26, 20261026, 2026.10.26)": "日付（例：2026-10-26、20261026、2026.10.26）",
+    "Time (e.g. 09-30-15, 09:30, 093015)": "時刻（例：09-30-15、09:30、093015）",
+    "Text in brackets ( ) [ ] （ ） 【 】": "括弧内の文字 ( ) [ ] （ ） 【 】",
+    "Extra spaces (collapse and trim)": "余分な空白（まとめて前後を削除）",
+    "Custom regular expression": "独自の正規表現",
+    "Regular expression": "正規表現",
+    "Everything it matches is removed": "一致した部分はすべて削除されます",
+    "Case": "大文字・小文字",
+    "UPPERCASE": "すべて大文字",
+    "lowercase": "すべて小文字",
+    "Capitalize the first letter": "先頭だけ大文字（残りは小文字）",
+    "Capitalize Each Word": "各単語の先頭を大文字",
+    "sWAP cASE": "大文字と小文字を入れ替え",
+    "Action": "操作",
+    "Replace": "置換",
+    "Delete characters": "文字を削除",
+    "Move a string": "文字列を移動",
+    "Delete mode": "削除の方法",
+    "Delete everything before character N": "N 文字目より前をすべて削除",
+    "Delete everything after character N": "N 文字目より後をすべて削除",
+    "Delete characters N to M": "N〜M 文字目を削除",
+    "Keep only characters N to M (delete the rest)": "N〜M 文字目だけ残す（残りは削除）",
+    "What to move": "移動する内容",
+    "A specific string (first match)": "指定した文字列（最初に一致したもの）",
+    "Characters N to M": "N〜M 文字目",
+    "Matches of a regular expression": "正規表現に一致した部分",
+    "A number / date / time format": "番号／日付／時刻の書式",
+    "String": "文字列",
+    "For example move 33 in Apple33 to get App33le": "例：Apple33 の 33 を移動すると App33le になります",
+    "Format to move": "移動する書式",
+    "leading number": "先頭の番号",
+    "trailing number": "末尾の番号",
+    "date": "日付",
+    "time": "時刻",
+    "the start": "先頭",
+    "the end": "末尾",
+    "before character N": "N 文字目の前",
+    "after character N": "N 文字目の後",
+    "Please fill in this step first": "先にこの手順を入力してください",
+    "Steps to apply ({0})": "適用待ちの手順（{0}）",
+    "No steps yet. Fill in the form above and press Convert.": "手順がまだありません。上のフォームに入力して「変換」を押してください。",
+    "Edit this step": "この手順を編集",
+    "Remove this step": "この手順を削除",
+    "Add at least one step first": "先に手順を1つ以上追加してください",
+    " (counted from the end)": "（末尾から数える）",
+    "Before character {0}": "{0} 文字目の前",
+    "After character {0}": "{0} 文字目の後",
+    "Replace characters {0} to {1}": "{0}〜{1} 文字目を置換",
+    "Name format \"{0}\" ({1})": "名前の書式「{0}」（{1}）",
+    "Remove formats: {0}": "書式を削除：{0}",
+    "brackets": "括弧",
+    "spaces": "空白",
+    "custom pattern": "独自のパターン",
+    "Change case: {0}": "大文字・小文字の変更：{0}",
+    "List replace ({0} names)": "名前リストで置換（{0} 件）",
+    "Replace \"{0}\" with \"{1}\"": "「{0}」を「{1}」に置換",
+    "Delete characters ({0})": "文字を削除（{0}）",
+    "everything before": "より前すべて",
+    "everything after": "より後すべて",
+    "range": "範囲",
+    "keep range only": "範囲のみ残す",
+    "Characters {0} to {1}": "{0}〜{1} 文字目",
+    "Move string ({0} → {1})": "文字列を移動（{0} → {1}）",
+    "before character {0}": "{0} 文字目の前",
+    "after character {0}": "{0} 文字目の後",
+    "Batch rename templates": "一括名前変更のテンプレート",
+    "Templates are saved from the batch rename dialog with \"Save as template\". Rename, duplicate or delete them here": "テンプレートは一括名前変更ウィンドウの「テンプレートとして保存」で作成します。ここで名前の変更、複製、削除ができます",
+    "Duplicate this template": "このテンプレートを複製",
+    "(no steps)": "（手順なし）",
+    "Cursor down": "カーソルを下へ",
+    "Cursor up": "カーソルを上へ",
+    "Collapse folder / go to the parent": "フォルダを折りたたむ／親へ移動",
+    "Expand folder / open": "フォルダを展開／開く",
+    "Go to the first item (or item N)": "最初の項目へ（数字があれば N 番目へ）",
+    "Go to the last item (or item N)": "最後の項目へ（数字があれば N 番目へ）",
+    "Half page down": "半ページ下へ",
+    "Half page up": "半ページ上へ",
+    "Expand": "展開",
+    "Collapse": "折りたたむ",
+    "Visual mode (extend the selection)": "ビジュアルモード（選択範囲を広げる）",
+    "Toggle selection of the current item": "現在の項目の選択を切り替え",
+    "Clear selection / cancel": "選択解除／キャンセル",
+    "Cut (delete in the tag and property managers)": "切り取り（タグ／プロパティ管理では削除）",
+    "Paste above": "上に貼り付け",
+    "Move item down (manual order)": "項目を下へ移動（手動並べ替え）",
+    "Move item up (manual order)": "項目を上へ移動（手動並べ替え）",
+    "Show the key help": "キー操作のヘルプを表示",
+    "Vim-style keys": "Vim 風キー操作",
+    "Vim keys in the panels": "パネルでの Vim キー",
+    "Keyboard navigation for the file manager, tag manager and property manager (j k h l, gg, G, dd, yy, p, 5j …). Obsidian's own Vim mode is currently {0}": "キーボードでファイル管理・タグ管理・プロパティ管理を操作します（j k h l、gg、G、dd、yy、p、5j …）。Obsidian 本体の Vim モードは現在「{0}」です",
+    "on": "オン",
+    "off": "オフ",
+    "Follow Obsidian's Vim setting": "Obsidian の Vim 設定に従う",
+    "Always on": "常にオン",
+    "Multi-key timeout (ms)": "複数キーの待ち時間（ミリ秒）",
+    "How long to wait for the next key of a sequence such as gg or dd": "gg や dd のような連続キーで、次のキーを待つ時間",
+    "{0} mappings loaded": "{0} 件のマッピングを読み込みました",
+    "Read mappings from a vimrc file": "vimrc ファイルのキーマップを読み込む",
+    "Reads nmap / nnoremap / map / noremap / unmap lines (and let mapleader) from the file below, for example the .obsidian.vimrc used by Vimrc Support. Only key-to-key mappings are used": "下のファイルから nmap／nnoremap／map／noremap／unmap（と let mapleader）を読み込みます。たとえば Vimrc Support が使う .obsidian.vimrc です。使われるのは「キー → キー」のマッピングだけです",
+    "vimrc file path": "vimrc ファイルのパス",
+    "Reload": "再読み込み",
+    "Key mappings": "キーマップ",
+    "Keys can be single keys (j), sequences (gg, dd, zR) or special keys such as <CR>, <Esc>, <Space>, <C-d>": "キーは 1 つのキー（j）、連続キー（gg、dd、zR）、または <CR>、<Esc>、<Space>、<C-d> などの特殊キーを指定できます",
+    "Remove this mapping": "このマッピングを削除",
+    "Add mapping": "マッピングを追加",
+    "Reset to defaults": "既定に戻す",
+    "From the vimrc file": "vimrc ファイルから",
+    "A number before a command repeats it (5j), and keys such as gg or dd are typed one after another. Customize them in the plugin settings.": "コマンドの前に数字を付けると繰り返します（例：5j）。gg や dd のようなキーは続けて入力します。プラグインの設定でカスタマイズできます。",
+    "Batch create ({0} items)": "一括作成（{0} 件）",
+    "No items are selected": "選択された項目がありません",
+    "{0} of {1} selected": "{0} / {1} 件を選択中",
+    "Check all": "すべてチェック",
+    "Uncheck all": "すべてのチェックを外す",
+    "Invert selection": "選択を反転",
+    "Check names containing…": "名前に次を含む項目をチェック…（Enter）",
+    "The preview includes the settings above that are not converted yet. Press Convert to add them as a step.": "プレビューには、上でまだ変換していない設定も含まれています。「変換」を押すと手順として追加されます。",
+    "Common formats (click to fill in)": "よく使う書式（クリックで入力）",
+    "Leading digits": "先頭の数字",
+    "Trailing digits": "末尾の数字",
+    "Date (2026-10-26, 20261026)": "日付（2026-10-26、20261026）",
+    "Time (09-30-15, 09:30)": "時刻（09-30-15、09:30）",
+    "Text in ( )": "( ) の中の文字",
+    "Text in [ ]": "[ ] の中の文字",
+    "Text in （ ） 【 】": "（ ） 【 】の中の文字",
+    "Extra spaces": "余分な空白",
+    "Chinese characters": "漢字",
+    "Letters": "アルファベット",
+    "Digits": "数字",
+    "Symbols and punctuation": "記号と句読点",
+    "Custom pattern": "独自のパターン",
+    "Pattern (regular expression)": "パターン（正規表現）",
+    "A number, a letter (a, A, Z…) or a Chinese numeral (一, 二, 三… or 壹, 貳, 參…); the sequence continues in the same style": "数字、アルファベット（a、A、Z…）、または漢数字（一、二、三… や 壱、弐、参…）を指定できます。連番も同じ形式で続きます",
+    "Number style": "数字の形式",
+    "Automatic (follows the start value)": "自動（開始値に合わせる）",
+    "1 2 3 (Arabic digits)": "1 2 3（算用数字）",
+    "一 二 三 (Chinese numerals)": "一 二 三（漢数字）",
+    "壹 貳 參 (formal Chinese numerals)": "壱 弐 参（大字）",
+    "Movable dialogs": "移動できるウィンドウ",
+    "Large dialogs such as batch rename and batch YAML edit open as floating windows: drag the title to move them, and you can keep reading and working in your notes behind them": "一括名前変更や YAML の一括編集などの大きなウィンドウを、フローティングウィンドウとして開きます。タイトルをドラッグして移動でき、背後のノートも引き続き読んだり操作したりできます",
+    "Leading and trailing spaces": "先頭と末尾の空白",
+    "Copy device path": "デバイスのパスをコピー",
+    "Focus the file manager": "ファイル管理にフォーカス",
+    "Focus the note editor": "ノートエディタにフォーカス",
+    "Switch focus between the note and the file manager": "ノートとファイル管理の間でフォーカスを切り替え",
+    "Open the right-click menu": "右クリックメニューを開く",
+    "Key to open the right-click menu": "右クリックメニューを開くキー",
+    "Opens the right-click menu of the selected items in the file manager, tag manager and property manager. Write it like Alt+M or Ctrl+Shift+K; leave it empty to turn it off. Hotkeys that move the focus between the note and the file manager are set in Obsidian's Hotkeys settings (search for \"Focus\")": "ファイル管理・タグ管理・プロパティ管理で、選択した項目の右クリックメニューを開きます。Alt+M や Ctrl+Shift+K のように入力し、空欄にすると無効になります。ノートとファイル管理の間でフォーカスを移すホットキーは、Obsidian のホットキー設定で「フォーカス」を検索して設定します",
+    "When closing a tab": "タブを閉じたとき",
+    "Which tab becomes active after the current tab is closed": "現在のタブを閉じた後に、どのタブをアクティブにするか",
+    "Back to the last used tab (the leftmost one if there is none)": "直前に使っていたタブへ戻る（なければ一番左のタブ）",
+    "The tab on the left": "左隣のタブ",
+    "The tab on the right (the left one if there is none)": "右隣のタブ（なければ左隣）",
+    "Obsidian's default": "Obsidian の既定",
+    "Update a last-modified property": "「最終更新日時」プロパティを更新",
+    "When you edit a note, the property below is set to the current time, a few seconds after you stop typing. Only the note you are editing is touched": "ノートを編集すると、入力が止まって数秒後に下のプロパティが現在時刻に更新されます。更新されるのは編集中のノートだけです",
+    "Last-modified property name": "最終更新日時のプロパティ名",
+    "Last-modified time format": "最終更新日時の書式",
+    "Moment.js format, for example YYYY-MM-DD HH:mm:ss": "Moment.js の書式（例：YYYY-MM-DD HH:mm:ss）",
+    "Show items added by other plugins": "他のプラグインが追加した項目を表示",
+    "Like Obsidian's own file explorer, the right-click menu also lists the items other plugins add to file menus (for example Excalidraw, Templater, Git). They appear after the built-in items": "Obsidian 標準のファイルエクスプローラーと同じように、他のプラグインがファイルメニューに追加した項目（Excalidraw、Templater、Git など）も右クリックメニューに表示します。組み込みの項目の後ろに並びます",
+    "Chinese numerals in name sorting": "名前の並べ替えで漢数字に対応",
+    "Sort names with Chinese numerals by their value, for example 第二章 before 第十章, and 一, 二, 十, 十一, 一百零一, 壹貳參 in numeric order": "名前の漢数字を数値順に並べます。たとえば「第二章」は「第十章」より前になり、一、二、十、十一、一百零一、壱弐参も数値順になります",
+    "General": "一般",
+    "Display & markers": "表示とマーク",
+    "Appearance": "外観",
+    "Keys & Vim": "ホットキーと Vim",
+    "Batch & templates": "一括処理とテンプレート",
+    "Add submenu": "サブメニューを追加",
+    "New submenu": "新しいサブメニュー",
+    "Submenu name": "サブメニュー名",
+    "Move into a submenu…": "サブメニューへ移動…",
+    "(top level)": "（最上位）",
+    "Delete this submenu (its items return to the menu)": "このサブメニューを削除（中の項目は元のメニューに戻ります）",
+    "Enabled (when off, the items inside go back to the main menu)": "有効（オフにすると、中の項目は元のメニューに戻ります）",
+    "Added by another plugin": "他のプラグインが追加",
+    "Submenus and items of other plugins": "サブメニューと他のプラグインの項目",
+    "Group items into submenus that open when you hover them (like the Windows right-click menu). Items that other plugins add are found when you right-click; the button looks for them now using the open note and its folder": "項目をサブメニューにまとめ、ホバーで開けます（Windows の右クリックメニューのように）。他のプラグインが追加した項目は右クリックしたときに自動で記録されます。ボタンで、開いているノートとそのフォルダを使って今すぐ検索することもできます",
+    "Scan items of other plugins": "他のプラグインの項目を検索",
+    "Found {0} items from other plugins": "他のプラグインの項目を {0} 件見つけました",
+    "Reorder the items of the file and folder right-click menu, turn off the ones you don't need (all on by default), and group them into submenus. Items added by other plugins are listed too, so this list always matches the real menu. Separator lines are items as well: move or remove them, or add your own": "ファイルとフォルダの右クリックメニューの項目の順序を変更したり、不要な項目をオフにしたり（デフォルトはすべてオン）、サブメニューにまとめたりできます。他のプラグインが追加した項目もここに表示されるので、この一覧は実際のメニューと一致します。区切り線も項目の一つで、移動・削除・追加ができます",
+    "Check names containing… (separate several words with spaces or commas)": "名前に次を含む項目をチェック…（複数の語はスペースかカンマで区切る）",
+    "Match any word": "いずれかの語に一致",
+    "Match all words": "すべての語に一致",
+    "Confirm": "確定",
+    "Built into Obsidian": "Obsidian 標準の機能",
+    "Added by another plugin: {0}": "他のプラグインが追加：{0}"
   }
 };
 const LANG_KEYS = Object.keys(LANG_DATA['zh-TW'] || {});
@@ -2807,30 +3634,311 @@ function lineDiff(a, b) {
 }
 
 /* 批量重新命名：計算新名稱（目前支援「模式/編號」與「替換字符」） */
-function computeNewNames(items, preset) {
-  return items.map((f, i) => {
-    const isF = f instanceof TFolder;
-    const ext = isF ? '' : f.extension ? '.' + f.extension : '';
-    const base = isF ? f.name : f.basename;
-    let nb = base;
-    if (preset.type === 'pattern') {
-      const num = Number(preset.start) + i * Number(preset.step);
-      const n = String(num).padStart(Number(preset.pad) || 0, '0');
-      nb = String(preset.pattern).replace(/\{(n|name|ext|i)\}/g, (m, k) =>
-        k === 'n' ? n : k === 'name' ? base : k === 'ext' ? ext.slice(1) : String(i + 1));
-    } else if (preset.type === 'list') {
-      const names = parseNameList(preset.names);
-      if (i < names.length) nb = names[i];
-    } else if (preset.find) {
-      try {
-        if (preset.regex) nb = base.replace(new RegExp(preset.find, preset.caseSensitive ? 'g' : 'gi'), preset.replace);
-        else if (preset.caseSensitive) nb = base.split(preset.find).join(preset.replace);
-        else nb = base.replace(new RegExp(escapeRe(preset.find), 'gi'), () => preset.replace);
-      } catch (e) { nb = base; }
+/* ------------------------------ 批量重新命名：編輯格式（可疊加的步驟） ------------------------------ */
+const PRESET_RE = {
+  leadNum: /^\d+[\s._\-)]*/,
+  trailNum: /[\s._\-(]*\d+$/,
+  date: /(^|\D)((?:19|20)\d{2}[-_.\/年]\d{1,2}[-_.\/月]\d{1,2}日?|(?:19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01]))(?!\d)/,
+  time: /(^|[^\d\-.:])(\d{1,2}[:\-.h]\d{2}(?:[:\-.m]\d{2})?|(?:[01]\d|2[0-3])[0-5]\d[0-5]\d)(?!\d)/,
+};
+// 找出名稱中某種格式的位置 [開始, 結束)（字串索引）
+function findPreset(name, key) {
+  const m = PRESET_RE[key].exec(name);
+  if (!m) return null;
+  if (m.length > 2 && m[2] !== undefined) { const a = m.index + m[1].length; return [a, a + m[2].length]; }
+  return [m.index, m.index + m[0].length];
+}
+function newStep(kind) {
+  const base = { kind, pos: 1, pos2: 1, fromEnd: false };
+  if (kind === 'format') return Object.assign(base, { pattern: '{n} {name}', place: 'whole', start: '1', numStyle: 'auto', step: 1, pad: 0, skip: '', cycleUse: 0, cycleSkip: 0, group: 0, timeFormat: 'YYYY-MM-DD', timeSource: 'now' });
+  if (kind === 'remove') return Object.assign(base, { leadNum: true, trailNum: false, date: false, time: false, brackets: false, spaces: false, custom: false, regex: '' });
+  if (kind === 'case') return Object.assign(base, { mode: 'upper' });
+  if (kind === 'list') return Object.assign(base, { names: '' });
+  return Object.assign(base, { op: 'replace', find: '', replace: '', useRegex: false, caseSensitive: true, mode: 'before', src: 'text', srcText: '', srcRegex: '', srcPreset: 'trailNum', dest: 'end', destPos: 1, destFromEnd: false });
+}
+// 中文數字：一二三… 壹貳參…（支援「十一」「二十三」「一百零一」「一零一」）
+function numberToCn(n, formal) {
+  n = Math.trunc(n);
+  if (n < 0) return '負' + numberToCn(-n, formal);
+  const D = formal ? '零壹貳參肆伍陸柒捌玖' : '零一二三四五六七八九';
+  const U = formal ? ['', '拾', '佰', '仟'] : ['', '十', '百', '千'];
+  if (n === 0) return D[0];
+  if (n >= 100000000) return String(n);
+  const section = (x) => {
+    let out = '', zero = false;
+    for (let i = 3; i >= 0; i--) {
+      const d = Math.floor(x / 10 ** i) % 10;
+      if (d === 0) { if (out) zero = true; continue; }
+      if (zero) { out += D[0]; zero = false; }
+      out += (i === 1 && d === 1 && !out && !formal) ? U[1] : D[d] + U[i];
     }
-    return nb + ext;
+    return out;
+  };
+  const hi = Math.floor(n / 10000), lo = n % 10000;
+  let out = hi ? section(hi) + '萬' : '';
+  if (lo) out += (hi && lo < 1000 ? D[0] : '') + section(lo);
+  return out;
+}
+const CN_DIGIT = { '零': 0, '〇': 0, '一': 1, '壹': 1, '二': 2, '貳': 2, '贰': 2, '兩': 2, '两': 2, '三': 3, '參': 3, '叁': 3, '叄': 3, '四': 4, '肆': 4, '五': 5, '伍': 5, '六': 6, '陸': 6, '陆': 6, '七': 7, '柒': 7, '八': 8, '捌': 8, '九': 9, '玖': 9 };
+const CN_UNIT = { '十': 10, '拾': 10, '百': 100, '佰': 100, '千': 1000, '仟': 1000 };
+function cnToNumber(s) {
+  s = String(s === undefined || s === null ? '' : s).trim();
+  if (!s) return NaN;
+  const chars = Array.from(s);
+  if (!chars.every((c) => c in CN_DIGIT || c in CN_UNIT || c === '萬' || c === '万')) return NaN;
+  if (!chars.some((c) => c in CN_UNIT || c === '萬' || c === '万')) return Number(chars.map((c) => CN_DIGIT[c]).join(''));
+  let total = 0, section = 0, num = 0;
+  for (const c of chars) {
+    if (c in CN_DIGIT) num = CN_DIGIT[c];
+    else if (c in CN_UNIT) { section += (num || 1) * CN_UNIT[c]; num = 0; }
+    else { section += num; total += (section || 1) * 10000; section = 0; num = 0; }
+  }
+  return total + section + num;
+}
+const cnStyleOf = (s) => { const str = String(s === undefined || s === null ? '' : s).trim(); if (!Number.isFinite(cnToNumber(str))) return ''; return /[壹貳贰參叁叄肆伍陸陆柒捌玖拾佰仟]/.test(str) ? 'upper' : /[零〇一二兩两三四五六七八九十百千萬万]/.test(str) ? 'lower' : ''; };
+// 名稱排序：數字與中文數字依數值比較（第二章 < 第十章，一百零一 > 九十九）
+function natTokens(s, cn) {
+  const out = [];
+  const re = cn ? /(\d+)|([零〇一二兩两三四五六七八九十百千萬万壹貳贰參叁叄肆伍陸陆柒捌玖拾佰仟]+)/g : /(\d+)/g;
+  let last = 0, m;
+  while ((m = re.exec(s))) {
+    if (m.index > last) out.push(s.slice(last, m.index));
+    const num = m[1] ? Number(m[1]) : cnToNumber(m[2]);
+    out.push(Number.isFinite(num) ? num : m[0]);
+    last = m.index + m[0].length;
+  }
+  if (last < s.length) out.push(s.slice(last));
+  return out;
+}
+function natCompare(a, b, cn) {
+  const A = natTokens(String(a), cn), B = natTokens(String(b), cn);
+  for (let i = 0; i < Math.min(A.length, B.length); i++) {
+    const x = A[i], y = B[i];
+    if (typeof x === 'number' && typeof y === 'number') { if (x !== y) return x - y; continue; }
+    const d = String(x).localeCompare(String(y), undefined, { sensitivity: 'base' });
+    if (d) return d;
+  }
+  return A.length - B.length;
+}
+const RENAME_REGEX_PRESETS = [
+  ["Leading digits", '^\\d+[\\s._\\-)]*'],
+  ["Trailing digits", '[\\s._\\-(]*\\d+$'],
+  ["Date (2026-10-26, 20261026)", '(?:19|20)\\d{2}[-_./年]\\d{1,2}[-_./月]\\d{1,2}日?|(?:19|20)\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])'],
+  ["Time (09-30-15, 09:30)", '\\d{1,2}[:\\-.h]\\d{2}(?:[:\\-.m]\\d{2})?'],
+  ["Text in ( )", '\\([^)]*\\)'],
+  ["Text in [ ]", '\\[[^\\]]*\\]'],
+  ["Text in （ ） 【 】", '（[^）]*）|【[^】]*】'],
+  ["Leading and trailing spaces", '^\\s+|\\s+$'],
+  ["Chinese characters", '[\\u4e00-\\u9fff]+'],
+  ["Letters", '[A-Za-z]+'],
+  ["Digits", '\\d+'],
+  ["Symbols and punctuation", '[-_.,;:!?@#$%^&*()+=~\\[\\]{}<>|\\\\/\'"`·、。，；：！？（）【】《》「」『』]+'],
+];
+const letterToNum = (s) => { let n = 0; for (const ch of String(s).toUpperCase()) n = n * 26 + (ch.charCodeAt(0) - 64); return n; };
+function numToLetters(n, upper) {
+  n = Math.trunc(n);
+  if (n < 1) n = (((n % 26) + 26) % 26) || 26;
+  let s = '';
+  while (n > 0) { const r = (n - 1) % 26; s = String.fromCharCode(97 + r) + s; n = Math.floor((n - 1) / 26); }
+  return upper ? s.toUpperCase() : s;
+}
+const parseStartValue = (v) => { const s = String(v === undefined || v === null ? '' : v).trim(); if (/^[A-Za-z]+$/.test(s)) return letterToNum(s); const c = cnToNumber(s); if (Number.isFinite(c)) return c; const n = Number(s); return Number.isFinite(n) ? n : 1; };
+function parseSkipTest(text) {
+  const ranges = [];
+  String(text || '').split(/[,，\s]+/).filter(Boolean).forEach((p) => {
+    const m = /^(-?\d+)\s*[-~–]\s*(-?\d+)$/.exec(p);
+    if (m) ranges.push([Math.min(+m[1], +m[2]), Math.max(+m[1], +m[2])]);
+    else if (/^-?\d+$/.test(p)) ranges.push([+p, +p]);
+  });
+  return (v) => ranges.some(([a, b]) => v >= a && v <= b);
+}
+// 產生編號序列：起始值、增減值（可為負）、跳過的編號、循環跳過（連續用 N 個、跳過 M 個）
+function makeSeq(st, count) {
+  const out = [];
+  if (count <= 0) return out;
+  let step = Number(st.step);
+  if (!Number.isFinite(step) || step === 0) step = 1;
+  let v = parseStartValue(st.start);
+  const skipped = parseSkipTest(st.skip);
+  const use = Math.max(0, Math.floor(Number(st.cycleUse) || 0)), skip = Math.max(0, Math.floor(Number(st.cycleSkip) || 0));
+  let usedN = 0, skipN = 0, guard = 0;
+  while (out.length < count && guard++ < 200000) {
+    if (!skipped(v)) {
+      if (use > 0 && skip > 0) {
+        if (usedN < use) { out.push(v); usedN++; } else { skipN++; if (skipN >= skip) { usedN = 0; skipN = 0; } }
+      } else out.push(v);
+    }
+    v += step;
+  }
+  while (out.length < count) { out.push(v); v += step; }
+  return out;
+}
+function posRange(L, st) {
+  const N = Math.max(1, Math.floor(Number(st.pos) || 1)), M = Math.max(N, Math.floor(Number(st.pos2) || N));
+  const a = st.fromEnd ? L - M : N - 1, b = st.fromEnd ? L - N + 1 : M;
+  return [Math.max(0, Math.min(L, a)), Math.max(0, Math.min(L, b))];
+}
+function placeInsert(name, ins, place, st) {
+  const chars = Array.from(name), L = chars.length;
+  const N = Math.max(1, Math.floor(Number(st.pos) || 1));
+  const cut = (i) => Math.max(0, Math.min(L, i));
+  if (place === 'start') return ins + name;
+  if (place === 'end') return name + ins;
+  if (place === 'before') { const i = cut(st.fromEnd ? L - N : N - 1); return chars.slice(0, i).join('') + ins + chars.slice(i).join(''); }
+  if (place === 'after') { const i = cut(st.fromEnd ? L - N + 1 : N); return chars.slice(0, i).join('') + ins + chars.slice(i).join(''); }
+  if (place === 'between') { const [a, b] = posRange(L, st); return chars.slice(0, a).join('') + ins + chars.slice(b).join(''); }
+  return ins;
+}
+const strIdxToChar = (s, idx) => Array.from(s.slice(0, idx)).length;
+function removeAllOf(s, key) {
+  let cur = s, r, guard = 0;
+  while ((r = findPreset(cur, key)) && guard++ < 10) cur = cur.slice(0, r[0]) + cur.slice(r[1]);
+  return cur;
+}
+function removeFormats(name, st) {
+  let out = name;
+  const cleanup = (s) => s.replace(/\s{2,}/g, ' ').replace(/^[\s._\-]+|[\s._\-]+$/g, '');
+  const apply = (fn) => { const r = fn(out); if (r !== out) { const c = cleanup(r); if (c.trim()) out = c; } };
+  if (st.date) apply((s) => removeAllOf(s, 'date'));
+  if (st.time) apply((s) => removeAllOf(s, 'time'));
+  if (st.brackets) apply((s) => s.replace(/\([^)]*\)|\[[^\]]*\]|（[^）]*）|【[^】]*】/g, ''));
+  if (st.leadNum) apply((s) => s.replace(PRESET_RE.leadNum, ''));
+  if (st.trailNum) apply((s) => s.replace(PRESET_RE.trailNum, ''));
+  if (st.custom && st.regex) apply((s) => { try { return s.replace(new RegExp(st.regex, 'g'), ''); } catch (e) { return s; } });
+  if (st.spaces) { const r = out.replace(/\s+/g, ' ').trim(); if (r) out = r; }
+  return out;
+}
+function changeCase(name, mode) {
+  if (mode === 'lower') return name.toLowerCase();
+  if (mode === 'first') return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  if (mode === 'title') return name.replace(/\p{L}[\p{L}\p{N}']*/gu, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  if (mode === 'swap') return Array.from(name).map((c) => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join('');
+  return name.toUpperCase();
+}
+function textStep(name, st) {
+  const chars = Array.from(name), L = chars.length;
+  if (st.op === 'replace') {
+    if (!st.find) return name;
+    try {
+      if (st.useRegex) return name.replace(new RegExp(st.find, st.caseSensitive ? 'g' : 'gi'), st.replace);
+      if (st.caseSensitive) return name.split(st.find).join(st.replace);
+      return name.replace(new RegExp(escapeRe(st.find), 'gi'), () => st.replace);
+    } catch (e) { return name; }
+  }
+  if (st.op === 'delete') {
+    const N = Math.max(1, Math.floor(Number(st.pos) || 1));
+    const startIdx = Math.max(0, Math.min(L, st.fromEnd ? L - N : N - 1));
+    if (st.mode === 'before') return chars.slice(startIdx).join('');
+    if (st.mode === 'after') return chars.slice(0, Math.min(L, startIdx + 1)).join('');
+    const [a, b] = posRange(L, st);
+    if (st.mode === 'keep') return chars.slice(a, b).join('');
+    return chars.slice(0, a).concat(chars.slice(b)).join('');
+  }
+  // move
+  let a, b;
+  if (st.src === 'range') [a, b] = posRange(L, st);
+  else if (st.src === 'text') {
+    const i = st.srcText ? name.indexOf(st.srcText) : -1;
+    if (i < 0) return name;
+    a = strIdxToChar(name, i); b = a + Array.from(st.srcText).length;
+  } else if (st.src === 'regex') {
+    try { const m = st.srcRegex ? new RegExp(st.srcRegex).exec(name) : null; if (!m || !m[0]) return name; a = strIdxToChar(name, m.index); b = a + Array.from(m[0]).length; } catch (e) { return name; }
+  } else {
+    const r = findPreset(name, st.srcPreset || 'trailNum');
+    if (!r) return name;
+    a = strIdxToChar(name, r[0]); b = strIdxToChar(name, r[1]);
+  }
+  if (b <= a) return name;
+  const moved = chars.slice(a, b).join(''), rest = chars.slice(0, a).concat(chars.slice(b)).join('');
+  return placeInsert(rest, moved, st.dest || 'start', { pos: st.destPos, fromEnd: st.destFromEnd });
+}
+function formatStep(cur, st, items) {
+  const N = cur.length, G = Math.max(0, Math.floor(Number(st.group) || 0));
+  const all = makeSeq(st, N);
+  const inner = G ? makeSeq(st, G) : null, outer = G ? makeSeq(st, Math.ceil(N / G)) : null;
+  const cnMode = st.numStyle === 'cn' ? 'lower' : st.numStyle === 'cnUpper' ? 'upper' : st.numStyle === 'arabic' ? '' : cnStyleOf(st.start);
+  const padNum = (v) => { if (cnMode) return numberToCn(v, cnMode === 'upper'); const w = Math.max(0, Math.floor(Number(st.pad) || 0)); const s = String(Math.abs(v)).padStart(w, '0'); return v < 0 ? '-' + s : s; };
+  const safe = (x) => String(x).replace(/[\\/:*?"<>|]/g, '-');
+  return cur.map((nm, i) => {
+    const f = items[i];
+    const vals = { n: all[i], n1: G ? inner[i % G] : all[i], n2: G ? outer[Math.floor(i / G)] : all[i] };
+    const ins = String(st.pattern === undefined || st.pattern === null ? '' : st.pattern).replace(/\{(n1|n2|n|a1|a2|a|A1|A2|A|name|ext|i|time|folder)\}/g, (m, k) => {
+      if (k === 'name') return nm;
+      if (k === 'ext') return f instanceof TFolder ? '' : f.extension || '';
+      if (k === 'i') return String(i + 1);
+      if (k === 'folder') { const par = f.parent; return safe(par && !(par.isRoot && par.isRoot()) ? par.name : ''); }
+      if (k === 'time') {
+        const src = st.timeSource;
+        const d = src === 'ctime' && f.stat ? new Date(f.stat.ctime) : src === 'mtime' && f.stat ? new Date(f.stat.mtime) : new Date();
+        return safe(obsidian.moment(d).format(st.timeFormat || 'YYYY-MM-DD'));
+      }
+      if (k[0] === 'n') return padNum(vals[k]);
+      return numToLetters(vals['n' + k.slice(1)], k[0] === 'A');
+    });
+    return placeInsert(nm, ins, st.place || 'whole', st);
   });
 }
+function runRenameStep(cur, st, items) {
+  if (st.kind === 'format') return formatStep(cur, st, items);
+  if (st.kind === 'list') { const names = parseNameList(st.names); return cur.map((nm, i) => (i < names.length ? names[i] : nm)); }
+  if (st.kind === 'remove') return cur.map((nm) => removeFormats(nm, st));
+  if (st.kind === 'case') return cur.map((nm) => changeCase(nm, st.mode));
+  return cur.map((nm) => textStep(nm, st));
+}
+function applyRenameSteps(items, steps) {
+  const exts = items.map((f) => (f instanceof TFolder ? '' : f.extension ? '.' + f.extension : ''));
+  let cur = items.map((f) => (f instanceof TFolder ? f.name : f.basename));
+  for (const st of steps || []) cur = runRenameStep(cur, st, items);
+  return cur.map((nm, i) => nm + exts[i]);
+}
+// 舊版「方案」轉成步驟
+function presetToSteps(pr) {
+  if (Array.isArray(pr.steps)) return pr.steps;
+  if (pr.type === 'pattern') return [Object.assign(newStep('format'), { pattern: pr.pattern, start: String(pr.start), step: Number(pr.step) || 1, pad: Number(pr.pad) || 0 })];
+  if (pr.type === 'list') return [Object.assign(newStep('list'), { names: pr.names || '' })];
+  if (pr.find) return [Object.assign(newStep('text'), { op: 'replace', find: pr.find, replace: pr.replace || '', useRegex: !!pr.regex, caseSensitive: pr.caseSensitive !== false })];
+  return [];
+}
+function DEFAULT_TEMPLATES() {
+  return [
+  { id: 'numbering', name: "Numbering (100, 200…)", steps: [Object.assign(newStep('format'), { pattern: '{n} {name}', start: '100', step: 100, pad: 0 })] },
+  ];
+}
+function computeNewNames(items, preset) { return applyRenameSteps(items, presetToSteps(preset)); }
+function stepPlaceLabel(st) {
+  const N = Math.max(1, Math.floor(Number(st.pos) || 1)), M = Math.max(N, Math.floor(Number(st.pos2) || N));
+  const end = st.fromEnd ? _t(" (counted from the end)") : '';
+  if (st.place === 'start') return _t("At the start");
+  if (st.place === 'end') return _t("At the end");
+  if (st.place === 'before') return _t("Before character {0}", N) + end;
+  if (st.place === 'after') return _t("After character {0}", N) + end;
+  if (st.place === 'between') return _t("Replace characters {0} to {1}", N, M) + end;
+  return _t("Replace the whole name");
+}
+function stepSummary(st) {
+  if (st.kind === 'format') return _t("Name format \"{0}\" ({1})", st.pattern, stepPlaceLabel(st));
+  if (st.kind === 'remove') {
+    const names = [['leadNum', "leading number"], ['trailNum', "trailing number"], ['date', "date"], ['time', "time"], ['brackets', "brackets"], ['spaces', "spaces"], ['custom', "custom pattern"]].filter(([k]) => st[k]).map(([, l]) => _t(l));
+    return _t("Remove formats: {0}", names.join(', '));
+  }
+  if (st.kind === 'case') return _t("Change case: {0}", _t({ upper: "UPPERCASE", lower: "lowercase", first: "Capitalize the first letter", title: "Capitalize Each Word", swap: "sWAP cASE" }[st.mode] || "UPPERCASE"));
+  if (st.kind === 'list') return _t("List replace ({0} names)", parseNameList(st.names).length);
+  if (st.op === 'replace') return _t("Replace \"{0}\" with \"{1}\"", st.find, st.replace);
+  if (st.op === 'delete') return _t("Delete characters ({0})", _t({ before: "everything before", after: "everything after", between: "range", keep: "keep range only" }[st.mode] || "range"));
+  const src = st.src === 'text' ? '"' + st.srcText + '"' : st.src === 'regex' ? '/' + st.srcRegex + '/' : st.src === 'range' ? _t("Characters {0} to {1}", st.pos, Math.max(Number(st.pos) || 1, Number(st.pos2) || 1)) : _t({ leadNum: "leading number", trailNum: "trailing number", date: "date", time: "time" }[st.srcPreset] || "trailing number");
+  return _t("Move string ({0} → {1})", src, _t({ start: "the start", end: "the end", before: "before character {0}", after: "after character {0}" }[st.dest] || "the end", st.destPos));
+}
+function stepValid(st) {
+  if (st.kind === 'format') return !!String(st.pattern || '').length;
+  if (st.kind === 'remove') return ['leadNum', 'trailNum', 'date', 'time', 'brackets', 'spaces'].some((k) => st[k]) || (st.custom && !!st.regex);
+  if (st.kind === 'list') return parseNameList(st.names).length > 0;
+  if (st.kind === 'text') {
+    if (st.op === 'replace') return !!st.find;
+    if (st.op === 'move') return st.src === 'text' ? !!st.srcText : st.src === 'regex' ? !!st.srcRegex : true;
+  }
+  return true;
+}
+
 
 /* ------------------------------ Modal ------------------------------ */
 class TextPromptModal extends Modal {
@@ -2901,61 +4009,175 @@ class AddToZoneModal extends Modal {
 }
 
 class BatchRenameModal extends Modal {
-  constructor(app, plugin, files) {
+  constructor(app, plugin, files, opts) {
     super(app);
-    this.plugin = plugin; this.files = files;
-    const ps = plugin.settings.renamePresets;
-    this.preset = clone(ps[0] || DEFAULT_PRESETS()[0]);
-    this.plan = []; this.problem = '';
+    this.plugin = plugin; this.files = files; this.opts = opts || {};
+    this.steps = []; this.kind = 'format'; this.form = newStep('format'); this.editIdx = -1;
+    this.plan = []; this.problem = ''; this.dirty = false; this.pendingIncluded = false;
+    this.checked = new Set(files.map((f) => f.path));
   }
   onOpen() {
     const p = this.plugin, el = this.contentEl;
     this.modalEl.addClass('ffm-batch-modal');
     this.updateTitle();
-    const presets = p.settings.renamePresets;
-    new Setting(el).setName(_t("Preset")).setDesc(_t("Add or edit presets in the plugin settings")).addDropdown((d) => {
-      presets.forEach((x, i) => d.addOption(String(i), _t(x.name)));
-      d.addOption('__list__', _t("List replace"));
-      d.setValue('0');
-      d.onChange((v) => {
-        this.preset = v === '__list__' ? { id: 'adhoc', name: _t("List replace"), type: 'list', names: '' } : clone(presets[Number(v)]);
-        this.renderFields(); this.renderPreview();
+    const templates = p.settings.renameTemplates;
+    new Setting(el).setName(_t("Template")).setDesc(_t("Pick a saved template to load its steps (none by default). Manage templates in the plugin settings"))
+      .addDropdown((d) => {
+        d.addOption('', _t("None (no template)"));
+        templates.forEach((x) => d.addOption(x.id, _t(x.name)));
+        d.setValue('');
+        d.onChange((v) => {
+          const tpl = templates.find((x) => x.id === v);
+          this.steps = tpl ? clone(tpl.steps) : [];
+          this.editIdx = -1; this.dirty = false;
+          this.renderQueue(); this.renderPreview();
+        });
       });
+    new Setting(el).setName(_t("Edit format")).addDropdown((d) => {
+      [['format', "Name format / numbering"], ['remove', "Remove name format / numbering"], ['case', "Change case"], ['text', "Characters / strings"], ['list', "List replace"]].forEach(([k, l]) => d.addOption(k, _t(l)));
+      d.setValue(this.kind);
+      d.onChange((v) => { this.kind = v; this.form = newStep(v); this.editIdx = -1; this.dirty = false; this.renderForm(); this.renderPreview(); });
     });
-    this.fieldsEl = el.createDiv();
+    this.formEl = el.createDiv();
+    this.queueEl = el.createDiv({ cls: 'ffm-yaml-queue' });
+    this.noteEl = el.createDiv({ cls: 'setting-item-description ffm-pending-note' });
     this.warnEl = el.createDiv({ cls: 'ffm-warn' });
     this.problemEl = el.createDiv({ cls: 'ffm-problem' });
+    this.ctlEl = el.createDiv({ cls: 'ffm-check-bar' });
     el.createEl('p', { cls: 'setting-item-description', text: _t("Drag the ⋮⋮ handle or use ↑ ↓ to change the order (numbering follows this order)") });
     this.previewEl = el.createDiv({ cls: 'ffm-preview' });
     new Setting(el)
-      .addButton((b) => b.setButtonText(_t("Save as preset")).onClick(() => this.savePreset()))
+      .addButton((b) => b.setButtonText(_t("Save as template")).onClick(() => this.saveTemplate()))
       .addButton((b) => b.setButtonText(_t("Cancel")).onClick(() => this.close()))
-      .addButton((b) => { this.applyBtn = b; b.setButtonText(_t("Apply")).setCta().onClick(() => this.apply()); });
-    this.renderFields(); this.renderPreview();
+      .addButton((b) => { this.applyBtn = b; b.setButtonText(this.opts.create ? _t("Create") : _t("Apply")).setCta().onClick(() => this.apply()); });
+    this.renderForm(); this.renderQueue(); this.renderPreview();
   }
-  updateTitle() { this.titleEl.setText(_t("Batch rename ({0} items)", this.files.length)); }
-  renderFields() {
-    const el = this.fieldsEl, pr = this.preset;
+  updateTitle() { this.titleEl.setText(this.opts.create ? _t("Batch create ({0} items)", this.files.length) : _t("Batch rename ({0} items)", this.files.length)); }
+  // 調整參數時，預覽會跟著變（尚未「轉化」的設定也會顯示）
+  touch() { this.dirty = true; this.renderPreview(); }
+  currentSteps() {
+    const base = this.steps;
+    if (!this.dirty || !stepValid(this.form)) { this.pendingIncluded = false; return base; }
+    this.pendingIncluded = true;
+    const st = clone(this.form);
+    if (this.editIdx >= 0) { const a = [...base]; a[this.editIdx] = st; return a; }
+    return [...base, st];
+  }
+
+  /* ---- 表單 ---- */
+  renderForm() {
+    const el = this.formEl, f = this.form;
     el.empty();
-    const text = (name, desc, key, num) => new Setting(el).setName(name).setDesc(desc || '').addText((t) =>
-      t.setValue(String(pr[key])).onChange((v) => { pr[key] = num ? Number(v) || 0 : v; this.renderPreview(); }));
-    const tog = (name, key) => new Setting(el).setName(name).addToggle((t) =>
-      t.setValue(!!pr[key]).onChange((v) => { pr[key] = v; this.renderPreview(); }));
-    if (pr.type === 'pattern') {
-      text(_t("Name pattern"), _t("Available: {n} number, {name} original name (without extension), {ext} extension, {i} order (1,2,3…)"), 'pattern');
-      text(_t("Start number"), '', 'start', true);
-      text(_t("Step"), '', 'step', true);
-      text(_t("Zero-padding digits"), _t("0 means no padding"), 'pad', true);
-    } else if (pr.type === 'list') {
+    let host = el;
+    const text = (name, desc, key, o) => new Setting(host).setName(name).setDesc(desc || '').addText((t2) => {
+      if (o && o.ref) this[o.ref] = t2;
+      t2.setValue(String(f[key] === undefined || f[key] === null ? '' : f[key])).onChange((v) => {
+        f[key] = o && o.num ? Number(v) || 0 : v;
+        if (o && o.redraw) this.renderForm();
+        if (o && o.after) o.after();
+        this.touch();
+      });
+    });
+    const tog = (name, key, redraw) => new Setting(host).setName(name).addToggle((t2) => t2.setValue(!!f[key]).onChange((v) => { f[key] = v; if (redraw) this.renderForm(); this.touch(); }));
+    const dd = (name, key, options, desc) => new Setting(host).setName(name).setDesc(desc || '').addDropdown((d) => {
+      options.forEach(([v, l]) => d.addOption(v, _t(l)));
+      d.setValue(String(f[key]));
+      d.onChange((v) => { f[key] = v; this.renderForm(); this.touch(); });
+    });
+    const posFields = (placeKey, nKey, n2Key, endKey) => {
+      const pl = f[placeKey];
+      if (pl === 'before' || pl === 'after' || pl === 'between') {
+        text(pl === 'between' ? _t("From character N") : _t("Character N"), '', nKey, { num: true });
+        if (pl === 'between') text(_t("To character M"), '', n2Key, { num: true });
+        tog(_t("Count from the end"), endKey);
+      }
+    };
+    // 常用格式：點一下就填入
+    const chipsFor = (apply) => {
+      host.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Common formats (click to fill in)") });
+      const wrap = host.createDiv({ cls: 'ffm-yaml-chip-row' });
+      RENAME_REGEX_PRESETS.forEach(([label, src]) => {
+        const c = wrap.createSpan({ cls: 'ffm-yaml-chip', text: _t(label) });
+        c.setAttr('aria-label', src);
+        c.onclick = () => apply(src);
+      });
+    };
+    if (f.kind === 'format') {
+      text(_t("Format"), _t("Tokens: {n} number, {a} / {A} letters, {name} current name, {i} order, {time} time, {folder} folder name, {ext} extension. For groups: {n1} {n2} {a1} {A1} {a2} {A2}"), 'pattern', { ref: 'patternComp', after: () => renderDyn() });
+      el.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Insert token") });
+      const chips = el.createDiv({ cls: 'ffm-yaml-chip-row' });
+      ['{n}', '{a}', '{A}', '{name}', '{i}', '{time}', '{folder}', '{ext}'].forEach((tk) => {
+        const chip = chips.createSpan({ cls: 'ffm-yaml-chip', text: tk });
+        chip.onclick = () => { f.pattern = String(f.pattern || '') + tk; this.renderForm(); this.touch(); };
+      });
+      dd(_t("Position"), 'place', [['whole', "Replace the whole name"], ['start', "At the start"], ['end', "At the end"], ['before', "Before character N"], ['after', "After character N"], ['between', "Between characters N and M (replaces that range)"]]);
+      if (f.place === 'between' || f.place === 'before' || f.place === 'after') posFields('place', 'pos', 'pos2', 'fromEnd');
+      const dyn = el.createDiv();
+      const renderDyn = () => {
+        dyn.empty();
+        host = dyn;
+        try {
+          const pat = String(f.pattern || '');
+          if (/\{(n1|n2|n|a1|a2|a|A1|A2|A)\}/.test(pat)) {
+            dyn.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Numbering") });
+            text(_t("Start value"), _t("A number, a letter (a, A, Z…) or a Chinese numeral (一, 二, 三… or 壹, 貳, 參…); the sequence continues in the same style"), 'start');
+            dd(_t("Number style"), 'numStyle', [['auto', "Automatic (follows the start value)"], ['arabic', "1 2 3 (Arabic digits)"], ['cn', "一 二 三 (Chinese numerals)"], ['cnUpper', "壹 貳 參 (formal Chinese numerals)"]]);
+            text(_t("Step"), _t("Negative values count down (for example -1 with start Z gives Z Y X…)"), 'step', { num: true });
+            text(_t("Zero-padding digits"), _t("0 means no padding"), 'pad', { num: true });
+            text(_t("Numbers to skip"), _t("Comma separated; ranges allowed, e.g. 300-500, 900"), 'skip');
+            text(_t("Cycle: use N in a row"), _t("With \"skip M\" below: use 1 and skip 1 gives 1 3 5 7…; 0 turns the cycle off"), 'cycleUse', { num: true });
+            text(_t("Cycle: then skip M"), '', 'cycleSkip', { num: true });
+            text(_t("Group size"), _t("Splits the order into groups. For example size 3 with {A2}{n1} gives A1 A2 A3 B1 B2 B3…"), 'group', { num: true });
+          }
+          if (/\{time\}/.test(pat)) {
+            dyn.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Time") });
+            text(_t("Time format"), _t("YYYY year, MM month, DD day, HH hour, mm minute, ss second, ddd weekday, WW week number"), 'timeFormat');
+            dd(_t("Time source"), 'timeSource', [['now', "Now"], ['ctime', "File created time"], ['mtime', "File modified time"]]);
+          }
+        } finally { host = el; }
+      };
+      renderDyn();
+    } else if (f.kind === 'remove') {
+      el.createEl('p', { cls: 'setting-item-description', text: _t("Pick the formats to take out of the names. Separators left over are tidied up, and a name is never emptied completely.") });
+      tog(_t("Leading number (e.g. 001 , 1. , 01-)"), 'leadNum');
+      tog(_t("Trailing number (e.g. _01, -3)"), 'trailNum');
+      tog(_t("Date (e.g. 2026-10-26, 20261026, 2026.10.26)"), 'date');
+      tog(_t("Time (e.g. 09-30-15, 09:30, 093015)"), 'time');
+      tog(_t("Text in brackets ( ) [ ] （ ） 【 】"), 'brackets');
+      tog(_t("Extra spaces (collapse and trim)"), 'spaces');
+      tog(_t("Custom pattern"), 'custom', true);
+      if (f.custom) {
+        text(_t("Pattern (regular expression)"), _t("Everything it matches is removed"), 'regex');
+        chipsFor((src) => { f.regex = src; this.renderForm(); this.touch(); });
+      }
+    } else if (f.kind === 'case') {
+      dd(_t("Case"), 'mode', [['upper', "UPPERCASE"], ['lower', "lowercase"], ['first', "Capitalize the first letter"], ['title', "Capitalize Each Word"], ['swap', "sWAP cASE"]]);
+    } else if (f.kind === 'list') {
       new Setting(el).setName(_t("Name list")).setDesc(_t("One name per line, applied in order to the files below (extensions are kept). Paste directly or import a text file"))
-        .addTextArea((t2) => { t2.setValue(pr.names || '').onChange((v) => { pr.names = v; this.renderPreview(); }); t2.inputEl.rows = 6; t2.inputEl.style.width = '100%'; })
+        .addTextArea((t2) => { this.listComp = t2; t2.setValue(f.names || '').onChange((v) => { f.names = v; this.touch(); }); t2.inputEl.rows = 6; t2.inputEl.style.width = '100%'; })
         .addButton((b) => b.setButtonText(_t("Import list…")).onClick(() => this.importList()));
     } else {
-      text(_t("Find"), '', 'find');
-      text(_t("Replace with"), '', 'replace');
-      tog(_t("Use regular expression"), 'regex');
-      tog(_t("Case sensitive"), 'caseSensitive');
+      dd(_t("Action"), 'op', [['replace', "Replace"], ['delete', "Delete characters"], ['move', "Move a string"]]);
+      if (f.op === 'replace') {
+        text(_t("Find"), '', 'find'); text(_t("Replace with"), '', 'replace');
+        tog(_t("Use regular expression"), 'useRegex'); tog(_t("Case sensitive"), 'caseSensitive');
+        chipsFor((src) => { f.find = src; f.useRegex = true; this.renderForm(); this.touch(); });
+      } else if (f.op === 'delete') {
+        dd(_t("Delete mode"), 'mode', [['before', "Delete everything before character N"], ['after', "Delete everything after character N"], ['between', "Delete characters N to M"], ['keep', "Keep only characters N to M (delete the rest)"]]);
+        text(f.mode === 'between' || f.mode === 'keep' ? _t("From character N") : _t("Character N"), '', 'pos', { num: true });
+        if (f.mode === 'between' || f.mode === 'keep') text(_t("To character M"), '', 'pos2', { num: true });
+        tog(_t("Count from the end"), 'fromEnd');
+      } else {
+        dd(_t("What to move"), 'src', [['text', "A specific string (first match)"], ['range', "Characters N to M"], ['regex', "Matches of a regular expression"], ['preset', "A number / date / time format"]]);
+        if (f.src === 'text') text(_t("String"), _t("For example move 33 in Apple33 to get App33le"), 'srcText');
+        else if (f.src === 'regex') { text(_t("Regular expression"), '', 'srcRegex'); chipsFor((src) => { f.srcRegex = src; this.renderForm(); this.touch(); }); }
+        else if (f.src === 'range') { text(_t("From character N"), '', 'pos', { num: true }); text(_t("To character M"), '', 'pos2', { num: true }); tog(_t("Count from the end"), 'fromEnd'); }
+        else dd(_t("Format to move"), 'srcPreset', [['leadNum', "leading number"], ['trailNum', "trailing number"], ['date', "date"], ['time', "time"]]);
+        dd(_t("Move to"), 'dest', [['start', "the start"], ['end', "the end"], ['before', "before character {0}"], ['after', "after character {0}"]].map(([k, l]) => [k, l.replace('{0}', 'N')]));
+        if (f.dest === 'before' || f.dest === 'after') { text(_t("Character N"), '', 'destPos', { num: true }); tog(_t("Count from the end"), 'destFromEnd'); }
+      }
     }
+    new Setting(el).addButton((b) => b.setButtonText(_t("Convert (preview only, no files are changed)")).setCta().onClick(() => this.convert()));
   }
   importList() {
     const input = createEl('input', { type: 'file' });
@@ -2963,31 +4185,96 @@ class BatchRenameModal extends Modal {
     input.onchange = async () => {
       const f = input.files && input.files[0];
       if (!f) return;
-      try { this.preset.names = await f.text(); this.renderFields(); this.renderPreview(); }
+      try { this.form.names = await f.text(); this.renderForm(); this.touch(); }
       catch (e) { new Notice(_t("Failed to read the file: ") + e.message); }
     };
     input.click();
   }
-  savePreset() {
-    const p = this.plugin;
-    new TextPromptModal(this.app, _t("Preset name"), this.preset.type === 'list' ? '' : _t(this.preset.name), async (name) => {
-      const entry = clone(this.preset);
-      entry.id = uid(); entry.name = name;
-      const list = p.settings.renamePresets;
+  convert() {
+    if (!stepValid(this.form)) { new Notice(_t("Please fill in this step first")); return; }
+    const st = clone(this.form);
+    if (this.editIdx >= 0) this.steps[this.editIdx] = st; else this.steps.push(st);
+    this.editIdx = -1; this.dirty = false;
+    this.form = newStep(this.kind);
+    this.renderForm(); this.renderQueue(); this.renderPreview();
+  }
+
+  /* ---- 待套用的步驟 ---- */
+  renderQueue() {
+    const el = this.queueEl;
+    el.empty();
+    el.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Steps to apply ({0})", this.steps.length) });
+    if (!this.steps.length) el.createDiv({ cls: 'ffm-empty', text: _t("No steps yet. Fill in the form above and press Convert.") });
+    this.steps.forEach((st, i) => {
+      const row = el.createDiv({ cls: 'ffm-yaml-op' });
+      row.createSpan({ cls: 'ffm-yaml-op-text', text: stepSummary(st) });
+      const up = row.createSpan({ cls: 'ffm-x', text: '↑' });
+      up.setAttr('aria-label', _t("Move up")); up.onclick = () => { if (i > 0) { [this.steps[i - 1], this.steps[i]] = [this.steps[i], this.steps[i - 1]]; this.renderQueue(); this.renderPreview(); } };
+      const dn = row.createSpan({ cls: 'ffm-x', text: '↓' });
+      dn.setAttr('aria-label', _t("Move down")); dn.onclick = () => { if (i < this.steps.length - 1) { [this.steps[i + 1], this.steps[i]] = [this.steps[i], this.steps[i + 1]]; this.renderQueue(); this.renderPreview(); } };
+      const edit = row.createSpan({ cls: 'ffm-x', text: '✎' });
+      edit.setAttr('aria-label', _t("Edit this step"));
+      edit.onclick = () => { this.kind = st.kind; this.form = clone(st); this.editIdx = i; this.dirty = false; this.renderForm(); this.renderPreview(); };
+      const del = row.createSpan({ cls: 'ffm-x', text: '✕' });
+      del.setAttr('aria-label', _t("Remove this step"));
+      del.onclick = () => { this.steps.splice(i, 1); if (this.editIdx === i) this.editIdx = -1; else if (this.editIdx > i) this.editIdx--; this.renderQueue(); this.renderPreview(); };
+    });
+  }
+  saveTemplate() {
+    const p = this.plugin, steps = this.currentSteps();
+    if (!steps.length) { new Notice(_t("Add at least one step first")); return; }
+    new TextPromptModal(this.app, _t("Template name"), '', async (name) => {
+      const entry = { id: uid(), name, steps: clone(steps) };
+      const list = p.settings.renameTemplates;
       const k = list.findIndex((x) => x.name === name);
-      if (k >= 0) list[k] = entry; else list.push(entry);
+      if (k >= 0) { entry.id = list[k].id; list[k] = entry; } else list.push(entry);
       await p.saveSettings();
-      new Notice(_t("Saved preset \"{0}\"", name));
+      new Notice(_t("Saved template \"{0}\"", name));
     }).open();
   }
+
+  /* ---- 預覽（含勾選） ---- */
+  checkedFiles() { return this.files.filter((f) => this.checked.has(f.path)); }
+  renderCheckBar() {
+    const el = this.ctlEl;
+    el.empty();
+    const n = this.checkedFiles().length;
+    el.createSpan({ cls: 'ffm-check-count', text: _t("{0} of {1} selected", n, this.files.length) });
+    const btn = (label, fn) => { const b = el.createEl('button', { cls: 'ffm-btn', text: _t(label) }); b.onclick = fn; return b; };
+    btn("Check all", () => { this.checked = new Set(this.files.map((f) => f.path)); this.renderPreview(); });
+    btn("Uncheck all", () => { this.checked = new Set(); this.renderPreview(); });
+    btn("Invert selection", () => { this.checked = new Set(this.files.filter((f) => !this.checked.has(f.path)).map((f) => f.path)); this.renderPreview(); });
+    const input = el.createEl('input', { type: 'text', cls: 'ffm-check-filter' });
+    input.placeholder = _t("Check names containing… (separate several words with spaces or commas)");
+    input.value = this.filterText || '';
+    input.addEventListener('input', () => { this.filterText = input.value; });
+    const mode = el.createEl('button', { cls: 'ffm-btn', text: this.filterAll ? _t("Match all words") : _t("Match any word") });
+    mode.onclick = () => { this.filterAll = !this.filterAll; mode.setText(this.filterAll ? _t("Match all words") : _t("Match any word")); };
+    const apply = () => {
+      this.filterText = input.value;
+      const terms = input.value.split(/[,，;；、\s]+/).map((x) => x.trim().toLowerCase()).filter(Boolean);
+      this.checked = new Set(this.files.filter((f) => {
+        if (!terms.length) return true;
+        const nm = f.name.toLowerCase();
+        return this.filterAll ? terms.every((x) => nm.includes(x)) : terms.some((x) => nm.includes(x));
+      }).map((f) => f.path));
+      this.renderPreview();
+    };
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') apply(); });
+    const okBtn = el.createEl('button', { cls: 'ffm-btn mod-cta', text: _t("Confirm") });
+    okBtn.onclick = apply;
+  }
   renderPreview() {
-    const files = this.files;
-    const names = computeNewNames(files, this.preset);
-    this.plan = files.map((f, i) => ({ file: f, newName: names[i], bad: '' }));
-    const moving = new Set(this.plan.map((x) => x.file.path));
+    const steps = this.currentSteps();
+    const sel = this.checkedFiles();
+    const newNames = applyRenameSteps(sel, steps);
+    const byPath = new Map(sel.map((f, i) => [f.path, newNames[i]]));
+    this.plan = this.files.map((f) => ({ file: f, checked: this.checked.has(f.path), newName: byPath.has(f.path) ? byPath.get(f.path) : f.name, bad: '' }));
+    const moving = new Set(sel.map((f) => f.path));
     const seen = new Map();
     let problem = '';
     for (const x of this.plan) {
+      if (!x.checked) continue;
       const dir = parentPath(x.file.path);
       const target = joinPath(dir, x.newName);
       const nm = x.newName;
@@ -2997,17 +4284,20 @@ class BatchRenameModal extends Modal {
       seen.set(target, true);
       if (x.bad && !problem) problem = _t("\"{0}\" → \"{1}\": {2}", x.file.name, x.newName, x.bad);
     }
-    if (!files.length) problem = _t("No items to rename");
+    if (!sel.length) problem = this.files.length ? _t("No items are selected") : _t("No items to rename");
     this.problem = problem;
     this.problemEl.setText(problem);
+    this.noteEl.setText(this.pendingIncluded ? _t("The preview includes the settings above that are not converted yet. Press Convert to add them as a step.") : '');
     let warn = '';
-    if (this.preset.type === 'list') {
-      const n = parseNameList(this.preset.names).length, mm = files.length;
+    const lst = steps.find((s) => s.kind === 'list');
+    if (lst) {
+      const n = parseNameList(lst.names).length, mm = sel.length;
       if (n > mm) warn = _t("The list has {0} names but only {1} items: the extra {2} names will not be used (you can ignore this warning)", n, mm, n - mm);
       else if (n < mm) warn = _t("The list has only {0} names but there are {1} items: the last {2} items keep their original names (you can ignore this warning)", n, mm, mm - n);
     }
     this.warnEl.setText(warn);
     if (this.applyBtn) this.applyBtn.setDisabled(!!problem);
+    this.renderCheckBar();
     const el = this.previewEl; el.empty();
     const table = el.createEl('table');
     const last = this.plan.length - 1;
@@ -3015,23 +4305,21 @@ class BatchRenameModal extends Modal {
     this.plan.forEach((item, idx) => {
       const tr = table.createEl('tr');
       if (item.bad) tr.addClass('is-bad');
+      if (!item.checked) tr.addClass('is-unchecked');
       tr.draggable = true;
+      const cbCell = tr.createEl('td', { cls: 'ffm-check-cell' });
+      const cb = cbCell.createEl('input', { type: 'checkbox' });
+      cb.checked = item.checked;
+      cb.onchange = () => { if (cb.checked) this.checked.add(item.file.path); else this.checked.delete(item.file.path); this.renderPreview(); };
       tr.createEl('td', { cls: 'ffm-drag-handle', text: '⋮⋮' }).setAttr('aria-label', _t("Drag to reorder"));
       tr.createEl('td', { text: item.file.name });
-      tr.createEl('td', { text: '→' });
-      tr.createEl('td', { text: item.newName });
+      tr.createEl('td', { text: item.checked ? '→' : '' });
+      tr.createEl('td', { text: item.checked ? item.newName : '' });
       const ctl = tr.createEl('td', { cls: 'ffm-row-ctl' });
       const up = ctl.createEl('button', { cls: 'ffm-x', text: '↑' });
       up.setAttr('aria-label', _t("Move up")); up.disabled = idx === 0; up.onclick = () => this.moveItem(idx, idx - 1);
       const dn = ctl.createEl('button', { cls: 'ffm-x', text: '↓' });
       dn.setAttr('aria-label', _t("Move down")); dn.disabled = idx === last; dn.onclick = () => this.moveItem(idx, idx + 1);
-      const xb = ctl.createEl('button', { cls: 'ffm-x', text: '✕' });
-      xb.setAttr('aria-label', _t("Remove from this batch rename"));
-      xb.onclick = () => {
-        this.files = this.files.filter((f) => f !== item.file);
-        this.updateTitle();
-        this.renderPreview();
-      };
       tr.addEventListener('dragstart', (e) => {
         this.dragIdx = idx;
         if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(idx)); }
@@ -3073,8 +4361,26 @@ class BatchRenameModal extends Modal {
   }
   async apply() {
     if (this.problem) return;
+    const p = this.plugin;
+    if (this.opts.create) {
+      // 批量創建：名稱確定之後才真正建立檔案
+      const { folder, place } = this.opts.create;
+      const made = [];
+      try {
+        for (const x of this.plan.filter((y) => y.checked)) { const f = await x.file._create(x.newName); if (f) made.push(f); }
+      } catch (e) { console.error(e); new Notice(_t("Create failed: ") + e.message); }
+      if (made.length) {
+        p.expandFolder(folder);
+        if (place) await p.placeByRef(folder, made.map((f) => f.name), place.ref, place.pos);
+        new Notice(_t("Created {0} items", made.length));
+        p.revealItem(made[0]);
+      }
+      this.close();
+      p.refreshAll();
+      return;
+    }
     const fm = this.app.fileManager;
-    const changes = this.plan.filter((x) => x.newName !== x.file.name);
+    const changes = this.plan.filter((x) => x.checked && x.newName !== x.file.name);
     if (!changes.length) { this.close(); return; }
     const oldPaths = new Set(changes.map((x) => x.file.path));
     const needTemp = changes.some((x) => oldPaths.has(joinPath(parentPath(x.file.path), x.newName)));
@@ -3088,7 +4394,7 @@ class BatchRenameModal extends Modal {
       console.error(e); new Notice(_t("Rename failed: ") + e.message);
     }
     this.close();
-    this.plugin.refreshAll();
+    p.refreshAll();
   }
   onClose() { this.contentEl.empty(); }
 }
@@ -3222,7 +4528,7 @@ class PropertiesModal extends Modal {
 }
 
 class BatchCreateModal extends Modal {
-  constructor(app, plugin, folder) { super(app); this.plugin = plugin; this.folder = folder; }
+  constructor(app, plugin, folder, place) { super(app); this.plugin = plugin; this.folder = folder; this.place = place || null; }
   onOpen() {
     const p = this.plugin, s = p.settings, el = this.contentEl;
     const max = Math.max(1, Math.min(50, Number(s.batchCreateMax) || 10));
@@ -3261,34 +4567,33 @@ class BatchCreateModal extends Modal {
   async create(st, n) {
     const p = this.plugin, folder = this.folder, vault = this.app.vault;
     const base = st.base || _t("Untitled");
-    const made = [];
     const def = st.type.startsWith('def:') ? p.newFileDefs().find((d) => 'def:' + d.id === st.type) : null;
     const tpl = st.type === 'daily' && st.tpl ? vault.getAbstractFileByPath(st.tpl) : null;
     const tplText = tpl instanceof TFile ? await vault.cachedRead(tpl) : '';
-    try {
-      for (let i = 1; i <= n; i++) {
-        const label = `${base} ${i}`;
-        let f = null;
-        if (st.type === 'folder') {
-          const path = p.uniqueVaultPath(folder.path, label, true);
-          const r = await vault.createFolder(path);
-          f = r && r.path ? r : vault.getAbstractFileByPath(path);
-        } else if (def && def.excalidraw) {
-          f = await p.createExcalidrawFile(folder, label);
-        } else {
-          const ext = def ? def.ext : 'md';
-          const path = p.uniqueVaultPath(folder.path, `${label}.${ext}`, false);
-          const content = def ? def.content || '' : st.type === 'daily' ? p.fillTemplate(tplText, label, obsidian.moment()) : '';
-          f = await vault.create(path, content);
-        }
-        if (f) made.push(f);
+    const items = [];
+    for (let i = 1; i <= n; i++) {
+      const label = `${base} ${i}`;
+      let item;
+      if (st.type === 'folder') {
+        item = Object.create(TFolder.prototype);
+        Object.assign(item, { name: label, path: joinPath(folder.path, label), parent: folder, children: [], isRoot: () => false });
+        item._create = async (nm) => { const path = joinPath(folder.path, nm); const r = await vault.createFolder(path); return r && r.path ? r : vault.getAbstractFileByPath(path); };
+      } else {
+        const ext = def && def.excalidraw ? 'excalidraw.md' : def ? def.ext : 'md';
+        item = Object.create(TFile.prototype);
+        Object.assign(item, { name: `${label}.${ext}`, basename: label, extension: ext, path: joinPath(folder.path, `${label}.${ext}`), parent: folder, stat: { ctime: Date.now(), mtime: Date.now(), size: 0 } });
+        item._create = async (nm) => {
+          if (def && def.excalidraw) return p.createExcalidrawFile(folder, nm.replace(/\.excalidraw\.md$/, ''));
+          const nb = nm.slice(0, nm.length - ext.length - 1);
+          const content = def ? def.content || '' : st.type === 'daily' ? p.fillTemplate(tplText, nb, obsidian.moment()) : '';
+          return vault.create(joinPath(folder.path, nm), content);
+        };
       }
-    } catch (e) { new Notice(_t("Create failed: ") + e.message); }
-    if (!made.length) return;
-    p.expandFolder(folder);
-    new Notice(_t("Created {0} items", made.length));
-    p.revealItem(made[0]);
-    new BatchRenameModal(this.app, p, made).open();
+      item.virtual = true;
+      items.push(item);
+    }
+    this.close();
+    new BatchRenameModal(this.app, p, items, { create: { folder, place: this.place } }).open();
   }
   onClose() { this.contentEl.empty(); }
 }
@@ -4752,7 +6057,7 @@ class AddPropValuesModal extends Modal {
 
 /* ------------------------------ 管理面板：欄位格式與展開文件 ------------------------------ */
 // 右鍵選單各項目的預設圖示（設定頁顯示用）
-const MENU_ICONS = {"open": "file-text", "openTab": "square-plus", "openRight": "separator-vertical", "openWindow": "app-window", "showInFolder": "folder-search", "selectMode": "check-square", "addZone": "target", "removeZone": "x-circle", "createTemp": "folder-plus", "moveToTemp": "folder-input", "moveOutTemp": "folder-output", "copy": "copy", "cut": "scissors", "paste": "clipboard-paste", "copyPath": "link", "copyName": "copy", "copyFullPath": "link-2", "bookmark": "bookmark", "rename": "pencil", "batchRename": "files", "batchRenameInner": "files", "yamlEdit": "braces", "moveByTags": "tags", "moveByYaml": "folder-input", "appearance": "palette", "sortFolder": "arrow-up-down", "pin": "pin", "unpin": "pin-off", "moveUp": "arrow-up", "moveDown": "arrow-down", "outdent": "corner-left-up", "indent": "corner-right-down", "hideExclude": "eye-off", "selectAllVisible": "check-square", "selectAllAll": "check-check", "newNote": "file-plus", "newFolder": "folder-plus", "newTyped": "file-plus", "dailyNote": "calendar-plus", "batchCreate": "copy-plus", "properties": "info", "delete": "trash"};
+const MENU_ICONS = {"newBase": "database", "newCanvas": "layout-dashboard", "newExcalidraw": "pencil-line", "pasteAbove": "chevrons-up", "pasteBelow": "chevrons-down", "quickMove": "move-vertical", "open": "file-text", "openTab": "square-plus", "openRight": "separator-vertical", "openWindow": "app-window", "showInFolder": "folder-search", "selectMode": "check-square", "addZone": "target", "removeZone": "x-circle", "createTemp": "folder-plus", "moveToTemp": "folder-input", "moveOutTemp": "folder-output", "copy": "copy", "cut": "scissors", "paste": "clipboard-paste", "copyPath": "link", "copyName": "copy", "copyFullPath": "link-2", "bookmark": "bookmark", "rename": "pencil", "batchRename": "files", "batchRenameInner": "files", "yamlEdit": "braces", "moveByTags": "tags", "moveByYaml": "folder-input", "appearance": "palette", "sortFolder": "arrow-up-down", "pin": "pin", "unpin": "pin-off", "moveUp": "arrow-up", "moveDown": "arrow-down", "outdent": "corner-left-up", "indent": "corner-right-down", "hideExclude": "eye-off", "selectAllVisible": "check-square", "selectAllAll": "check-check", "newNote": "file-plus", "newFolder": "folder-plus", "newTyped": "file-plus", "dailyNote": "calendar-plus", "batchCreate": "copy-plus", "properties": "info", "delete": "trash"};
 const TAG_COL_KEYS = ['num', 'state', 'name', 'note', 'last', 'count'];
 const PROP_COL_KEYS = ['num', 'type', 'name', 'count'];
 const panelKeys = (panel) => (panel instanceof TagPanel ? TAG_COL_KEYS : PROP_COL_KEYS);
@@ -4877,6 +6182,93 @@ PropPanel.prototype.colsField = function () { return this.standalone ? 'propCols
   const sr = TagPanel.prototype.startRename;
   TagPanel.prototype.startRename = function (r, row) { if (r.type === 'file') { this.plugin.openFile(r.file); return; } return sr.call(this, r, row); };
 })();
+
+/* ------------------------------ 貼上／創建位置、快速移動 ------------------------------ */
+class PlacePromptModal extends Modal {
+  constructor(app, plugin, opts) { super(app); this.plugin = plugin; this.opts = opts; }
+  onOpen() {
+    const { title, name, key, onChoose } = this.opts, p = this.plugin, el = this.contentEl;
+    this.titleEl.setText(title);
+    el.createEl('p', { text: _t('Place it above or below "{0}"?', name) });
+    let remember = false;
+    const row = el.createDiv({ cls: 'ffm-place-row' });
+    const pick = (pos) => {
+      if (remember) { p.settings[key] = pos; p.saveSettings(); }
+      onChoose(pos); this.close();
+    };
+    const up = row.createEl('button', { cls: 'mod-cta', text: _t("Above") });
+    up.onclick = () => pick('above');
+    const down = row.createEl('button', { cls: 'mod-cta', text: _t("Below") });
+    down.onclick = () => pick('below');
+    const lab = el.createEl('label', { cls: 'ffm-place-remember' });
+    const cb = lab.createEl('input', { type: 'checkbox' });
+    cb.onchange = () => { remember = cb.checked; };
+    lab.createSpan({ text: _t("Remember my choice (don't ask again)") });
+    const hint = el.createEl('p', { cls: 'setting-item-description' });
+    hint.createSpan({ text: _t("You can change this in the plugin settings.") + ' ' });
+    const a = hint.createEl('a', { text: _t("Go to the setting"), href: '#' });
+    a.onclick = (e) => { e.preventDefault(); this.close(); p.openSettingAt(key); };
+  }
+  onClose() { this.contentEl.empty(); }
+}
+
+class QuickMoveModal extends Modal {
+  constructor(app, plugin, files) { super(app); this.plugin = plugin; this.files = pruneNested(files); this.ref = null; this.pos = 'below'; }
+  onOpen() {
+    const p = this.plugin, el = this.contentEl;
+    this.modalEl.addClass('ffm-yaml-modal');
+    this.titleEl.setText(_t("Quick move up / down"));
+    const first = this.files[0];
+    this.dest = first && first.parent ? first.parent.path : '/';
+    el.createEl('p', { cls: 'setting-item-description', text: _t("Items to move: {0}", this.files.map((f) => f.name).join(', ')) });
+    new Setting(el).setName(_t("Destination folder")).setDesc(_t("Defaults to the current folder; type or pick another path to move the items there"))
+      .addText((t2) => {
+        t2.setValue(this.dest).onChange((v) => { this.dest = v.trim() || '/'; this.drawList(); });
+        attachSuggest(t2.inputEl, (txt) => { const q = String(txt || '').toLowerCase(); return p.folderPaths().filter((x) => !q || x.toLowerCase().includes(q)).slice(0, 12); }, (c) => { this.dest = c; t2.setValue(c); this.drawList(); });
+      });
+    el.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("Reference item") });
+    this.listEl = el.createDiv({ cls: 'ffm-yaml-files ffm-move-list' });
+    new Setting(el).setName(_t("Position")).addDropdown((d) => {
+      d.addOption('above', _t("Above the item")); d.addOption('below', _t("Below the item"));
+      d.setValue(this.pos); d.onChange((v) => { this.pos = v; });
+    });
+    new Setting(el)
+      .addButton((b) => b.setButtonText(_t("Cancel")).onClick(() => this.close()))
+      .addButton((b) => b.setButtonText(_t("Move")).setCta().onClick(() => this.apply()));
+    this.drawList();
+  }
+  folder() {
+    const v = String(this.dest || '').replace(/^\/+|\/+$/g, '');
+    const f = !v ? this.app.vault.getRoot() : this.app.vault.getAbstractFileByPath(v);
+    return f instanceof TFolder ? f : null;
+  }
+  drawList() {
+    const el = this.listEl, folder = this.folder();
+    el.empty();
+    if (!folder) { el.createDiv({ cls: 'ffm-empty', text: _t("This folder does not exist yet") }); this.ref = null; return; }
+    const kids = this.plugin.getChildren(folder).filter((c) => !this.files.includes(c));
+    if (!kids.length) { el.createDiv({ cls: 'ffm-empty', text: _t("No items in this folder") }); this.ref = null; return; }
+    if (!this.ref || !kids.includes(this.ref)) this.ref = kids[0];
+    kids.forEach((k) => {
+      const row = el.createEl('label', { cls: 'ffm-yaml-file' });
+      const rb = row.createEl('input', { type: 'radio' });
+      rb.name = 'ffm-qm-ref'; rb.checked = k === this.ref;
+      rb.onchange = () => { this.ref = k; };
+      row.createSpan({ text: (k instanceof TFolder ? '📁 ' : '') + k.name });
+    });
+  }
+  async apply() {
+    const p = this.plugin, folder = this.folder();
+    if (!folder) { new Notice(_t("This folder does not exist yet")); return; }
+    const moved = this.files.filter((f) => f.parent !== folder);
+    if (moved.length) await p.moveFiles(moved, folder);
+    await p.placeByRef(folder, this.files.map((f) => f.name), this.ref, this.pos);
+    new Notice(_t("Moved {0} items", this.files.length));
+    this.close();
+    p.refreshAll();
+  }
+  onClose() { this.contentEl.empty(); }
+}
 
 /* ------------------------------ 依標籤／YAML 移動文件 ------------------------------ */
 class MoveBase extends Modal {
@@ -5291,7 +6683,7 @@ class Pane {
     const p = this.plugin, m = new Menu();
     const copy = async (text) => { try { await navigator.clipboard.writeText(text); new Notice(_t("Path copied")); } catch (err) { new Notice(_t("Copy failed")); } };
     m.addItem((i) => i.setTitle(_t("Copy path")).setIcon('link').onClick(() => copy(path)));
-    if (HAS_NODE && p.basePath()) m.addItem((i) => i.setTitle(_t("Copy full path")).setIcon('link-2').onClick(() => copy(path === '/' ? p.basePath() : nodePath.join(p.basePath(), path))));
+    if (HAS_NODE && p.basePath()) m.addItem((i) => i.setTitle(_t("Copy device path")).setIcon('link-2').onClick(() => copy(path === '/' ? p.basePath() : nodePath.join(p.basePath(), path))));
     m.showAtMouseEvent(e);
   }
 
@@ -5667,7 +7059,7 @@ class Pane {
     const mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
     if (mod && k === 'c') { e.preventDefault(); this.plugin.copySelection(this, false); }
     else if (mod && k === 'x') { e.preventDefault(); this.plugin.copySelection(this, true); }
-    else if (mod && k === 'v') { e.preventDefault(); this.plugin.paste(this.pasteTarget()); }
+    else if (mod && k === 'v') { e.preventDefault(); this.plugin.pasteSmart(this); }
     else if (mod && k === 'a') { e.preventDefault(); this.selectAll(); }
     else if (k === 'f2') { const f = this.getSelectedFiles()[0]; if (f) this.startRenameByPath(f.path); }
     else if (this.isExplorer() && (k === 'backspace' || (e.altKey && k === 'arrowup'))) { e.preventDefault(); this.plugin.navUp(); }
@@ -5720,20 +7112,8 @@ class Pane {
     const reg = p.menuRegistry(this, ctx);
     const byId = new Map(reg.map((x) => [x.id, x]));
     const hidden = new Set(p.settings.menuHidden || []);
-    const icons = p.settings.menuIcons || {};
-    const explicitSep = !!p.settings.menuSepExplicit;
-    let prev = null, pendingSep = false;
-    for (const id of p.menuOrderList(reg.map((x) => x.id))) {
-      if (String(id).startsWith('sep:')) { pendingSep = true; continue; }
-      const en = byId.get(id);
-      if (!en || hidden.has(id) || !en.show()) continue;
-      const items = en.items();
-      if (!items.length) continue;
-      if (prev !== null && (pendingSep || (!explicitSep && en.group !== prev))) m.addSeparator();
-      pendingSep = false;
-      items.forEach((x) => m.addItem((i) => i.setTitle(x.title).setIcon(icons[id] || x.icon).onClick(x.fn)));
-      prev = en.group;
-    }
+    const ext = p.settings.includeOtherPluginItems !== false && ctx.sel && ctx.sel.length ? p.collectExternalItems(ctx.sel) : [];
+    p.renderContextMenu(m, reg, ctx, ext, e);
     m.showAtMouseEvent(e);
   }
 
@@ -5941,6 +7321,8 @@ class FocusView extends ItemView {
     const gear = this.makeBtn(bar);
     this.setBtn(gear, { icon: 'settings', label: _t("Plugin settings"), tip: _t("Open plugin settings") });
     gear.onclick = () => p.openSettings();
+    this.plusBtn = this.makeBtn(bar);
+    this.plusBtn.onclick = () => p.openInTab();
     this.updateToolbar();
   }
   updateToolbar() {
@@ -5958,6 +7340,12 @@ class FocusView extends ItemView {
     this.setBtn(this.crossBtn, { icon: 'move', label: _t("Cross-level move: {0}", cross), tip: _t("Cross-level move (limits dragging): {0}", cross), on: s.crossLevelMove });
     const sortName = !s.sortMode || s.sortMode === 'default' || !SORT_MODES[s.sortMode] ? _t("Default") : s.sortMode === 'manual' ? _t("Manual") : _t(SORT_MODES[s.sortMode]);
     this.setBtn(this.sortBtn, { icon: 'arrow-up-down', label: _t("Sort: {0}", sortName), tip: _t("Sort order: {0}", sortName) });
+    if (this.plusBtn) {
+      this.setBtn(this.plusBtn, { icon: 'plus', label: '＋', tip: _t("Open in a tab") });
+      this.plusBtn.addClass('ffm-push-right');
+      const ws = this.plugin.app.workspace, root = this.leaf && this.leaf.getRoot ? this.leaf.getRoot() : null;
+      this.plusBtn.style.display = root && ws.rootSplit && root === ws.rootSplit ? 'none' : '';
+    }
     if (this.tagBtn) this.setBtn(this.tagBtn, { icon: 'tags', label: _t("Tag manager"), tip: _t("Tag manager"), on: s.leftMode === 'tags' });
     if (this.propBtn) this.setBtn(this.propBtn, { icon: 'list-checks', label: _t("Property manager"), tip: _t("Property manager"), on: s.leftMode === 'props' });
     if (this.eyeBtn) {
@@ -6086,6 +7474,11 @@ class FocusFileManagerPlugin extends Plugin {
       this.addCommand({ id, name, callback: () => this.setLayoutMode(mode) }));
     this.addCommand({ id: 'cycle-layout', name: _t("Cycle view (File manager → Focus zone → Both)"), callback: () => this.cycleLayoutMode() });
     this.tagTerms = [];
+    [
+      ['focus-file-manager', "Focus the file manager", () => this.focusFileManager()],
+      ['focus-note-editor', "Focus the note editor", () => this.focusEditor()],
+      ['toggle-focus', "Switch focus between the note and the file manager", () => (this.isFocusInManager() ? this.focusEditor() : this.focusFileManager())],
+    ].forEach(([id, name, callback]) => this.addCommand({ id, name: _t(name), callback }));
     this.requestPanels = debounce(() => { this.invalidateMeta(); this.refreshPanels(); }, 400, true);
     this.registerView(VIEW_TAGS, (leaf) => new ManagerView(leaf, this, 'tags'));
     this.registerView(VIEW_PROPS, (leaf) => new ManagerView(leaf, this, 'props'));
@@ -6111,6 +7504,10 @@ class FocusFileManagerPlugin extends Plugin {
 
     this.app.workspace.onLayoutReady(() => {
       this.computeOpen();
+      this.loadVimrc();
+      this.initTabClose();
+      this.initLastModified();
+      try { this.registerEvent(this.app.vault.on('raw', (path) => { if (this.settings.vimrcEnabled && String(path) === this.settings.vimrcPath) this.loadVimrc(); })); } catch (e) { /* ignore */ }
       const mc = this.app.metadataCache;
       try { this.registerEvent(this.app.vault.on('raw', (path) => { if (String(path).endsWith('types.json')) this.loadTypesFile(); })); } catch (e) { /* ignore */ }
       this.registerEvent(mc.on('changed', (f) => this.onMetaChanged(f)));
@@ -6144,9 +7541,14 @@ class FocusFileManagerPlugin extends Plugin {
     if (!Array.isArray(s.guideStyles)) s.guideStyles = [];
     if (!Array.isArray(s.styleTemplates)) s.styleTemplates = [];
     if (!Array.isArray(s.customLangs)) s.customLangs = [];
-    ['menuIcons', 'tagMeta', 'tagExpanded', 'tagCols', 'propCols', 'propExpanded', 'tagPanel', 'propPanel', 'tagColStyle', 'propColStyle', 'tagFilesOpen', 'tagColsTab', 'propColsTab', 'tagColStyleTab', 'propColStyleTab'].forEach((k) => { if (!s[k] || typeof s[k] !== 'object' || Array.isArray(s[k])) s[k] = clone(DEFAULT_SETTINGS[k]); });
-    ['menuOrder', 'menuHidden', 'yamlSchemes', 'propFolders', 'tagFolders', 'tagOrder', 'tagCustom', 'propOrder', 'propCustom'].forEach((k) => { if (!Array.isArray(s[k])) s[k] = []; });
+    ['menuIcons', 'menuAssign', 'menuExtSeen', 'tagMeta', 'tagExpanded', 'tagCols', 'propCols', 'propExpanded', 'tagPanel', 'propPanel', 'tagColStyle', 'propColStyle', 'tagFilesOpen', 'tagColsTab', 'propColsTab', 'tagColStyleTab', 'propColStyleTab'].forEach((k) => { if (!s[k] || typeof s[k] !== 'object' || Array.isArray(s[k])) s[k] = clone(DEFAULT_SETTINGS[k]); });
+    ['menuOrder', 'menuHidden', 'menuFolders', 'yamlSchemes', 'propFolders', 'tagFolders', 'tagOrder', 'tagCustom', 'propOrder', 'propCustom'].forEach((k) => { if (!Array.isArray(s[k])) s[k] = []; });
     if (!Array.isArray(s.renamePresets) || !s.renamePresets.length) s.renamePresets = DEFAULT_PRESETS();
+    // 舊版「批量重新命名方案」轉成新的「模板」（一個模板 = 一串步驟）
+    if (!Array.isArray(s.renameTemplates)) {
+      s.renameTemplates = s.renamePresets.map((pr) => ({ id: pr.id || uid(), name: pr.name, steps: presetToSteps(pr) })).filter((tpl) => tpl.steps.length);
+      if (!s.renameTemplates.length) s.renameTemplates = DEFAULT_TEMPLATES();
+    }
     this.settings = s;
     this.rebuildAliases();
   }
@@ -6468,7 +7870,8 @@ class FocusFileManagerPlugin extends Plugin {
     let kids = [...folder.children];
     if (levelOnly) kids = kids.filter((k) => k instanceof TFile);
     if (!s.showExcluded) kids = kids.filter((k) => !this.isExcluded(k.path));
-    const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    const cnSort = s.sortChineseNumerals !== false;
+    const byName = (a, b) => natCompare(a.name, b.name, cnSort);
     const pos = s.sortFolderPos || (s.sortFoldersFirst === false ? 'mixed-after' : 'top');
     const mixed = pos === 'mixed-before' || pos === 'mixed-after';
     const tm = /^(mtime|ctime)-(asc|desc)$/.exec(mode);
@@ -6481,7 +7884,7 @@ class FocusFileManagerPlugin extends Plugin {
       for (const b of bases) if (low.startsWith(b.toLowerCase()) && b.length > best.length) best = b;
       return best ? k.name.slice(0, best.length) : k.name;
     };
-    const coll = (x, y) => x.localeCompare(y, undefined, { numeric: true, sensitivity: 'base' });
+    const coll = (x, y) => natCompare(x, y, cnSort);
     kids.sort((a, b) => {
       const af = a instanceof TFolder, bf = b instanceof TFolder;
       if (!mixed && af !== bf) return (pos === 'top') === af ? -1 : 1;
@@ -6545,6 +7948,15 @@ class FocusFileManagerPlugin extends Plugin {
         const set = new Set(names);
         const order = this.getChildren(parent).map((c) => c.name);
         s.manualOrder[parent.path] = shiftSelected(order, (n) => set.has(n), dir);
+      { // 置頂的項目之間也可以互相交換位置
+        const pinned = s.pinned || [];
+        const slots = [];
+        pinned.forEach((pp, k) => { if (parentPath(pp) === parent.path) slots.push(k); });
+        if (slots.length > 1) {
+          const wanted = s.manualOrder[parent.path].map((nm) => joinPath(parent.path, nm)).filter((pp) => pinned.includes(pp));
+          slots.forEach((slot, k) => { if (wanted[k]) pinned[slot] = wanted[k]; });
+        }
+      }
       }
     }
     await this.saveSettings(); this.refreshAll();
@@ -6631,12 +8043,6 @@ class FocusFileManagerPlugin extends Plugin {
       { id: 'canvas', label: _t("Canvas"), ext: 'canvas', content: '{}', icon: 'layout-dashboard' },
     ];
     if (this.getPlugin('obsidian-excalidraw-plugin')) defs.push({ id: 'excalidraw', label: 'Excalidraw', excalidraw: true, icon: 'pencil-line' });
-    String(this.settings.newFileTypes || '').split('\n').forEach((line) => {
-      const parts = line.split('|');
-      if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
-        defs.push({ id: 'custom-' + parts[0].trim(), label: parts[0].trim(), ext: parts[1].trim().replace(/^\./, ''), content: (parts.slice(2).join('|') || '').replace(/\\n/g, '\n'), icon: 'file-plus' });
-      }
-    });
     return defs;
   }
   expandFolder(folder) {
@@ -6657,17 +8063,17 @@ class FocusFileManagerPlugin extends Plugin {
       return f instanceof TFile ? f : null;
     } catch (e) { new Notice(_t("Failed to create Excalidraw: ") + e.message); return null; }
   }
-  async createExcalidraw(folder, name) {
+  async createExcalidraw(folder, name, place) {
     const f = await this.createExcalidrawFile(folder, name);
-    if (f) { this.openFile(f); this.revealItem(f); }
+    if (f) { if (place) await this.placeByRef(folder, [f.name], place.ref, place.pos); this.openFile(f); this.revealItem(f); }
   }
-  promptCreate(folder, kind) {
+  promptCreate(folder, kind, place) {
     const def = kind && typeof kind === 'object' ? kind : null;
     const title = def ? _t("New {0}", _t(def.label)) : kind === 'note' ? _t("New note") : _t("New folder");
     new TextPromptModal(this.app, title, '', async (name) => {
       if (INVALID_NAME.test(name)) { new Notice(_t("The name contains invalid characters")); return; }
       try {
-        if (def && def.excalidraw) { await this.createExcalidraw(folder, name); this.expandFolder(folder); return; }
+        if (def && def.excalidraw) { await this.createExcalidraw(folder, name, place); this.expandFolder(folder); return; }
         let fname = name;
         if (def) { if (!new RegExp('\\.' + escapeRe(def.ext) + '$', 'i').test(fname)) fname += '.' + def.ext; }
         else if (kind === 'note' && !/\.[^.]+$/.test(fname)) fname += '.md';
@@ -6678,7 +8084,9 @@ class FocusFileManagerPlugin extends Plugin {
         else if (kind === 'note') created = await this.app.vault.create(path, '');
         else created = await this.app.vault.createFolder(path);
         this.expandFolder(folder);
-        this.revealItem(created && created.path ? created : this.app.vault.getAbstractFileByPath(path));
+        const made = created && created.path ? created : this.app.vault.getAbstractFileByPath(path);
+        if (place && made) await this.placeByRef(folder, [made.name], place.ref, place.pos);
+        this.revealItem(made);
       } catch (e) { new Notice(_t("Create failed: ") + e.message); }
     }).open();
   }
@@ -6808,7 +8216,7 @@ class FocusFileManagerPlugin extends Plugin {
       return now.format(fmt ? fmt.trim() : kind === 'date' ? 'YYYY-MM-DD' : 'HH:mm');
     });
   }
-  async createDailyNote(folder, tpl) {
+  async createDailyNote(folder, tpl, place) {
     try {
       const now = obsidian.moment();
       const name = now.format(this.settings.dailyNameFormat || 'YYYY-MM-DD');
@@ -6820,19 +8228,20 @@ class FocusFileManagerPlugin extends Plugin {
       if (tpl) content = this.fillTemplate(await this.app.vault.cachedRead(tpl), name, now);
       const f = await this.app.vault.create(path, content);
       this.expandFolder(folder);
+      if (place) await this.placeByRef(folder, [f.name], place.ref, place.pos);
       new Notice(_t("Daily note created: {0}", name));
       try { this.openFile(f); } catch (e) { /* 開啟失敗不影響建立結果 */ }
       this.revealItem(f);
     } catch (e) { new Notice(_t("Create failed: ") + e.message); }
   }
-  dailyMenu(e, folder) {
+  dailyMenu(e, folder, place) {
     const list = this.dailyTemplateList();
-    if (list.length === 1) { this.createDailyNote(folder, list[0]); return; }
+    if (list.length === 1) { this.createDailyNote(folder, list[0], place); return; }
     const dup = new Set(list.map((f) => f.basename).filter((n, i, a) => a.indexOf(n) !== i));
     const m = new Menu();
-    list.forEach((f) => m.addItem((i) => i.setTitle(dup.has(f.basename) ? f.path.replace(/\.md$/, '') : f.basename).setIcon('file-text').onClick(() => this.createDailyNote(folder, f))));
+    list.forEach((f) => m.addItem((i) => i.setTitle(dup.has(f.basename) ? f.path.replace(/\.md$/, '') : f.basename).setIcon('file-text').onClick(() => this.createDailyNote(folder, f, place))));
     if (list.length) m.addSeparator();
-    m.addItem((i) => i.setTitle(_t("Blank daily note (no template)")).setIcon('file').onClick(() => this.createDailyNote(folder, null)));
+    m.addItem((i) => i.setTitle(_t("Blank daily note (no template)")).setIcon('file').onClick(() => this.createDailyNote(folder, null, place)));
     m.showAtMouseEvent(e);
   }
 
@@ -6913,6 +8322,7 @@ class FocusFileManagerPlugin extends Plugin {
     if (idx < 0) idx = names.length; else if (pos === 'after') idx++;
     names.splice(idx, 0, ...files.map((f) => f.name));
     s.manualOrder[parent.path] = names;
+    this.syncPinnedFromManual(parent);
     await this.saveSettings(); this.refreshAll();
   }
 
@@ -6984,49 +8394,56 @@ class FocusFileManagerPlugin extends Plugin {
     } else {
       await this.app.vault.copy(src, dest);
     }
+    return dest.split('/').pop();
   }
-  async pasteRel(clip, destFolder) {
+  async pasteRel(clip, destFolder, place) {
     let n = 0;
+    const names = [];
     for (const rel of clip.paths) {
       const src = this.app.vault.getAbstractFileByPath(rel);
       if (!src) continue;
       try {
-        if (clip.op === 'cut') await this.moveFiles([src], destFolder);
-        else await this.copyInVault(src, destFolder);
+        if (clip.op === 'cut') { await this.moveFiles([src], destFolder); if (src.parent === destFolder) names.push(src.name); }
+        else { const nm = await this.copyInVault(src, destFolder); if (nm) names.push(nm); }
         n++;
       } catch (e) { console.error(e); new Notice(_t("Paste failed: ") + e.message); }
     }
+    if (place && names.length) await this.placeByRef(destFolder, names, place.ref, place.pos);
     if (clip.op === 'cut') { this.memClip = null; this.cutPaths = new Set(); }
     new Notice(_t("Pasted {0} items", n));
     this.refreshAll();
   }
-  async paste(destFolder) {
+  async paste(destFolder, place) {
     const clip = await this.readClip();
     if (!clip) {
-      if (this.memClip) { await this.pasteRel(this.memClip, destFolder); return; }
+      if (this.memClip) { await this.pasteRel(this.memClip, destFolder, place); return; }
       new Notice(_t("No files or folders on the clipboard to paste"));
       return;
     }
     const base = this.basePath();
     let n = 0;
+    const names = [];
     for (const abs of clip.absPaths) {
       try {
         const rel = nodePath.relative(base, abs);
         const inVault = rel && !rel.startsWith('..') && !nodePath.isAbsolute(rel);
         const src = inVault ? this.app.vault.getAbstractFileByPath(rel.split(nodePath.sep).join('/')) : null;
         if (src) {
-          if (clip.op === 'cut') await this.moveFiles([src], destFolder);
-          else await this.copyInVault(src, destFolder);
+          if (clip.op === 'cut') { await this.moveFiles([src], destFolder); names.push(src.name); }
+          else { const nm = await this.copyInVault(src, destFolder); if (nm) names.push(nm); }
         } else {
           if (!fs.existsSync(abs)) continue;
           const isDir = fs.statSync(abs).isDirectory();
           const destDir = nodePath.join(base, destFolder.isRoot() ? '' : destFolder.path);
-          fs.cpSync(abs, this.uniqueFsPath(destDir, nodePath.basename(abs), isDir), { recursive: true });
+          const target = this.uniqueFsPath(destDir, nodePath.basename(abs), isDir);
+          fs.cpSync(abs, target, { recursive: true });
+          names.push(nodePath.basename(target));
           if (clip.op === 'cut') fs.rmSync(abs, { recursive: true, force: true });
         }
         n++;
       } catch (e) { console.error(e); new Notice(_t("Paste failed: ") + e.message); }
     }
+    if (place && names.length) await this.placeByRef(destFolder, names, place.ref, place.pos);
     if (clip.op === 'cut') { try { fs.unlinkSync(CLIP_FILE); } catch (e) { /* ignore */ } this.cutPaths = new Set(); this.memClip = null; }
     new Notice(_t("Pasted {0} items", n));
     setTimeout(() => this.refreshAll(), 400);
@@ -7097,9 +8514,47 @@ class FocusFileManagerPlugin extends Plugin {
     return out;
   }
 
+  /* ---- 手動排序：把項目放到某個項目的上方／下方 ---- */
+  async placeByRef(parent, names, ref, pos) {
+    const s = this.settings;
+    if (s.sortMode !== 'manual') return;
+    const cur = this.getChildren(parent).map((c) => c.name).filter((n) => !names.includes(n));
+    const i = ref ? cur.indexOf(ref.name) : -1;
+    if (i < 0) cur.push(...names); else cur.splice(pos === 'above' ? i : i + 1, 0, ...names);
+    s.manualOrder[parent.path] = cur;
+    this.syncPinnedFromManual(parent);
+    await this.saveSettings();
+    this.refreshAll();
+  }
+  askPlace(kind, ref) {
+    const key = kind === 'paste' ? 'pastePlace' : 'createPlace';
+    const v = this.settings[key];
+    if (v === 'above' || v === 'below') return Promise.resolve(v);
+    return new Promise((resolve) => {
+      let done = false;
+      const m = new PlacePromptModal(this.app, this, { title: kind === 'paste' ? _t("Where to paste?") : _t("Where to create?"), name: ref.name, key, onChoose: (pos) => { done = true; resolve(pos); } });
+      const close = m.onClose.bind(m);
+      m.onClose = () => { close(); if (!done) resolve(null); };
+      m.open();
+    });
+  }
+  async pasteSmart(pane, forcePos) {
+    const f = pane.getSelectedFiles()[0];
+    const manual = this.settings.sortMode === 'manual' && !pane.cfg.isZone;
+    if (!f || !manual || (f instanceof TFolder && !forcePos)) return this.paste(pane.pasteTarget());
+    const parent = f.parent || this.app.vault.getRoot();
+    const pos = forcePos || await this.askPlace('paste', f);
+    if (!pos) return;
+    return this.paste(parent, { ref: f, pos });
+  }
+  openSettingAt(key) {
+    this._jumpKey = key;
+    const st = this.app.setting;
+    if (st && st.open) { st.open(); if (st.openTabById) st.openTabById(this.manifest.id); }
+  }
   /* ---- 右鍵選單：功能清單（可在設定中調整順序與開關） ---- */
   menuOrderList(defaultIds) {
-    const saved = (this.settings.menuOrder || []).filter((id) => defaultIds.includes(id) || String(id).startsWith('sep:'));
+    const saved = (this.settings.menuOrder || []).filter((id) => defaultIds.includes(id) || /^(sep|ext|fol):/.test(String(id)));
     const out = [...new Set(saved)];
     defaultIds.forEach((id, i) => {
       if (out.includes(id)) return;
@@ -7118,7 +8573,7 @@ class FocusFileManagerPlugin extends Plugin {
     const isFolder = () => file instanceof TFolder;
     return [
       { id: 'open', group: 1, label: _t("Open"), show: () => openables.length > 0, items: () => [it(_t("Open"), 'file-text', () => openables.forEach((f) => p.openFile(f)))] },
-      { id: 'openTab', group: 1, label: _t("Open in new tab"), show: () => openables.length > 0, items: () => [it(p.tabLabel(), 'square-plus', () => openables.forEach((f) => p.openFile(f, 'tab')))] },
+      { id: 'openTab', group: 1, label: p.tabLabel(), show: () => openables.length > 0, items: () => [it(p.tabLabel(), 'square-plus', () => openables.forEach((f) => p.openFile(f, 'tab')))] },
       { id: 'openRight', group: 1, label: _t("Open to the right"), show: () => openables.length > 0, items: () => [it(_t("Open to the right"), 'separator-vertical', () => openables.forEach((f) => p.openFile(f, 'split')))] },
       { id: 'openWindow', group: 1, label: _t("Open in new window"), show: () => !!desktop && openables.length > 0, items: () => [it(_t("Open in new window"), 'app-window', () => openables.forEach((f) => p.openFile(f, 'window')))] },
       { id: 'showInFolder', group: 1, label: _t("Show in folder"), show: () => !!desktop, items: () => [it(_t("Show in folder"), 'folder-search', () => p.showInFolder(file))] },
@@ -7134,10 +8589,14 @@ class FocusFileManagerPlugin extends Plugin {
         items: () => [it(_t("Move out of temporary folder"), 'folder-output', () => p.zoneMoveToGroup(rootSel, null))] },
       { id: 'copy', group: 4, label: _t("Copy"), show: () => true, items: () => [it(_t("Copy"), 'copy', () => p.copySelection(pane, false))] },
       { id: 'cut', group: 4, label: _t("Cut"), show: () => true, items: () => [it(_t("Cut"), 'scissors', () => p.copySelection(pane, true))] },
-      { id: 'paste', group: 4, label: _t("Paste"), show: () => true, items: () => [it(_t("Paste"), 'clipboard-paste', () => p.paste(pane.pasteTarget()))] },
+      { id: 'paste', group: 4, label: _t("Paste"), show: () => true, items: () => [it(_t("Paste"), 'clipboard-paste', () => p.pasteSmart(pane))] },
+      { id: 'pasteAbove', group: 4, label: _t("Paste above this item"), show: () => !!pane && !isZone() && p.settings.sortMode === 'manual',
+        items: () => [it(_t("Paste above this item"), 'chevrons-up', () => p.pasteSmart(pane, 'above'))] },
+      { id: 'pasteBelow', group: 4, label: _t("Paste below this item"), show: () => !!pane && !isZone() && p.settings.sortMode === 'manual',
+        items: () => [it(_t("Paste below this item"), 'chevrons-down', () => p.pasteSmart(pane, 'below'))] },
       { id: 'copyPath', group: 5, label: _t("Copy path"), show: () => true, items: () => [it(_t("Copy path"), 'link', () => p.copyPaths(sel, false))] },
       { id: 'copyName', group: 5, label: _t("Copy names"), show: () => true, items: () => [it(_t("Copy names"), 'copy', () => p.copyNames(sel))] },
-      { id: 'copyFullPath', group: 5, label: _t("Copy full path"), show: () => true, items: () => [it(_t("Copy full path"), 'link-2', () => p.copyPaths(sel, true))] },
+      { id: 'copyFullPath', group: 5, label: _t("Copy device path"), show: () => true, items: () => [it(_t("Copy device path"), 'link-2', () => p.copyPaths(sel, true))] },
       { id: 'bookmark', group: 5, label: _t("Add / remove bookmark"), show: () => !!p.getBookmarks(),
         items: () => [it(sel.every((f) => p.findBookmark(f.path)) ? _t("Remove bookmark") : _t("Add bookmark"), 'bookmark', () => p.toggleBookmarks(sel))] },
       { id: 'rename', group: 6, label: _t("Rename"), show: () => true, items: () => [it(_t("Rename"), 'pencil', () => pane.startRenameByPath(file.path))] },
@@ -7160,18 +8619,39 @@ class FocusFileManagerPlugin extends Plugin {
       { id: 'unpin', group: 7, label: _t("Unpin"), show: () => sel.every((f) => pane.pinSet.has(f.path)), items: () => [it(_t("Unpin"), 'pin-off', () => p.unpin(pane, sel))] },
       { id: 'moveUp', group: 7, label: _t("Move up"), show: () => true, items: () => [it(_t("Move up"), 'arrow-up', () => p.moveItems(pane, sel, -1))] },
       { id: 'moveDown', group: 7, label: _t("Move down"), show: () => true, items: () => [it(_t("Move down"), 'arrow-down', () => p.moveItems(pane, sel, 1))] },
+      { id: 'quickMove', group: 6, label: _t("Quick move up / down…"), show: () => !!pane && !isZone() && p.settings.sortMode === 'manual' && sel.length > 0,
+        items: () => [it(_t("Quick move up / down…"), 'move-vertical', () => new QuickMoveModal(p.app, p, sel).open())] },
       { id: 'outdent', group: 7, label: _t("Move up one level"), show: () => true, items: () => [it(_t("Move up one level"), 'corner-left-up', () => p.outdent(sel))] },
       { id: 'indent', group: 7, label: _t("Move down one level (into the previous folder)"), show: () => true, items: () => [it(_t("Move down one level (into the previous folder)"), 'corner-right-down', () => p.indent(sel))] },
       { id: 'hideExclude', group: 7, label: _t("Hide / unhide (exclude)"), show: () => !!(pane && !pane.cfg.isZone),
         items: () => [it(sel.every((f) => p.isExcluded(f.path)) ? _t("Unhide (remove exclusion)") : _t("Hide (add exclusion)"), 'eye-off', () => p.toggleExcluded(sel))] },
       { id: 'selectAllVisible', group: 8, label: _t("Select all (visible)"), show: () => true, items: () => [it(_t("Select all (visible)"), 'check-square', () => pane.selectAll())] },
       { id: 'selectAllAll', group: 8, label: _t("Select all (including collapsed)"), show: () => true, items: () => [it(_t("Select all (including collapsed)"), 'check-check', () => pane.selectEverything())] },
-      { id: 'newNote', group: 9, label: _t("New note here"), show: () => isFolder(), items: () => [it(_t("New note here"), 'file-plus', () => p.promptCreate(file, 'note'))] },
-      { id: 'newFolder', group: 9, label: _t("New folder here"), show: () => isFolder(), items: () => [it(_t("New folder here"), 'folder-plus', () => p.promptCreate(file, 'folder'))] },
-      { id: 'newTyped', group: 9, label: _t("New other file types here (Base, Canvas…)"), show: () => isFolder(),
-        items: () => p.newFileDefs().map((d) => it(_t("New {0} here", _t(d.label)), d.icon || 'file-plus', () => p.promptCreate(file, d))) },
-      { id: 'dailyNote', group: 9, label: _t("Create daily note from template"), show: () => isFolder(), items: () => [it(_t("Create daily note from template"), 'calendar-plus', () => p.dailyMenu(e, file))] },
-      { id: 'batchCreate', group: 9, label: _t("Batch create…"), show: () => isFolder(), items: () => [it(_t("Batch create…"), 'copy-plus', () => new BatchCreateModal(p.app, p, file).open())] },
+      ...(() => {
+        const manualFile = () => !!pane && !isZone() && !isFolder() && p.settings.sortMode === 'manual';
+        const can = () => isFolder() || manualFile();
+        // 對資料夾：建立在裡面；對文件（手動排序）：建立在它旁邊，位置依設定（預設詢問）
+        const here = (fn) => async () => {
+          if (isFolder()) { fn(file, null); return; }
+          const pos = await p.askPlace('create', file);
+          if (!pos) return;
+          fn(file.parent || p.app.vault.getRoot(), { ref: file, pos });
+        };
+        const out = [
+          { id: 'newNote', group: 9, label: _t("Create note here"), show: can, items: () => [it(_t("Create note here"), 'file-plus', here((f, pl) => p.promptCreate(f, 'note', pl)))] },
+          { id: 'newFolder', group: 9, label: _t("Create folder here"), show: can, items: () => [it(_t("Create folder here"), 'folder-plus', here((f, pl) => p.promptCreate(f, 'folder', pl)))] },
+        ];
+        p.newFileDefs().filter((d) => !d.excalidraw).forEach((d) => {
+          const rid = d.id.startsWith('custom-') ? 'custom:' + d.id.slice(7) : 'new' + d.id.charAt(0).toUpperCase() + d.id.slice(1);
+          const label = _t("Create {0} here", d.label);
+          out.push({ id: rid, group: 9, label, show: can, items: () => [it(label, d.icon || 'file-plus', here((f, pl) => p.promptCreate(f, d, pl)))] });
+        });
+        out.push(
+          { id: 'dailyNote', group: 9, label: _t("Create daily note here (template)"), show: can, items: () => [it(_t("Create daily note here (template)"), 'calendar-plus', here((f, pl) => p.dailyMenu(e, f, pl)))] },
+          { id: 'batchCreate', group: 9, label: _t("Batch create here…"), show: can, items: () => [it(_t("Batch create here…"), 'copy-plus', here((f, pl) => new BatchCreateModal(p.app, p, f, pl).open()))] },
+        );
+        return out;
+      })(),
       { id: 'properties', group: 10, label: _t("Properties…"), show: () => true, items: () => [it(_t("Properties…"), 'info', () => new PropertiesModal(p.app, p, sel).open())] },
       { id: 'delete', group: 10, label: _t("Delete"), show: () => true, items: () => [it(_t("Delete"), 'trash', () => p.deleteFiles(sel))] },
     ];
@@ -7934,6 +9414,25 @@ class FocusFileManagerPlugin extends Plugin {
 }
 
 /* ------------------------------ 設定頁 ------------------------------ */
+// 設定頁：依類別分頁，只建立目前類別的項目（開啟設定時不再一次渲染全部）
+let SETTING_SKIP = false;
+const NULL_SETTING = new Proxy(function () {}, { get: (tt, k) => (k === '__ffmNull' ? true : k === Symbol.toPrimitive ? () => '' : k === 'then' ? undefined : NULL_SETTING), apply: () => NULL_SETTING, construct: () => NULL_SETTING });
+function GSetting(el) { return SETTING_SKIP ? NULL_SETTING : new Setting(el); }
+function setIconG(el, id) { if (el && el.__ffmNull) return; return setIcon(el, id); }
+const SETTING_CATS = [['general', "General"], ['display', "Display & markers"], ['appearance', "Appearance"], ['menu', "Right-click menu"], ['keys', "Keys & Vim"], ['batch', "Batch & templates"]];
+const SETTING_HEADS = [["Language", 'general'], ["Behavior", 'general'], ["Displayed info", 'display'], ["Open-file markers", 'display'], ["Appearance & theme compatibility", 'appearance'], ["Right-click menu", 'menu'], ["Hotkeys", 'keys'], ["Vim-style keys", 'keys'], ["Daily note templates", 'batch'], ["Batch rename templates", 'batch']];
+const settingCatOf = (translated) => { for (const [key, cat] of SETTING_HEADS) if (_t(key) === translated) return cat; return 'general'; };
+const settingKeyOf = (translated) => { for (const [key] of SETTING_HEADS) if (_t(key) === translated) return key; return ''; };
+function jumpToHeading(tab) {
+  const key = tab._jumpHead;
+  if (!key) return;
+  const h = [...tab.containerEl.children].find((c) => c.dataset && c.dataset.ffmHead === key);
+  if (!h) return;
+  tab._jumpHead = null;
+  h.style.scrollMarginTop = '64px';
+  if (h.scrollIntoView) h.scrollIntoView({ block: 'start' });
+}
+
 class FFMSettingTab extends PluginSettingTab {
   constructor(app, plugin) { super(app, plugin); this.plugin = plugin; }
   display() {
@@ -7947,9 +9446,24 @@ class FFMSettingTab extends PluginSettingTab {
     const search = searchWrap.createEl('input', { type: 'search', cls: 'ffm-settings-search' });
     search.placeholder = _t("Search settings… (type # to jump to a section)");
     search.value = this.query || '';
+
+    this.catWanted = (c) => !!this.searchAll || this.cat === c;
+    const wanted = this.catWanted;
+    if (!this.cat || !SETTING_CATS.some((c) => c[0] === this.cat)) this.cat = SETTING_CATS.some((c) => c[0] === p.settings.settingsCat) ? p.settings.settingsCat : 'general';
+    const catBar = searchWrap.createDiv({ cls: 'ffm-settings-cats' });
+    SETTING_CATS.forEach(([k, label]) => {
+      const b = catBar.createEl('button', { cls: 'ffm-cat-btn', text: _t(label) });
+      b.toggleClass('is-active', !this.searchAll && this.cat === k);
+      b.onclick = () => { this.cat = k; p.settings.settingsCat = k; p.saveSoon(); search.value = ''; this.query = ''; this.searchAll = false; this.display(); };
+    });
     const save = async () => { await p.saveSettings(); p.refreshAll(); };
-    const heading = (t) => new Setting(el).setName(t).setHeading();
-    const toggle = (name, desc, get, set) => new Setting(el).setName(name).setDesc(desc || '')
+    const heading = (t) => {
+      SETTING_SKIP = !wanted(settingCatOf(t));
+      const st = new GSetting(el).setName(t).setHeading();
+      st.settingEl.dataset.ffmHead = settingKeyOf(t);
+      return st;
+    };
+    const toggle = (name, desc, get, set) => new GSetting(el).setName(name).setDesc(desc || '')
       .addToggle((t) => t.setValue(get()).onChange(async (v) => { set(v); await save(); }));
 
     const iconInput = (st, get, set, placeholder) => {
@@ -7963,7 +9477,7 @@ class FFMSettingTab extends PluginSettingTab {
       upd();
     };
     heading(_t("Language"));
-    new Setting(el).setName(_t("Interface language")).setDesc(_t("Follows the system (Obsidian) language by default; English is used if the language is not available. Japanese and Simplified Chinese are machine translations and may be inaccurate. Command names update after reloading the plugin."))
+    new GSetting(el).setName(_t("Interface language")).setDesc(_t("Follows the system (Obsidian) language by default; English is used if the language is not available. Japanese and Simplified Chinese are machine translations and may be inaccurate. Command names update after reloading the plugin."))
       .addDropdown((d) => {
         d.addOption('auto', _t("Follow system"));
         LANG_BUILTIN.forEach(([code, name]) => d.addOption(code, name));
@@ -7971,47 +9485,47 @@ class FFMSettingTab extends PluginSettingTab {
         d.setValue(s.language || 'auto');
         d.onChange(async (v) => { s.language = v; p.applyLanguage(); await save(); this.display(); });
       });
-    new Setting(el).setName(_t("Language file path")).setDesc(_t("Relative path = a file in the vault; on desktop you can also enter a full path. The exported JSON uses English as the default template: edit the translations inside \"strings\", then import it. Imported languages are listed by file name after the built-in languages."))
+    new GSetting(el).setName(_t("Language file path")).setDesc(_t("Relative path = a file in the vault; on desktop you can also enter a full path. The exported JSON uses English as the default template: edit the translations inside \"strings\", then import it. Imported languages are listed by file name after the built-in languages."))
       .addText((t2) => t2.setPlaceholder('Focus File Manager/lang/en.json').setValue(s.langPath || '').onChange(async (v) => { s.langPath = v.trim(); await p.saveSettings(); }));
-    new Setting(el).setName(_t("Export / import language"))
+    new GSetting(el).setName(_t("Export / import language"))
       .addButton((b) => b.setButtonText(_t("Export English template")).onClick(() => p.exportLanguage(s.langPath, 'en')))
       .addButton((b) => b.setButtonText(_t("Export current language")).onClick(() => p.exportLanguage(s.langPath, 'current')))
       .addButton((b) => b.setButtonText(_t("Import")).setCta().onClick(async () => { await p.importLanguage(s.langPath); this.display(); }));
     if (s.customLangs.length) {
       let delName = s.customLangs[0].name;
-      new Setting(el).setName(_t("Manage imported languages"))
+      new GSetting(el).setName(_t("Manage imported languages"))
         .addDropdown((d) => { s.customLangs.forEach((l) => d.addOption(l.name, l.name)); d.setValue(delName); d.onChange((v) => (delName = v)); })
         .addButton((b) => b.setButtonText(_t("Remove")).setWarning().onClick(async () => { await p.removeLanguage(delName); this.display(); }));
     }
 
     heading(_t("Behavior"));
-    new Setting(el).setName(_t("File manager style")).setDesc(_t("Default: tree (expandable subfolders). Explorer: path bar on top, one level at a time, click a folder to enter it (focus zones are unaffected)"))
+    new GSetting(el).setName(_t("File manager style")).setDesc(_t("Default: tree (expandable subfolders). Explorer: path bar on top, one level at a time, click a folder to enter it (focus zones are unaffected)"))
       .addDropdown((d) => {
         d.addOption('tree', _t("Default (tree)")); d.addOption('explorer', _t("Explorer (level by level)"));
         d.setValue(s.treeStyle || 'tree');
         d.onChange(async (v) => { s.treeStyle = v; await save(); });
       });
-    new Setting(el).setName(_t("Sort order")).setDesc(_t("You can also switch with the sort button on the toolbar. For time-based sorting, a folder uses the time of the newest (modified) or oldest (created) file inside it"))
+    new GSetting(el).setName(_t("Sort order")).setDesc(_t("You can also switch with the sort button on the toolbar. For time-based sorting, a folder uses the time of the newest (modified) or oldest (created) file inside it"))
       .addDropdown((d) => {
         Object.keys(SORT_MODES).forEach((k) => d.addOption(k, _t(SORT_MODES[k])));
         d.setValue(s.sortMode || 'default');
         d.onChange(async (v) => { s.sortMode = v; await save(); });
       });
-    new Setting(el).setName(_t("Folder position")).setDesc(_t("Where folders go when sorting. \"Mixed by name\" sorts files and folders together; a folder whose name starts with a file's name (for example A-image and A.md) goes right before or after that file.")).addDropdown((d) => {
+    new GSetting(el).setName(_t("Folder position")).setDesc(_t("Where folders go when sorting. \"Mixed by name\" sorts files and folders together; a folder whose name starts with a file's name (for example A-image and A.md) goes right before or after that file.")).addDropdown((d) => {
       [['top', 'Folders at the top'], ['bottom', 'Folders at the bottom'], ['mixed-before', 'Mixed by name: folder before its file'], ['mixed-after', 'Mixed by name: folder after its file']].forEach(([k, label]) => d.addOption(k, _t(label)));
       d.setValue(s.sortFolderPos || (s.sortFoldersFirst === false ? 'mixed-after' : 'top'));
       d.onChange(async (v) => { s.sortFolderPos = v; await save(); });
     });
     toggle(_t("Exclude items from \"Expand all / Collapse all\""), _t("When enabled, folders matching the list below are not affected by Expand all or Collapse all and keep their current state"), () => s.expandExcludeOn, (v) => (s.expandExcludeOn = v));
-    new Setting(el).setName(_t("Exclusion list")).setDesc(_t("One per line. A name only (e.g. Attachments) = any folder with that name; a path (e.g. Projects/Archive) = the folder at that path. Wildcards * and ? are supported"))
+    new GSetting(el).setName(_t("Exclusion list")).setDesc(_t("One per line. A name only (e.g. Attachments) = any folder with that name; a path (e.g. Projects/Archive) = the folder at that path. Wildcards * and ? are supported"))
       .addTextArea((t2) => { t2.setPlaceholder('Attachments\nProjects/Archive\n*.assets').setValue(s.expandExclude || '').onChange(async (v) => { s.expandExclude = v; await p.saveSettings(); }); t2.inputEl.rows = 3; t2.inputEl.style.width = '100%'; });
-    new Setting(el).setName(_t("Top view-mode button style")).setDesc(_t("\"File manager / Focus zone / Both\": separate buttons, or one merged icon button that cycles"))
+    new GSetting(el).setName(_t("Top view-mode button style")).setDesc(_t("\"File manager / Focus zone / Both\": separate buttons, or one merged icon button that cycles"))
       .addDropdown((d) => {
         d.addOption('separate', _t("Separate buttons")); d.addOption('cycle', _t("Cycle button (merged)"));
         d.setValue(s.modeButtonStyle || 'separate');
         d.onChange(async (v) => { s.modeButtonStyle = v; await save(); });
       });
-    new Setting(el).setName(_t("Top button appearance")).setDesc(_t("Use icons like Obsidian's built-in file explorer (description shown on hover), icons with text, or plain text"))
+    new GSetting(el).setName(_t("Top button appearance")).setDesc(_t("Use icons like Obsidian's built-in file explorer (description shown on hover), icons with text, or plain text"))
       .addDropdown((d) => {
         d.addOption('text', _t("Text buttons")); d.addOption('icon', _t("Icon buttons (description as tooltip)")); d.addOption('icon-text', _t("Icon + text label"));
         d.setValue(s.toolbarStyle || 'text');
@@ -8020,7 +9534,7 @@ class FFMSettingTab extends PluginSettingTab {
     toggle(_t("Merge \"Collapse all / Expand all\" into one button"), _t("Like the built-in file explorer: the button reads \"Collapse all\" when something is expanded, otherwise \"Expand all\""), () => s.mergeExpandCollapse, (v) => (s.mergeExpandCollapse = v));
     toggle(_t("Clicking a folder does not expand/collapse"), _t("When enabled, only the arrow beside a folder expands or collapses it"), () => s.folderArrowOnly, (v) => (s.folderArrowOnly = v));
     toggle(_t("Single click does not open files"), _t("When enabled, a single click only selects; open files with the open icons below (or the right-click menu)"), () => s.openViaButton, (v) => (s.openViaButton = v));
-    new Setting(el).setName(_t("How files open")).setDesc(_t("Applies to single-click open, the right-click \"Open\" and the open icon"))
+    new GSetting(el).setName(_t("How files open")).setDesc(_t("Applies to single-click open, the right-click \"Open\" and the open icon"))
       .addDropdown((d) => {
         d.addOption('current', _t("Open in current tab")); d.addOption('tab', _t("Open in new tab"));
         d.setValue(s.openMode || 'current');
@@ -8030,14 +9544,14 @@ class FFMSettingTab extends PluginSettingTab {
     toggle(_t("Show \"open in new tab to the right\" icon"), _t("Show an \"open in new tab to the right\" icon beside each file (on by default). If \"How files open\" is set to new tab, only one icon is shown"), () => s.showTabButton !== false, (v) => (s.showTabButton = v));
     toggle(_t("Open icons follow the sidebar"), _t("The icons stay pinned to the right edge of the visible area, so long file names never push them out of the sidebar (on by default)"), () => s.openIconSticky !== false, (v) => (s.openIconSticky = v));
     [['open', _t("Open icon color"), _t("Open icon opacity")], ['tab', _t("\"Open in new tab\" icon color"), _t("\"Open in new tab\" icon opacity")]].forEach(([k, colorName, opacityName]) => {
-      new Setting(el).setName(colorName).setDesc(_t("Leave empty for the default color. Accepts color names, RGB or HEX"))
+      new GSetting(el).setName(colorName).setDesc(_t("Leave empty for the default color. Accepts color names, RGB or HEX"))
         .addText((t2) => t2.setPlaceholder(_t("Default color")).setValue(s[k + 'IconColor'] || '').onChange(async (v) => { s[k + 'IconColor'] = v.trim(); await save(); }))
         .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset")).onClick(async () => { s[k + 'IconColor'] = ''; await save(); this.display(); }));
-      new Setting(el).setName(opacityName).setDesc(_t("100% = opaque"))
+      new GSetting(el).setName(opacityName).setDesc(_t("100% = opaque"))
         .addSlider((sl) => sl.setLimits(10, 100, 5).setValue(Number(s[k + 'IconOpacity']) || 100).setDynamicTooltip().onChange(async (v) => { s[k + 'IconOpacity'] = v; await save(); }))
         .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset")).onClick(async () => { s[k + 'IconOpacity'] = 100; await save(); this.display(); }));
     });
-    new Setting(el).setName(_t("New tab position")).setDesc(_t("Used by the right-click \"Open in new tab to the right\" and the new-tab icon"))
+    new GSetting(el).setName(_t("New tab position")).setDesc(_t("Used by the right-click \"Open in new tab to the right\" and the new-tab icon"))
       .addDropdown((d) => {
         d.addOption('adjacent', _t("Next to the current tab (default)")); d.addOption('end', _t("At the end of the tabs"));
         d.setValue(s.newTabPosition || 'adjacent');
@@ -8045,47 +9559,73 @@ class FFMSettingTab extends PluginSettingTab {
       });
     toggle(_t("Show times on hover"), _t("Hover over a file or folder to see its last modified and created times (also available via right-click \"Properties\")"), () => s.hoverInfo !== false, (v) => (s.hoverInfo = v));
     toggle(_t("Dim other levels while dragging when cross-level move is off"), _t("While dragging, items not on the same level are dimmed"), () => s.dimOtherLevels !== false, (v) => (s.dimOtherLevels = v));
-    new Setting(el).setName(_t("Dim level")).setDesc(_t("The value is the visibility (%) of other-level items; lower is dimmer"))
+    new GSetting(el).setName(_t("Dim level")).setDesc(_t("The value is the visibility (%) of other-level items; lower is dimmer"))
       .addSlider((sl) => sl.setLimits(5, 90, 5).setValue(Number(s.dimOpacity) || 35).setDynamicTooltip().onChange(async (v) => { s.dimOpacity = v; await save(); }));
-    new Setting(el).setName(_t("Double-click interval (ms)")).setDesc(_t("Two clicks closer than this count as a double-click (rename). When the previous option is off, opening a file by single click is delayed by this long"))
+    new GSetting(el).setName(_t("Double-click interval (ms)")).setDesc(_t("Two clicks closer than this count as a double-click (rename). When the previous option is off, opening a file by single click is delayed by this long"))
       .addText((t) => t.setValue(String(s.doubleClickMs || 300)).onChange(async (v) => { s.doubleClickMs = Math.max(100, Number(v) || 300); await p.saveSettings(); }));
-    new Setting(el).setName(_t("Folder scope when dragging into a focus zone"))
+    new GSetting(el).setName(_t("Folder scope when dragging into a focus zone"))
       .addDropdown((d) => {
         d.addOption('all', _t("Include all sublevels")); d.addOption('level', _t("Current level files only"));
         d.setValue(s.dragAddMode || 'all');
         d.onChange(async (v) => { s.dragAddMode = v; await p.saveSettings(); });
       });
     toggle(_t("Highlight new items"), _t("After creating a note, folder, etc. from the menu, the new item's background is briefly highlighted (on by default)"), () => s.highlightNew !== false, (v) => (s.highlightNew = v));
-    new Setting(el).setName(_t("Highlight color")).setDesc(_t("Leave empty to use the theme's accent color. Accepts color names, RGB or HEX"))
+    new GSetting(el).setName(_t("Highlight color")).setDesc(_t("Leave empty to use the theme's accent color. Accepts color names, RGB or HEX"))
       .addText((t2) => t2.setPlaceholder(_t("Follow theme")).setValue(s.highlightColor || '').onChange(async (v) => { s.highlightColor = v.trim(); await save(); }))
       .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset (follow theme)")).onClick(async () => { s.highlightColor = ''; await save(); this.display(); }));
     toggle(_t("Locate new items"), _t("Automatically expands parent folders and scrolls to the new item (on by default)"), () => s.locateNew !== false, (v) => (s.locateNew = v));
     toggle(_t("Open in the left sidebar when the plugin is enabled"), _t("When you enable this plugin manually inside Obsidian, Focus File Manager opens in the left sidebar automatically (on by default)"), () => s.openOnEnable !== false, (v) => (s.openOnEnable = v));
-    new Setting(el).setName(_t("Maximum for batch create")).setDesc(_t("The most items one batch create can make. Default 10, maximum 50"))
+    new GSetting(el).setName(_t("Maximum for batch create")).setDesc(_t("The most items one batch create can make. Default 10, maximum 50"))
       .addSlider((sl) => sl.setLimits(1, 50, 1).setValue(Math.max(1, Math.min(50, Number(s.batchCreateMax) || 10))).setDynamicTooltip().onChange(async (v) => { s.batchCreateMax = v; await p.saveSettings(); }));
+    new GSetting(el).setName(_t("When pasting")).setDesc(_t("In manual sort mode, pasting while a file is selected can place the pasted items below or above that file"))
+      .addDropdown((d) => {
+        d.addOption('below', _t("Paste below the file")); d.addOption('above', _t("Paste above the file")); d.addOption('ask', _t("Ask when pasting"));
+        d.setValue(s.pastePlace || 'ask'); d.onChange(async (v) => { s.pastePlace = v; await save(); });
+      }).settingEl.addClass('ffm-key-pastePlace');
+    new GSetting(el).setName(_t("When creating here")).setDesc(_t("In manual sort mode, creating from a file's right-click menu can place the new item below or above that file"))
+      .addDropdown((d) => {
+        d.addOption('below', _t("Create below the file")); d.addOption('above', _t("Create above the file")); d.addOption('ask', _t("Ask when creating"));
+        d.setValue(s.createPlace || 'ask'); d.onChange(async (v) => { s.createPlace = v; await save(); });
+      }).settingEl.addClass('ffm-key-createPlace');
+    new GSetting(el).setName(_t("Movable dialogs")).setDesc(_t("Large dialogs such as batch rename and batch YAML edit open as floating windows: drag the title to move them, and you can keep reading and working in your notes behind them"))
+      .addToggle((tg) => tg.setValue(s.floatingDialogs !== false).onChange(async (v) => { s.floatingDialogs = v; await save(); }));
+    new GSetting(el).setName(_t("When closing a tab")).setDesc(_t("Which tab becomes active after the current tab is closed")).addDropdown((d) => {
+      [['last', "Back to the last used tab (the leftmost one if there is none)"], ['left', "The tab on the left"], ['right', "The tab on the right (the left one if there is none)"], ['default', "Obsidian's default"]].forEach(([k, l]) => d.addOption(k, _t(l)));
+      d.setValue(s.closeTabTo || 'last'); d.onChange(async (v) => { s.closeTabTo = v; await save(); });
+    });
+    new GSetting(el).setName(_t("Show items added by other plugins")).setDesc(_t("Like Obsidian's own file explorer, the right-click menu also lists the items other plugins add to file menus (for example Excalidraw, Templater, Git). They appear after the built-in items"))
+      .addToggle((tg) => tg.setValue(s.includeOtherPluginItems !== false).onChange(async (v) => { s.includeOtherPluginItems = v; await save(); }));
+    new GSetting(el).setName(_t("Chinese numerals in name sorting")).setDesc(_t("Sort names with Chinese numerals by their value, for example 第二章 before 第十章, and 一, 二, 十, 十一, 一百零一, 壹貳參 in numeric order"))
+      .addToggle((tg) => tg.setValue(s.sortChineseNumerals !== false).onChange(async (v) => { s.sortChineseNumerals = v; await save(); p.refreshAll(); }));
+    new GSetting(el).setName(_t("Key to open the right-click menu")).setDesc(_t("Opens the right-click menu of the selected items in the file manager, tag manager and property manager. Write it like Alt+M or Ctrl+Shift+K; leave it empty to turn it off. Hotkeys that move the focus between the note and the file manager are set in Obsidian's Hotkeys settings (search for \"Focus\")"))
+      .addText((tx) => tx.setPlaceholder('Alt+M').setValue(s.contextMenuKey || '').onChange(async (v) => { s.contextMenuKey = v.trim(); await save(); }));
+    new GSetting(el).setName(_t("Update a last-modified property")).setDesc(_t("When you edit a note, the property below is set to the current time, a few seconds after you stop typing. Only the note you are editing is touched"))
+      .addToggle((tg) => tg.setValue(!!s.lastModEnabled).onChange(async (v) => { s.lastModEnabled = v; await save(); }));
+    new GSetting(el).setName(_t("Last-modified property name")).addText((tx) => tx.setPlaceholder('updated').setValue(s.lastModKey || 'updated').onChange(async (v) => { s.lastModKey = v.trim() || 'updated'; await save(); }));
+    new GSetting(el).setName(_t("Last-modified time format")).setDesc(_t("Moment.js format, for example YYYY-MM-DD HH:mm:ss")).addText((tx) => tx.setPlaceholder('YYYY-MM-DD HH:mm:ss').setValue(s.lastModFormat || 'YYYY-MM-DD HH:mm:ss').onChange(async (v) => { s.lastModFormat = v.trim() || 'YYYY-MM-DD HH:mm:ss'; await save(); }));
     toggle(_t("Show excluded files"), _t("Hidden by default. You can also toggle it with the eye button on the toolbar"), () => !!s.showExcluded, (v) => (s.showExcluded = v));
-    new Setting(el).setName(_t("Exclusion list (hidden files / folders)")).setDesc(_t("One per line. Starting with / or containing / means a path (e.g. /Projects/Archive); otherwise it is a name (any item with that name). Wildcards * and ? work. \"Hide\" in the right-click menu writes here automatically"))
+    new GSetting(el).setName(_t("Exclusion list (hidden files / folders)")).setDesc(_t("One per line. Starting with / or containing / means a path (e.g. /Projects/Archive); otherwise it is a name (any item with that name). Wildcards * and ? work. \"Hide\" in the right-click menu writes here automatically"))
       .addTextArea((t2) => { t2.setPlaceholder('/Projects/Archive\n*.tmp').setValue(s.hiddenList || '').onChange(async (v) => { s.hiddenList = v; await save(); }); t2.inputEl.rows = 3; t2.inputEl.style.width = '100%'; });
     toggle(_t("Tags in notes: single click edits, double click searches"), _t("When on (default), a single click on a tag (#tag) in a note does not jump to Obsidian's search so you can edit it directly; a double click searches for the tag"), () => s.tagClickEdit !== false, (v) => (s.tagClickEdit = v));
     toggle(_t("Locate the file when clicking the file name under the tab bar"), _t("A single click on the file name locates and highlights the file in this plugin; a double click starts renaming (on by default)"), () => s.headerTitleLocate !== false, (v) => (s.headerTitleLocate = v));
     toggle(_t("Prefer this plugin when clicking the path under the tab bar"), _t("When you click a folder name in the path above a note's title, this plugin locates and shows that folder (on by default)"), () => s.headerPathPrefer !== false, (v) => (s.headerPathPrefer = v));
 
     heading(_t("Daily note templates"));
-    new Setting(el).setName(_t("Daily note template paths")).setDesc(_t("One path per line; each can be a template file or a folder (every .md inside a folder is listed as a template). Supports {{date}}, {{date:FORMAT}}, {{time}} and {{title}}"))
+    new GSetting(el).setName(_t("Daily note template paths")).setDesc(_t("One path per line; each can be a template file or a folder (every .md inside a folder is listed as a template). Supports {{date}}, {{date:FORMAT}}, {{time}} and {{title}}"))
       .addTextArea((t2) => { t2.setPlaceholder('Templates/Daily.md\nTemplates/Journal').setValue(s.dailyTemplates || '').onChange(async (v) => { s.dailyTemplates = v; await p.saveSettings(); }); t2.inputEl.rows = 3; t2.inputEl.style.width = '100%'; });
-    new Setting(el).setName(_t("Daily note file name format")).setDesc(_t("Uses moment.js format tokens; default YYYY-MM-DD"))
+    new GSetting(el).setName(_t("Daily note file name format")).setDesc(_t("Uses moment.js format tokens; default YYYY-MM-DD"))
       .addText((t2) => t2.setPlaceholder('YYYY-MM-DD').setValue(s.dailyNameFormat || 'YYYY-MM-DD').onChange(async (v) => { s.dailyNameFormat = v.trim() || 'YYYY-MM-DD'; await p.saveSettings(); }));
 
     heading(_t("Displayed info"));
     toggle(_t("Folders: show file count"), '', () => s.show.folderFileCount, (v) => (s.show.folderFileCount = v));
     toggle(_t("Folders: show subfolder count"), '', () => s.show.folderSubCount, (v) => (s.show.folderSubCount = v));
     toggle(_t("Counts include all sublevels (recursive)"), _t("When off, only the current level is counted"), () => s.countRecursive, (v) => (s.countRecursive = v));
-    new Setting(el).setName(_t("Extensions counted as files")).setDesc(_t("Comma-separated, e.g. md,png,pdf; use * for all"))
+    new GSetting(el).setName(_t("Extensions counted as files")).setDesc(_t("Comma-separated, e.g. md,png,pdf; use * for all"))
       .addText((t) => t.setValue(s.countExtensions).onChange(async (v) => { s.countExtensions = v; await save(); }));
     toggle(_t("Files: show extension"), '', () => s.show.extension, (v) => (s.show.extension = v));
     toggle(_t("Files: show created time"), '', () => s.show.ctime, (v) => (s.show.ctime = v));
     toggle(_t("Files: show size"), '', () => s.show.size, (v) => (s.show.size = v));
-    new Setting(el).setName(_t("File info position")).setDesc(_t("Where the extension, created time, size and folder counts are placed"))
+    new GSetting(el).setName(_t("File info position")).setDesc(_t("Where the extension, created time, size and folder counts are placed"))
       .addDropdown((d) => {
         d.addOption('inline', _t("All after the file name"));
         d.addOption('below', _t("All below the file name (.md date size)"));
@@ -8093,20 +9633,20 @@ class FFMSettingTab extends PluginSettingTab {
         d.setValue(s.metaLayout || 'inline');
         d.onChange(async (v) => { s.metaLayout = v; await save(); });
       });
-    new Setting(el).setName(_t("Size format")).setDesc(_t("Default: automatic unit (B / KB / MB…). Custom: choose the unit, decimals and base"))
+    new GSetting(el).setName(_t("Size format")).setDesc(_t("Default: automatic unit (B / KB / MB…). Custom: choose the unit, decimals and base"))
       .addDropdown((d) => {
         d.addOption('default', _t("Default")); d.addOption('custom', _t("Custom"));
         d.setValue(s.sizeMode || 'default');
         d.onChange(async (v) => { s.sizeMode = v; await save(); this.display(); });
       });
     if (s.sizeMode === 'custom') {
-      new Setting(el).setName(_t("Unit")).addDropdown((d) => {
+      new GSetting(el).setName(_t("Unit")).addDropdown((d) => {
         ['auto', 'B', 'KB', 'MB', 'GB'].forEach((u) => d.addOption(u, u === 'auto' ? _t("Auto") : u));
         d.setValue(s.sizeUnit || 'auto');
         d.onChange(async (v) => { s.sizeUnit = v; await save(); });
       });
-      new Setting(el).setName(_t("Decimal places")).addText((t) => t.setValue(String(s.sizeDecimals ?? 1)).onChange(async (v) => { s.sizeDecimals = Math.max(0, Math.min(6, Number(v) || 0)); await save(); }));
-      new Setting(el).setName(_t("Base")).addDropdown((d) => {
+      new GSetting(el).setName(_t("Decimal places")).addText((t) => t.setValue(String(s.sizeDecimals ?? 1)).onChange(async (v) => { s.sizeDecimals = Math.max(0, Math.min(6, Number(v) || 0)); await save(); }));
+      new GSetting(el).setName(_t("Base")).addDropdown((d) => {
         d.addOption('1024', _t("1024 (KiB style)")); d.addOption('1000', _t("1000 (SI style)"));
         d.setValue(String(s.sizeBase || 1024));
         d.onChange(async (v) => { s.sizeBase = Number(v); await save(); });
@@ -8117,19 +9657,19 @@ class FFMSettingTab extends PluginSettingTab {
     toggle(_t("Wrap full names to the sidebar width"), _t("On (default): names wrap to the available width. Off: names stay on one line and can be scrolled sideways. Only applies when the two options above are on"), () => s.fullNameWrap !== false, (v) => (s.fullNameWrap = v));
 
     heading(_t("Appearance & theme compatibility"));
-    new Setting(el).setDesc(_t("The list uses Obsidian's native style classes and the data-path attribute, so themes and CSS snippets usually apply directly. You can replace the symbols below; icons accept Lucide icon names, icon IDs registered by other plugins, or emoji/text. Set per-item icons and colors via right-click \"Appearance\"."));
+    new GSetting(el).setDesc(_t("The list uses Obsidian's native style classes and the data-path attribute, so themes and CSS snippets usually apply directly. You can replace the symbols below; icons accept Lucide icon names, icon IDs registered by other plugins, or emoji/text. Set per-item icons and colors via right-click \"Appearance\"."));
     toggle(_t("Use Obsidian's native style classes"), _t("Compatible with themes and CSS snippets; turn off if the layout looks wrong"), () => s.nativeClasses !== false, (v) => (s.nativeClasses = v));
     toggle(_t("Show indent guides"), _t("Show a line to the left of child items when a folder is expanded (on by default)"), () => s.indentGuides !== false, (v) => (s.indentGuides = v));
-    new Setting(el).setName(_t("Indent guide color")).setDesc(_t("Leave empty to follow the theme. Accepts color names, RGB or HEX"))
+    new GSetting(el).setName(_t("Indent guide color")).setDesc(_t("Leave empty to follow the theme. Accepts color names, RGB or HEX"))
       .addText((t) => t.setPlaceholder(_t("Follow theme")).setValue(s.guideColor || '').onChange(async (v) => { s.guideColor = v.trim(); await save(); }))
       .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset (follow theme)")).onClick(async () => { s.guideColor = ''; await save(); this.display(); }));
-    new Setting(el).setName(_t("Indent guide opacity")).setDesc(_t("100% = opaque"))
+    new GSetting(el).setName(_t("Indent guide opacity")).setDesc(_t("100% = opaque"))
       .addSlider((sl) => sl.setLimits(5, 100, 5).setValue(Number(s.guideOpacity) || 100).setDynamicTooltip().onChange(async (v) => { s.guideOpacity = v; await save(); }))
       .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset")).onClick(async () => { s.guideOpacity = 100; await save(); this.display(); }));
-    new Setting(el).setName(_t("Indent guide thickness (px)"))
+    new GSetting(el).setName(_t("Indent guide thickness (px)"))
       .addSlider((sl) => sl.setLimits(1, 6, 1).setValue(Number(s.guideWidth) || 1).setDynamicTooltip().onChange(async (v) => { s.guideWidth = v; await save(); }))
       .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset")).onClick(async () => { s.guideWidth = 1; await save(); this.display(); }));
-    new Setting(el).setName(_t("Indent guide style template")).setDesc(_t("Choosing a template overwrites the line style, color, opacity, thickness, indent distance and advanced CSS below"))
+    new GSetting(el).setName(_t("Indent guide style template")).setDesc(_t("Choosing a template overwrites the line style, color, opacity, thickness, indent distance and advanced CSS below"))
       .addDropdown((d) => {
         d.addOption('', _t("(Choose a template…)"));
         GUIDE_TEMPLATES.forEach((x, i) => d.addOption('b' + i, _t("Template: {0}", _t(x.name)) + (x.description ? ' (' + _t(x.description) + ')' : '')));
@@ -8141,71 +9681,69 @@ class FFMSettingTab extends PluginSettingTab {
           if (st) { await p.applyGuideStyle(normalizeGuideStyle(st)); this.display(); }
         });
       });
-    new Setting(el).setName(_t("Indent guide line style"))
+    new GSetting(el).setName(_t("Indent guide line style"))
       .addDropdown((d) => {
         GUIDE_LINES.forEach((k) => d.addOption(k, _t(GUIDE_LINE_NAMES[k])));
         d.setValue(GUIDE_LINES.includes(s.guideLine) ? s.guideLine : 'solid');
         d.onChange(async (v) => { s.guideLine = v; await save(); });
       });
-    new Setting(el).setName(_t("Indent distance (px)")).setDesc(_t("How far each level of children is indented to the right"))
+    new GSetting(el).setName(_t("Indent distance (px)")).setDesc(_t("How far each level of children is indented to the right"))
       .addSlider((sl) => sl.setLimits(0, 40, 1).setValue(s.guideOffset === undefined ? 12 : Number(s.guideOffset) || 0).setDynamicTooltip().onChange(async (v) => { s.guideOffset = v; await save(); }))
       .addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset")).onClick(async () => { s.guideOffset = 12; await save(); this.display(); }));
-    new Setting(el).setName(_t("Advanced: custom CSS declarations")).setDesc(_t("Only property declarations are accepted (e.g. box-shadow: …;). Use var(--ffm-guide-final) to get the final color after color and opacity are applied. For safety, url(), @-rules and braces are not allowed"))
+    new GSetting(el).setName(_t("Advanced: custom CSS declarations")).setDesc(_t("Only property declarations are accepted (e.g. box-shadow: …;). Use var(--ffm-guide-final) to get the final color after color and opacity are applied. For safety, url(), @-rules and braces are not allowed"))
       .addTextArea((t) => { t.setValue(s.guideCss || '').onChange(async (v) => { s.guideCss = v; await save(); }); t.inputEl.rows = 3; t.inputEl.style.width = '100%'; });
-    new Setting(el).setName(_t("Style name")).setDesc(_t("Written to the file on export; after import it also appears in the template list under this name"))
+    new GSetting(el).setName(_t("Style name")).setDesc(_t("Written to the file on export; after import it also appears in the template list under this name"))
       .addText((t) => t.setValue(s.guideStyleName || '').onChange(async (v) => { s.guideStyleName = v; await p.saveSettings(); }));
-    new Setting(el).setName(_t("Export / import path")).setDesc(_t("Relative path = a file in the vault; on desktop you can also enter a full path (e.g. D:\\\\styles\\\\guide.json). Folders are created automatically on export"))
+    new GSetting(el).setName(_t("Export / import path")).setDesc(_t("Relative path = a file in the vault; on desktop you can also enter a full path (e.g. D:\\\\styles\\\\guide.json). Folders are created automatically on export"))
       .addText((t) => t.setPlaceholder('Focus File Manager/guide-style.json').setValue(s.guideStylePath || '').onChange(async (v) => { s.guideStylePath = v.trim(); await p.saveSettings(); }));
-    new Setting(el).setName(_t("Export / import")).setDesc(_t("\"Export template reference\" writes guide-style-templates.json to the same folder, containing all built-in templates, as a reference for custom styles"))
+    new GSetting(el).setName(_t("Export / import")).setDesc(_t("\"Export template reference\" writes guide-style-templates.json to the same folder, containing all built-in templates, as a reference for custom styles"))
       .addButton((b) => b.setButtonText(_t("Export current style")).onClick(() => p.exportGuideStyle(s.guideStylePath)))
       .addButton((b) => b.setButtonText(_t("Export template reference")).onClick(() => p.exportGuideTemplates(s.guideStylePath)))
       .addButton((b) => b.setButtonText(_t("Import")).setCta().onClick(async () => { await p.importGuideStyle(s.guideStylePath); this.display(); }));
     if (s.guideStyles.length) {
       let delIdx = 0;
-      new Setting(el).setName(_t("Manage imported styles"))
+      new GSetting(el).setName(_t("Manage imported styles"))
         .addDropdown((d) => { s.guideStyles.forEach((x, i) => d.addOption(String(i), x.name)); d.setValue('0'); d.onChange((v) => (delIdx = Number(v))); })
         .addButton((b) => b.setButtonText(_t("Delete")).setWarning().onClick(async () => { s.guideStyles.splice(delIdx, 1); await p.saveSettings(); this.display(); }));
     }
-    new Setting(el).setName(_t("Display text size")).setDesc(_t("Default: follow Obsidian. Custom: set the list text size (px)"))
+    new GSetting(el).setName(_t("Display text size")).setDesc(_t("Default: follow Obsidian. Custom: set the list text size (px)"))
       .addDropdown((d) => {
         d.addOption('follow', _t("Follow Obsidian (default)")); d.addOption('custom', _t("Custom"));
         d.setValue(s.fontMode || 'follow');
         d.onChange(async (v) => { s.fontMode = v; await save(); this.display(); });
       });
     if (s.fontMode === 'custom') {
-      new Setting(el).setName(_t("Text size (px)"))
+      new GSetting(el).setName(_t("Text size (px)"))
         .addSlider((sl) => sl.setLimits(9, 24, 1).setValue(Number(s.fontSize) || 13).setDynamicTooltip().onChange(async (v) => { s.fontSize = v; await save(); }));
     }
-    iconInput(new Setting(el).setName(_t("Pin icon")).setDesc(_t("Shown beside pinned items")), () => s.pinIcon || 'pin', (v) => { s.pinIcon = v || 'pin'; });
+    iconInput(new GSetting(el).setName(_t("Pin icon")).setDesc(_t("Shown beside pinned items")), () => s.pinIcon || 'pin', (v) => { s.pinIcon = v || 'pin'; });
     toggle(_t("Show bookmark marks"), _t("Synced with Obsidian bookmarks; bookmarked items get a mark beside them"), () => s.showBookmarkMark !== false, (v) => (s.showBookmarkMark = v));
-    iconInput(new Setting(el).setName(_t("Bookmark icon")), () => s.bookmarkIcon || 'bookmark', (v) => { s.bookmarkIcon = v || 'bookmark'; });
-    new Setting(el).setName(_t("Other file types for right-click \"New\"")).setDesc(_t("Base and Canvas are built in; Excalidraw also appears if the plugin is enabled. Other types: one per line in the format Name|extension|initial content (\\n = line break)"))
-      .addTextArea((t) => { t.setValue(s.newFileTypes).onChange(async (v) => { s.newFileTypes = v; await save(); }); t.inputEl.rows = 3; });
+    iconInput(new GSetting(el).setName(_t("Bookmark icon")), () => s.bookmarkIcon || 'bookmark', (v) => { s.bookmarkIcon = v || 'bookmark'; });
     toggle(_t("Show icons beside folders"), _t("On by default"), () => s.showFolderIcon, (v) => (s.showFolderIcon = v));
     toggle(_t("Show icons beside files"), _t("On by default"), () => s.showFileIcon, (v) => (s.showFileIcon = v));
-    new Setting(el).setName(_t("Icon source")).setDesc(_t("Some themes (e.g. Rathgar Gold) draw their own folder and file icons. Auto: use the theme's icons when detected to avoid duplicates; you can also force the theme's or the plugin's icons"))
+    new GSetting(el).setName(_t("Icon source")).setDesc(_t("Some themes (e.g. Rathgar Gold) draw their own folder and file icons. Auto: use the theme's icons when detected to avoid duplicates; you can also force the theme's or the plugin's icons"))
       .addDropdown((d) => {
         d.addOption('auto', _t("Auto (detect theme)")); d.addOption('theme', _t("Use theme icons")); d.addOption('plugin', _t("Use plugin icons (customizable below)"));
         d.setValue(s.iconSource || 'auto');
         d.onChange(async (v) => { s.iconSource = v; await save(); });
       });
-    new Setting(el).setName(_t("Expand / collapse arrow")).setDesc(_t("Auto: if the theme hides the expand arrow, it is hidden too (you can still click the folder row to expand); always shown when \"Clicking a folder does not expand/collapse\" is on"))
+    new GSetting(el).setName(_t("Expand / collapse arrow")).setDesc(_t("Auto: if the theme hides the expand arrow, it is hidden too (you can still click the folder row to expand); always shown when \"Clicking a folder does not expand/collapse\" is on"))
       .addDropdown((d) => {
         d.addOption('auto', _t("Auto (follow theme)")); d.addOption('show', _t("Always show")); d.addOption('hide', _t("Always hide"));
         d.setValue(s.arrowMode || 'auto');
         d.onChange(async (v) => { s.arrowMode = v; await save(); });
       });
     [['collapsed', _t("Collapsed arrow")], ['expanded', _t("Expanded arrow")], ['folder', _t("Folder icon")], ['folderOpen', _t("Folder icon (expanded)")], ['file', _t("File icon")]].forEach(([k, name]) => {
-      iconInput(new Setting(el).setName(name), () => s.icons[k], (v) => { s.icons[k] = v; });
+      iconInput(new GSetting(el).setName(name), () => s.icons[k], (v) => { s.icons[k] = v; });
     });
-    new Setting(el).setName(_t("File icons by extension")).setDesc(_t("One per line, format: extension=icon. E.g. md=file-text, png=image, pdf=📕"))
+    new GSetting(el).setName(_t("File icons by extension")).setDesc(_t("One per line, format: extension=icon. E.g. md=file-text, png=image, pdf=📕"))
       .addTextArea((t) => { t.setValue(s.extIcons).onChange(async (v) => { s.extIcons = v; await save(); }); t.inputEl.rows = 4; });
-    new Setting(el).addButton((b) => b.setButtonText(_t("Restore default icons")).onClick(async () => {
+    new GSetting(el).addButton((b) => b.setButtonText(_t("Restore default icons")).onClick(async () => {
       s.icons = clone(DEFAULT_SETTINGS.icons); await save(); this.display();
     }));
 
     heading(_t("Hotkeys"));
-    new Setting(el).setName(_t("View-mode hotkeys")).setDesc(_t("All empty by default. You can assign hotkeys to the four commands \"Show file manager only\", \"Show focus zone only\", \"Show both\" and \"Cycle view\"."))
+    new GSetting(el).setName(_t("View-mode hotkeys")).setDesc(_t("All empty by default. You can assign hotkeys to the four commands \"Show file manager only\", \"Show focus zone only\", \"Show both\" and \"Cycle view\"."))
       .addButton((b) => b.setButtonText(_t("Open hotkey settings")).onClick(() => {
         try {
           const st = this.app.setting;
@@ -8217,7 +9755,7 @@ class FFMSettingTab extends PluginSettingTab {
 
     heading(_t("Open-file markers"));
     const markSetting = (name, desc, mark, def) => {
-      const st = new Setting(el).setName(name).setDesc(desc);
+      const st = new GSetting(el).setName(name).setDesc(desc);
       st.settingEl.addClass('ffm-wide-setting');
       let tText, tColor, preview;
       const upd = () => { p.setAnyIcon(preview, mark.text); preview.style.color = parseColor(mark.color, p.aliasMap); };
@@ -8232,11 +9770,11 @@ class FFMSettingTab extends PluginSettingTab {
     };
     markSetting(_t("Currently displayed file"), _t("A file whose tab is in the foreground and visible on screen (default: dot). The first box takes a symbol, Lucide icon name or emoji (pick an icon with the button on the right); the second takes a color (red, 255,0,0 and #FF0000 all work)"), s.viewingMark, DEFAULT_SETTINGS.viewingMark);
     markSetting(_t("Open file (background tab)"), _t("A file that is open but whose tab is in the background (not currently shown) (default: square)"), s.backgroundMark, DEFAULT_SETTINGS.backgroundMark);
-    new Setting(el).setName(_t("Custom color names")).setDesc(_t("One per line, format: name=color. E.g. \"vermilion=#ff4500\" or \"crimson=red\""))
+    new GSetting(el).setName(_t("Custom color names")).setDesc(_t("One per line, format: name=color. E.g. \"vermilion=#ff4500\" or \"crimson=red\""))
       .addTextArea((t) => { t.setValue(s.colorAliases).onChange(async (v) => { s.colorAliases = v; await save(); }); t.inputEl.rows = 4; });
 
     heading(_t("Right-click menu"));
-    new Setting(el).setDesc(_t("Reorder the items in the file and folder right-click menu, or turn off the ones you don't need (all on by default). The separator lines are listed too: move or remove them, or add your own"));
+    new GSetting(el).setDesc(_t("Reorder the items of the file and folder right-click menu, turn off the ones you don't need (all on by default), and group them into submenus. Items added by other plugins are listed too, so this list always matches the real menu. Separator lines are items as well: move or remove them, or add your own"));
     const menuList = p.menuRegistry(null, {});
     let menuOrder = p.menuOrderList(menuList.map((x) => x.id));
     // 把目前選單裡自動產生的分組分隔線，轉成可以移動／移除的項目（只轉換一次）
@@ -8256,66 +9794,121 @@ class FFMSettingTab extends PluginSettingTab {
     }
     const menuHidden = new Set(s.menuHidden);
     const menuIcons = s.menuIcons || (s.menuIcons = {});
-    const iconOf = (id) => menuIcons[id] || MENU_ICONS[id] || 'circle';
-    const moveMenu = (a, b) => async () => { const arr = [...menuOrder]; [arr[a], arr[b]] = [arr[b], arr[a]]; s.menuOrder = arr; await p.saveSettings(); this.display(); };
-    menuOrder.forEach((id, idx) => {
-      const isSep = String(id).startsWith('sep:');
-      const en = isSep ? null : menuList.find((x) => x.id === id);
-      if (!isSep && !en) return;
-      const row = new Setting(el).setName(isSep ? '' : en.label);
-      if (isSep) {
-        row.settingEl.addClass('ffm-menu-sep-row');
-        row.nameEl.setText('───── ' + _t("Separator") + ' ─────');
-        row.addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Remove separator")).onClick(async () => { s.menuOrder = menuOrder.filter((x, k) => k !== idx); await p.saveSettings(); this.display(); }));
-      } else {
-        const ico = row.nameEl.createSpan({ cls: 'ffm-menu-ico' });
-        setIcon(ico, iconOf(id));
-        row.nameEl.prepend(ico);
-        row.addToggle((tg) => tg.setValue(!menuHidden.has(id)).onChange(async (v) => {
-          s.menuHidden = v ? s.menuHidden.filter((x) => x !== id) : s.menuHidden.includes(id) ? s.menuHidden : [...s.menuHidden, id];
-          await p.saveSettings();
-        }));
-        row.addExtraButton((b) => b.setIcon('image-plus').setTooltip(_t("Change icon")).onClick(() => new IconPickerModal(p.app, p, iconOf(id), async (v) => { menuIcons[id] = v; await p.saveSettings(); this.display(); }).open()));
-        if (menuIcons[id]) row.addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset icon")).onClick(async () => { delete menuIcons[id]; await p.saveSettings(); this.display(); }));
-        row.addExtraButton((b) => b.setIcon('separator-horizontal').setTooltip(_t("Insert a separator below")).onClick(async () => { const arr = [...menuOrder]; arr.splice(idx + 1, 0, 'sep:' + uid()); s.menuOrder = arr; await p.saveSettings(); this.display(); }));
-      }
-      row.addExtraButton((b) => { b.setIcon('arrow-up').setTooltip(_t("Move up")).onClick(moveMenu(idx, idx - 1)); b.setDisabled(idx === 0); });
-      row.addExtraButton((b) => { b.setIcon('arrow-down').setTooltip(_t("Move down")).onClick(moveMenu(idx, idx + 1)); b.setDisabled(idx === menuOrder.length - 1); });
-    });
-    new Setting(el).addButton((b) => b.setButtonText(_t("Add separator")).onClick(async () => { s.menuOrder = [...menuOrder, 'sep:' + uid()]; await p.saveSettings(); this.display(); }));
-    new Setting(el).addButton((b) => b.setButtonText(_t("Restore default order and switches")).onClick(async () => { s.menuOrder = []; s.menuHidden = []; s.menuIcons = {}; s.menuSepExplicit = false; await p.saveSettings(); this.display(); }));
+    if (!s.menuFolders) s.menuFolders = [];
+    if (!s.menuAssign) s.menuAssign = {};
+    if (!s.menuExtSeen) s.menuExtSeen = {};
+    const freshExt = Object.keys(s.menuExtSeen).filter((k) => !menuOrder.includes(k));
+    if (freshExt.length) { menuOrder = [...freshExt, 'sep:' + uid(), ...menuOrder]; s.menuOrder = menuOrder; p.saveSettings(); }
+    const folderById = (id) => s.menuFolders.find((f) => f.id === id);
+    const parentOf = (id) => { const f = s.menuAssign[id]; return f && folderById(f) ? f : null; };
+    const siblings = (pid) => menuOrder.filter((id) => parentOf(id) === pid && (!id.startsWith('fol:') || folderById(id.slice(4))));
+    const iconOf = (id) => menuIcons[id] || (id.startsWith('fol:') ? (folderById(id.slice(4)) || {}).icon || 'folder' : id.startsWith('ext:') ? (s.menuExtSeen[id] || {}).icon || 'puzzle' : MENU_ICONS[id]) || (String(id).startsWith('custom:') ? 'file-plus' : 'circle');
+    const commit = async () => { s.menuOrder = menuOrder; await p.saveSettings(); this.display(); };
+    const setSiblingOrder = (pid, newSibs) => {
+      const pos = siblings(pid).map((id) => menuOrder.indexOf(id)).sort((x, y) => x - y);
+      const arr = [...menuOrder];
+      newSibs.forEach((id, k) => { arr[pos[k]] = id; });
+      menuOrder = arr;
+    };
+    const moveSib = (id, dir) => async () => {
+      const pid = parentOf(id), sibs = siblings(pid), k = sibs.indexOf(id), j = k + dir;
+      if (j < 0 || j >= sibs.length) return;
+      [sibs[k], sibs[j]] = [sibs[j], sibs[k]];
+      setSiblingOrder(pid, sibs); await commit();
+    };
+    const jumpSep = (id, dir) => async () => {
+      const pid = parentOf(id), sibs = siblings(pid), at = sibs.indexOf(id), arr = sibs.filter((x) => x !== id);
+      let ins;
+      if (dir < 0) { let k = at - 1; if (k >= 0 && arr[k].startsWith('sep:')) k--; while (k >= 0 && !arr[k].startsWith('sep:')) k--; ins = k + 1; }
+      else { let k = at; while (k < arr.length && !arr[k].startsWith('sep:')) k++; ins = k < arr.length ? k + 1 : arr.length; }
+      arr.splice(ins, 0, id);
+      setSiblingOrder(pid, arr); await commit();
+    };
+    const posOf = (b) => { const r = b && b.extraSettingsEl && b.extraSettingsEl.getBoundingClientRect ? b.extraSettingsEl.getBoundingClientRect() : { left: 0, bottom: 0 }; return { x: r.left, y: r.bottom }; };
+    const moveInto = (id) => (b) => {
+      const m = new Menu(), banned = new Set();
+      if (id.startsWith('fol:')) { const collect = (fid) => { banned.add(fid); menuOrder.forEach((x) => { if (x.startsWith('fol:') && s.menuAssign[x] === fid) collect(x.slice(4)); }); }; collect(id.slice(4)); }
+      m.addItem((i) => i.setTitle(_t("(top level)")).setChecked(!parentOf(id)).onClick(async () => { delete s.menuAssign[id]; await commit(); }));
+      s.menuFolders.filter((f) => !banned.has(f.id)).forEach((f) => m.addItem((i) => i.setTitle(f.name).setIcon('folder').setChecked(parentOf(id) === f.id).onClick(async () => { s.menuAssign[id] = f.id; await commit(); })));
+      m.showAtPosition(posOf(b));
+    };
+    const removeEntry = async (id) => { menuOrder = menuOrder.filter((x) => x !== id); delete s.menuAssign[id]; await commit(); };
+    new GSetting(el).setName(_t("Submenus and items of other plugins")).setDesc(_t("Group items into submenus that open when you hover them (like the Windows right-click menu). Items that other plugins add are found when you right-click; the button looks for them now using the open note and its folder"))
+      .addButton((b) => b.setButtonText(_t("Add submenu")).setCta().onClick(() => new TextPromptModal(p.app, _t("Submenu name"), _t("New submenu"), async (name) => {
+        const id = uid();
+        s.menuFolders.push({ id, name: name || _t("New submenu"), enabled: true, icon: '' });
+        menuOrder = [...menuOrder, 'fol:' + id];
+        await commit();
+      }).open()))
+      .addButton((b) => b.setButtonText(_t("Scan items of other plugins")).onClick(async () => { const n = p.scanExternalMenuItems(); new Notice(_t("Found {0} items from other plugins", n)); await p.saveSettings(); this.display(); }));
+    const renderRows = (pid, depth) => {
+      siblings(pid).forEach((id) => {
+        const isSep = id.startsWith('sep:'), isFol = id.startsWith('fol:'), isExt = id.startsWith('ext:');
+        const fol = isFol ? folderById(id.slice(4)) : null;
+        const en = !isSep && !isFol && !isExt ? menuList.find((x) => x.id === id) : null;
+        const meta = isExt ? s.menuExtSeen[id] || { title: id.slice(4) } : null;
+        if (!isSep && !isFol && !isExt && !en) return;
+        const row = new GSetting(el).setName(isSep || isFol ? '' : isExt ? meta.title : en.label);
+        if (depth) row.settingEl.style.marginLeft = depth * 22 + 'px';
+        if (isSep) {
+          row.settingEl.addClass('ffm-menu-sep-row');
+          row.nameEl.setText('───── ' + _t("Separator") + ' ─────');
+          row.addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Remove separator")).onClick(() => removeEntry(id)));
+        } else {
+          const ico = row.nameEl.createSpan({ cls: 'ffm-menu-ico' });
+          setIconG(ico, iconOf(id));
+          row.nameEl.prepend(ico);
+          if (isExt) row.setDesc(meta.owner === 'core' ? _t("Built into Obsidian") : meta.owner && meta.owner !== '?' ? _t("Added by another plugin: {0}", meta.owner) : _t("Added by another plugin"));
+          if (isFol) {
+            row.settingEl.addClass('ffm-menu-folder-row');
+            row.addText((tx) => tx.setPlaceholder(_t("Submenu name")).setValue(fol.name).onChange(async (v) => { fol.name = v || _t("New submenu"); await p.saveSettings(); }));
+            row.addToggle((tg) => { tg.setValue(fol.enabled !== false).onChange(async (v) => { fol.enabled = v; await p.saveSettings(); }); if (tg.setTooltip) tg.setTooltip(_t("Enabled (when off, the items inside go back to the main menu)")); });
+          } else {
+            row.addToggle((tg) => tg.setValue(!menuHidden.has(id)).onChange(async (v) => {
+              s.menuHidden = v ? s.menuHidden.filter((x) => x !== id) : s.menuHidden.includes(id) ? s.menuHidden : [...s.menuHidden, id];
+              await p.saveSettings();
+            }));
+          }
+          row.addExtraButton((b) => b.setIcon('image-plus').setTooltip(_t("Change icon")).onClick(() => new IconPickerModal(p.app, p, iconOf(id), async (v) => { menuIcons[id] = v; if (fol) fol.icon = v; await p.saveSettings(); this.display(); }).open()));
+          if (menuIcons[id]) row.addExtraButton((b) => b.setIcon('rotate-ccw').setTooltip(_t("Reset icon")).onClick(async () => { delete menuIcons[id]; if (fol) fol.icon = ''; await p.saveSettings(); this.display(); }));
+          if (s.menuFolders.length || parentOf(id)) row.addExtraButton((b) => b.setIcon('folder-input').setTooltip(_t("Move into a submenu…")).onClick(() => moveInto(id)(b)));
+          if (isFol) {
+            row.addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Delete this submenu (its items return to the menu)")).onClick(async () => {
+              const up = parentOf(id);
+              Object.keys(s.menuAssign).forEach((k) => { if (s.menuAssign[k] === fol.id) { if (up) s.menuAssign[k] = up; else delete s.menuAssign[k]; } });
+              s.menuFolders = s.menuFolders.filter((f) => f.id !== fol.id);
+              delete menuIcons[id];
+              await removeEntry(id);
+            }));
+          } else {
+            row.addExtraButton((b) => b.setIcon('chevrons-up').setTooltip(_t("Move below the separator above")).onClick(jumpSep(id, -1)));
+            row.addExtraButton((b) => b.setIcon('chevrons-down').setTooltip(_t("Move below the separator below")).onClick(jumpSep(id, 1)));
+            row.addExtraButton((b) => b.setIcon('separator-horizontal').setTooltip(_t("Insert a separator below")).onClick(async () => {
+              const nid = 'sep:' + uid(), at = menuOrder.indexOf(id), arr = [...menuOrder];
+              arr.splice(at + 1, 0, nid);
+              if (parentOf(id)) s.menuAssign[nid] = parentOf(id);
+              menuOrder = arr; await commit();
+            }));
+          }
+        }
+        row.addExtraButton((b) => { b.setIcon('arrow-up').setTooltip(_t("Move up")).onClick(moveSib(id, -1)); b.setDisabled(siblings(pid)[0] === id); });
+        row.addExtraButton((b) => { b.setIcon('arrow-down').setTooltip(_t("Move down")).onClick(moveSib(id, 1)); b.setDisabled(siblings(pid).slice(-1)[0] === id); });
+        if (isFol && depth < 6) renderRows(fol.id, depth + 1);
+      });
+    };
+    renderRows(null, 0);
+    new GSetting(el).addButton((b) => b.setButtonText(_t("Add separator")).onClick(async () => { menuOrder = [...menuOrder, 'sep:' + uid()]; await commit(); }));
+    new GSetting(el).addButton((b) => b.setButtonText(_t("Restore default order and switches")).onClick(async () => { s.menuOrder = []; s.menuHidden = []; s.menuIcons = {}; s.menuFolders = []; s.menuAssign = {}; s.menuSepExplicit = false; await p.saveSettings(); this.display(); }));
 
-    heading(_t("Batch rename presets"));
-    s.renamePresets.forEach((pr, idx) => {
+    heading(_t("Batch rename templates"));
+    new GSetting(el).setDesc(_t("Templates are saved from the batch rename dialog with \"Save as template\". Rename, duplicate or delete them here"));
+    s.renameTemplates.forEach((tpl, idx) => {
       const card = el.createDiv({ cls: 'ffm-preset-card' });
-      new Setting(card).setName(_t("Preset name")).addText((t) => t.setValue(_t(pr.name)).onChange(async (v) => { pr.name = v || _t("Untitled"); await p.saveSettings(); }))
-        .addDropdown((d) => {
-          d.addOption('pattern', _t("Name pattern / numbering")); d.addOption('replace', _t("Replace characters")); d.addOption('list', _t("List replace")); d.setValue(pr.type);
-          d.onChange(async (v) => { pr.type = v; await p.saveSettings(); this.display(); });
-        })
-        .addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Delete this preset")).onClick(async () => {
-          if (s.renamePresets.length <= 1) { new Notice(_t("Keep at least one preset")); return; }
-          s.renamePresets.splice(idx, 1); await p.saveSettings(); this.display();
-        }));
-      const text = (name, desc, key, num) => new Setting(card).setName(name).setDesc(desc || '')
-        .addText((t) => t.setValue(String(pr[key])).onChange(async (v) => { pr[key] = num ? Number(v) || 0 : v; await p.saveSettings(); }));
-      const tog = (name, key) => new Setting(card).setName(name)
-        .addToggle((t) => t.setValue(!!pr[key]).onChange(async (v) => { pr[key] = v; await p.saveSettings(); }));
-      if (pr.type === 'pattern') {
-        text(_t("Name pattern"), _t("{n} number, {name} original name, {ext} extension, {i} order"), 'pattern');
-        text(_t("Start number"), '', 'start', true); text(_t("Step"), '', 'step', true); text(_t("Zero-padding digits"), '', 'pad', true);
-      } else if (pr.type === 'list') {
-        new Setting(card).setName(_t("Name list")).setDesc(_t("One name per line, applied to the files in order"))
-          .addTextArea((t2) => { t2.setValue(pr.names || '').onChange(async (v) => { pr.names = v; await p.saveSettings(); }); t2.inputEl.rows = 4; t2.inputEl.style.width = '100%'; });
-      } else {
-        text(_t("Find"), '', 'find'); text(_t("Replace with"), '', 'replace');
-        tog(_t("Use regular expression"), 'regex'); tog(_t("Case sensitive"), 'caseSensitive');
-      }
+      new GSetting(card).setName(_t("Template name")).addText((t2) => t2.setValue(_t(tpl.name)).onChange(async (v) => { tpl.name = v || _t("Untitled"); await p.saveSettings(); }))
+        .addExtraButton((b) => b.setIcon('copy').setTooltip(_t("Duplicate this template")).onClick(async () => { s.renameTemplates.splice(idx + 1, 0, { id: uid(), name: _t(tpl.name) + ' 2', steps: clone(tpl.steps) }); await p.saveSettings(); this.display(); }))
+        .addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Delete this template")).onClick(async () => { s.renameTemplates.splice(idx, 1); await p.saveSettings(); this.display(); }));
+      card.createEl('div', { cls: 'setting-item-description', text: tpl.steps.map((st) => stepSummary(st)).join('  →  ') || _t("(no steps)") });
     });
-    new Setting(el).addButton((b) => b.setButtonText(_t("Add preset")).onClick(async () => {
-      s.renamePresets.push({ id: uid(), name: _t("New preset"), type: 'pattern', pattern: '{n} {name}', start: 1, step: 1, pad: 2, find: '', replace: '', regex: false, caseSensitive: true });
-      await p.saveSettings(); this.display();
-    }));
 
     // ---- 搜尋：依名稱與說明過濾；標題符合時顯示整個區段
     const hasCls = (c, n) => (c.classList ? c.classList.contains(n) : !!(c.classes && c.classes.has(n)));
@@ -8337,24 +9930,32 @@ class FFMSettingTab extends PluginSettingTab {
     const renderToc = (q) => {
       toc.empty();
       toc.style.display = '';
-      const heads = [...el.children].filter((c) => c !== searchWrap && c !== noMatch && hasCls(c, 'setting-item-heading'));
       let shown = 0;
-      heads.forEach((h) => {
-        const label = rawTextOf(h);
-        if (!label || (q && !label.toLowerCase().includes(q))) return;
+      SETTING_HEADS.forEach(([key, cat]) => {
+        const label = _t(key);
+        if (q && !label.toLowerCase().includes(q)) return;
         shown++;
-        h.style.scrollMarginTop = '64px';
         const item = toc.createDiv({ cls: 'ffm-settings-toc-item', text: label });
         item.addEventListener('mousedown', (ev) => ev.preventDefault());
         item.addEventListener('click', () => {
-          search.value = ''; this.query = ''; applyFilter();
-          if (h.scrollIntoView) h.scrollIntoView({ block: 'start' });
+          search.value = ''; this.query = ''; this.searchAll = false; this._jumpHead = key;
+          this.cat = cat; p.settings.settingsCat = cat;
+          this.display();
         });
       });
       if (!shown) toc.createDiv({ cls: 'ffm-empty', text: _t("No matching sections") });
     };
     const applyFilter = () => {
       const raw = search.value.trim();
+      // 開始搜尋時要建立全部類別（才搜尋得到）；清空搜尋後再回到單一類別
+      const wantAll = !!raw && !(raw.startsWith('#') || raw.startsWith('＃'));
+      if (wantAll !== !!this.searchAll) {
+        this.searchAll = wantAll; this.query = search.value;
+        this.display();
+        const ns = this.containerEl.querySelector('.ffm-settings-search');
+        if (ns && ns.focus) { ns.focus(); if (ns.setSelectionRange) ns.setSelectionRange(ns.value.length, ns.value.length); }
+        return;
+      }
       if (raw.startsWith('#') || raw.startsWith('＃')) {
         renderToc(raw.slice(1).trim().toLowerCase());
         for (const c of [...el.children]) { if (c !== searchWrap && c !== noMatch) c.style.display = ''; }
@@ -8383,6 +9984,8 @@ class FFMSettingTab extends PluginSettingTab {
     };
     search.addEventListener('input', () => { this.query = search.value; applyFilter(); });
     applyFilter();
+    jumpToHeading(this);
+    SETTING_SKIP = false;
     if (scroller && keepTop) {
       scroller.scrollTop = keepTop;
       if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => { scroller.scrollTop = keepTop; });
@@ -8391,8 +9994,785 @@ class FFMSettingTab extends PluginSettingTab {
   hide() {
     this.shown = false;
     this.query = '';
+    this.searchAll = false;
     if (super.hide) super.hide();
   }
 }
+
+(function wrapSettingsCats() {
+  const disp = FFMSettingTab.prototype.display;
+  FFMSettingTab.prototype.display = function () { try { disp.call(this); } finally { SETTING_SKIP = false; } };
+})();
+
+/* ------------------------------ Vim 風格按鍵（檔案管理／標籤管理／屬性管理面板） ------------------------------ */
+function DEFAULT_VIM_KEYMAP() {
+  return [
+    ['j', 'down'], ['k', 'up'], ['h', 'left'], ['l', 'right'], ['<Down>', 'down'], ['<Up>', 'up'], ['<Left>', 'left'], ['<Right>', 'right'],
+    ['gg', 'top'], ['G', 'bottom'], ['<C-d>', 'pageDown'], ['<C-u>', 'pageUp'],
+    ['<CR>', 'open'], ['t', 'openTab'], ['s', 'openSplit'],
+    ['zo', 'expand'], ['zc', 'collapse'], ['zR', 'expandAll'], ['zM', 'collapseAll'],
+    ['v', 'visual'], ['V', 'selectAll'], ['<Space>', 'toggleSelect'], ['<Esc>', 'clear'],
+    ['yy', 'copy'], ['dd', 'cut'], ['p', 'paste'], ['P', 'pasteAbove'],
+    ['D', 'delete'], ['r', 'rename'], ['a', 'newNote'], ['A', 'newFolder'], ['J', 'moveDown'], ['K', 'moveUp'],
+    ['yp', 'copyPath'], ['yn', 'copyName'], ['m', 'merge'], ['L', 'lock'], ['/', 'search'], ['?', 'help'],
+    ['<C-w>w', 'focusEditor'], ['.', 'contextMenu'],
+  ].map(([keys, action]) => ({ keys, action }));
+}
+const VIM_ACTIONS = [
+  ['down', "Cursor down"], ['up', "Cursor up"], ['left', "Collapse folder / go to the parent"], ['right', "Expand folder / open"],
+  ['top', "Go to the first item (or item N)"], ['bottom', "Go to the last item (or item N)"], ['pageDown', "Half page down"], ['pageUp', "Half page up"],
+  ['open', "Open"], ['openTab', "Open in new tab"], ['openSplit', "Open to the right"],
+  ['expand', "Expand"], ['collapse', "Collapse"], ['expandAll', "Expand all"], ['collapseAll', "Collapse all"],
+  ['visual', "Visual mode (extend the selection)"], ['selectAll', "Select all"], ['toggleSelect', "Toggle selection of the current item"], ['clear', "Clear selection / cancel"],
+  ['copy', "Copy"], ['cut', "Cut (delete in the tag and property managers)"], ['paste', "Paste"], ['pasteAbove', "Paste above"], ['delete', "Delete"], ['rename', "Rename"],
+  ['newNote', "Create note here"], ['newFolder', "Create folder here"], ['moveDown', "Move item down (manual order)"], ['moveUp', "Move item up (manual order)"],
+  ['copyPath', "Copy path"], ['copyName', "Copy names"], ['copyHash', "Copy tag names with #"], ['merge', "Merge tags…"], ['lock', "Lock / unlock"], ['search', "Search"], ['help', "Show the key help"], ['focusEditor', "Focus the note editor"], ['contextMenu', "Open the right-click menu"],
+];
+const vimActionLabel = (id) => { const x = VIM_ACTIONS.find((a) => a[0] === id); return x ? _t(x[1]) : id; };
+function vimNormTok(t) {
+  const inner = t.slice(1, -1), low = inner.toLowerCase();
+  const names = { esc: 'Esc', cr: 'CR', enter: 'CR', return: 'CR', space: 'Space', bs: 'BS', tab: 'Tab', up: 'Up', down: 'Down', left: 'Left', right: 'Right', del: 'Del' };
+  if (low === 'lt') return '<';
+  if (names[low]) return '<' + names[low] + '>';
+  const m = /^([cas])-(.+)$/i.exec(inner);
+  if (m) return '<' + m[1].toUpperCase() + '-' + (m[2].length === 1 ? m[2].toLowerCase() : names[m[2].toLowerCase()] ? names[m[2].toLowerCase()] : m[2]) + '>';
+  return t;
+}
+function vimParseKeys(str) {
+  const out = [], s = String(str === undefined || str === null ? '' : str);
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === '<') { const j = s.indexOf('>', i); if (j > i + 1) { out.push(vimNormTok(s.slice(i, j + 1))); i = j; continue; } }
+    out.push(s[i]);
+  }
+  return out;
+}
+function vimToken(e) {
+  const k = e.key;
+  if (!k || ['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Dead', 'Process'].includes(k)) return null;
+  const special = { Escape: 'Esc', Enter: 'CR', ' ': 'Space', Backspace: 'BS', Tab: 'Tab', ArrowUp: 'Up', ArrowDown: 'Down', ArrowLeft: 'Left', ArrowRight: 'Right', Delete: 'Del' };
+  if (e.ctrlKey || e.metaKey) return k.length === 1 ? '<C-' + k.toLowerCase() + '>' : special[k] ? '<C-' + special[k] + '>' : null;
+  if (e.altKey) return k.length === 1 ? '<A-' + k.toLowerCase() + '>' : null;
+  if (special[k]) return '<' + special[k] + '>';
+  return k.length === 1 ? k : null;
+}
+// .obsidian.vimrc（Vimrc Support 等外掛用的檔案）：只讀取「按鍵 → 按鍵」的對應
+function parseVimrc(text) {
+  let leader = '\\';
+  const maps = [], unmaps = [];
+  const expand = (s) => s.replace(/<leader>/gi, leader === ' ' ? '<Space>' : leader);
+  String(text || '').split(/\r?\n/).forEach((raw) => {
+    const line = raw.trim();
+    if (!line || line[0] === '"') return;
+    let m = /^let\s+mapleader\s*=\s*(.+)$/i.exec(line);
+    if (m) { const v = m[1].trim().replace(/^["']|["']$/g, ''); leader = /^(\\?<space>| )$/i.test(v) ? ' ' : v; return; }
+    m = /^(nmap|nnoremap|map|noremap|nunmap|unmap)\s+(\S+)(?:\s+(.+))?$/i.exec(line);
+    if (!m) return;
+    const cmd = m[1].toLowerCase(), lhs = vimParseKeys(expand(m[2]));
+    if (!lhs.length) return;
+    if (cmd === 'nunmap' || cmd === 'unmap') { unmaps.push(lhs); return; }
+    const rhsRaw = (m[3] || '').trim();
+    if (!rhsRaw || rhsRaw.includes(':') || /<plug>/i.test(rhsRaw)) return;
+    maps.push({ lhs, rhs: vimParseKeys(expand(rhsRaw)), noremap: cmd.includes('nore') });
+  });
+  return { maps, unmaps };
+}
+class VimEngine {
+  constructor(entries, run, timeout) { this.entries = entries; this.run = run; this.timeout = timeout || 1000; this.buf = []; this.count = ''; this.timer = null; this.depth = 0; }
+  reset() { this.buf = []; this.count = ''; if (this.timer) { clearTimeout(this.timer); this.timer = null; } }
+  pending() { return this.buf.length > 0 || !!this.count; }
+  starts(tokens, buf) { return buf.length <= tokens.length && buf.every((t, i) => tokens[i] === t); }
+  feed(tok, noremap) {
+    if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    if (tok === '<Esc>' && this.pending()) { this.reset(); return true; }
+    if (!this.buf.length && (/^[1-9]$/.test(tok) || (this.count && tok === '0'))) { this.count += tok; return true; }
+    this.buf.push(tok);
+    const cands = this.entries.filter((m) => this.starts(m.tokens, this.buf) && !(noremap && m.rhs));
+    if (!cands.length) { const consumed = this.buf.length > 1 || !!this.count; this.reset(); return consumed; }
+    const exact = cands.filter((m) => m.tokens.length === this.buf.length);
+    const longer = cands.some((m) => m.tokens.length > this.buf.length);
+    const pick = exact.find((m) => m.rhs) || exact[0];
+    if (pick && !longer) { this.exec(pick); return true; }
+    this.timer = setTimeout(() => { this.timer = null; if (pick) this.exec(pick); else this.reset(); }, this.timeout);
+    return true;
+  }
+  exec(m) {
+    const count = this.count ? parseInt(this.count, 10) : 0;
+    this.buf = []; this.count = '';
+    if (m.rhs) {
+      if (this.depth > 10) return;
+      this.depth++;
+      if (count) this.count = String(count);
+      m.rhs.forEach((t) => this.feed(t, m.noremap));
+      this.depth--;
+      return;
+    }
+    this.run(m.action, count || 1, !!count);
+  }
+}
+class VimHelpModal extends Modal {
+  constructor(app, plugin) { super(app); this.plugin = plugin; }
+  onOpen() {
+    const p = this.plugin, el = this.contentEl;
+    this.modalEl.addClass('ffm-yaml-modal');
+    this.titleEl.setText(_t("Vim-style keys"));
+    el.createEl('p', { cls: 'setting-item-description', text: _t("A number before a command repeats it (5j), and keys such as gg or dd are typed one after another. Customize them in the plugin settings.") });
+    const table = el.createEl('table', { cls: 'ffm-vim-help' });
+    (p.settings.vimKeymap || []).forEach((r) => {
+      const tr = table.createEl('tr');
+      tr.createEl('td', { cls: 'ffm-vim-key', text: r.keys });
+      tr.createEl('td', { text: vimActionLabel(r.action) });
+    });
+    const rc = p._vimrc && p._vimrc.maps ? p._vimrc.maps : [];
+    if (rc.length) {
+      el.createDiv({ cls: 'ffm-yaml-chip-label', text: _t("From the vimrc file") });
+      const t2 = el.createEl('table', { cls: 'ffm-vim-help' });
+      rc.forEach((m) => { const tr = t2.createEl('tr'); tr.createEl('td', { cls: 'ffm-vim-key', text: m.lhs.join('') }); tr.createEl('td', { text: '→ ' + m.rhs.join('') }); });
+    }
+  }
+  onClose() { this.contentEl.empty(); }
+}
+
+/* ---- 外掛：啟用條件、對應表、執行動作 ---- */
+Object.assign(FocusFileManagerPlugin.prototype, {
+  vimEnabled() {
+    const m = this.settings.vimMode;
+    if (m === 'on') return true;
+    if (m === 'off') return false;
+    try { return !!(this.app.vault.getConfig && this.app.vault.getConfig('vimMode')); } catch (e) { return false; }
+  },
+  vimBump() { this._vimVer = (this._vimVer || 0) + 1; },
+  async loadVimrc() {
+    this._vimrc = { maps: [], unmaps: [] };
+    const s = this.settings;
+    if (s.vimrcEnabled && s.vimrcPath) {
+      try {
+        if (await this.app.vault.adapter.exists(s.vimrcPath)) this._vimrc = parseVimrc(await this.app.vault.adapter.read(s.vimrcPath));
+      } catch (e) { console.error(e); }
+    }
+    this.vimBump();
+  },
+  vimEntries() {
+    if (this._vimEntriesVer === this._vimVer && this._vimEntries) return this._vimEntries;
+    const out = [];
+    (this.settings.vimKeymap || []).forEach((r) => { const tokens = vimParseKeys(r.keys); if (tokens.length && r.action) out.push({ tokens, action: r.action }); });
+    const rc = this._vimrc || { maps: [], unmaps: [] };
+    const same = (a, b) => a.length === b.length && a.every((t, i) => t === b[i]);
+    let list = out.filter((m) => !rc.unmaps.some((u) => same(u, m.tokens)));
+    rc.maps.forEach((m) => list.push({ tokens: m.lhs, rhs: m.rhs, noremap: m.noremap }));
+    this._vimEntries = list; this._vimEntriesVer = this._vimVer;
+    return list;
+  },
+  vimHandle(owner, e) {
+    if (!this.vimEnabled() || e.defaultPrevented) return false;
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return false;
+    const tok = vimToken(e);
+    if (!tok) return false;
+    if (!owner._vim || owner._vimVer !== this._vimVer) {
+      if (owner._vim) owner._vim.reset();
+      owner._vim = new VimEngine(this.vimEntries(), (a, c, h) => this.vimRun(owner, a, c, h), this.settings.vimTimeout);
+      owner._vimVer = this._vimVer;
+    }
+    const used = owner._vim.feed(tok);
+    if (used) { e.preventDefault(); e.stopPropagation(); }
+    return used;
+  },
+  vimRows(owner) { return owner.rows || []; },
+  vimSel(owner) { return owner.selection || owner.sel; },
+  vimSetSel(owner, set) {
+    if (owner.selection) { owner.selection = set; owner.updateSelection(); } else { owner.sel = set; owner.updateSel(); }
+  },
+  vimIndex(owner) {
+    const rows = this.vimRows(owner);
+    let i = owner.vimPath ? rows.findIndex((r) => r.path === owner.vimPath) : -1;
+    if (i < 0) { const first = [...this.vimSel(owner)][0]; i = first ? rows.findIndex((r) => r.path === first) : -1; }
+    return i < 0 ? 0 : i;
+  },
+  vimGo(owner, idx) {
+    const rows = this.vimRows(owner);
+    if (!rows.length) return;
+    idx = Math.max(0, Math.min(rows.length - 1, idx));
+    owner.vimPath = rows[idx].path;
+    const sel = new Set(owner.vimMarks || []);
+    if (owner.vimVisual) {
+      const a = rows.findIndex((r) => r.path === owner.vimVisual);
+      const [lo, hi] = a < 0 ? [idx, idx] : [Math.min(a, idx), Math.max(a, idx)];
+      rows.slice(lo, hi + 1).forEach((r) => sel.add(r.path));
+    } else sel.add(rows[idx].path);
+    this.vimSetSel(owner, sel);
+    const root = owner.el || owner.bodyEl;
+    const rowEl = root && root.querySelectorAll ? [...root.querySelectorAll('.ffm-row, .ffm-panel-row')].find((x) => (x.dataset.path || x.dataset.key) === rows[idx].path) : null;
+    if (rowEl && rowEl.scrollIntoView) rowEl.scrollIntoView({ block: 'nearest' });
+  },
+  // 要處理的項目：有框選（多個）就用框選；否則從游標開始取 count 個
+  vimTargets(owner, count) {
+    const rows = this.vimRows(owner), sel = this.vimSel(owner);
+    if (sel.size > 1) return rows.filter((r) => sel.has(r.path));
+    const i = this.vimIndex(owner);
+    return rows.slice(i, i + Math.max(1, count));
+  },
+  vimRun(owner, action, count, hasCount) {
+    const isPane = !!owner.selection;
+    const rows = this.vimRows(owner);
+    const cur = this.vimIndex(owner);
+    // 還沒有游標時，第一次移動先停在第一項
+    const none = !owner.vimPath && this.vimSel(owner).size === 0;
+    switch (action) {
+      case 'down': this.vimGo(owner, none ? count - 1 : cur + count); return;
+      case 'up': this.vimGo(owner, none ? 0 : cur - count); return;
+      case 'top': this.vimGo(owner, hasCount ? count - 1 : 0); return;
+      case 'bottom': this.vimGo(owner, hasCount ? count - 1 : rows.length - 1); return;
+      case 'pageDown': this.vimGo(owner, cur + 10 * count); return;
+      case 'pageUp': this.vimGo(owner, cur - 10 * count); return;
+      case 'visual': owner.vimVisual = owner.vimVisual ? null : (rows[cur] ? rows[cur].path : null); if (owner.vimVisual) this.vimSetSel(owner, new Set([owner.vimVisual])); return;
+      case 'selectAll': this.vimSetSel(owner, new Set(rows.filter((r) => r.type !== 'folder' || !isPane).map((r) => r.path))); return;
+      case 'toggleSelect': { const p = rows[cur] && rows[cur].path; if (!p) return; const m = owner.vimMarks || (owner.vimMarks = new Set()); if (m.has(p)) m.delete(p); else m.add(p); this.vimGo(owner, cur); return; }
+      case 'clear': owner.vimVisual = null; owner.vimMarks = new Set(); if (owner.selectMode && owner.exitSelectMode) owner.exitSelectMode(); this.vimSetSel(owner, new Set()); return;
+      case 'help': new VimHelpModal(this.app, this).open(); return;
+      case 'focusEditor': this.focusEditor(); return;
+      case 'contextMenu': this.vimContextMenu(owner); return;
+      default: break;
+    }
+    if (isPane) this.vimPane(owner, action, count, cur); else this.vimPanel(owner, action, count, cur);
+  },
+  vimPane(pane, action, count, cur) {
+    const rows = pane.rows, f = rows[cur];
+    const files = () => { const t = this.vimTargets(pane, count); return t.filter(Boolean); };
+    const folderOpen = (x) => x instanceof TFolder && pane.isExpanded(x.path);
+    switch (action) {
+      case 'left':
+        if (pane.isExplorer()) { this.navUp(); return; }
+        if (f && folderOpen(f)) { pane.toggleExpanded(f.path); pane.render(); return; }
+        if (f && f.parent) { const pi = rows.findIndex((r) => r.path === f.parent.path); if (pi >= 0) this.vimGo(pane, pi); }
+        return;
+      case 'right': case 'open':
+        if (!f) return;
+        if (f instanceof TFolder) {
+          if (pane.isExplorer()) { this.navigate(f.path); return; }
+          if (!pane.isExpanded(f.path)) { pane.toggleExpanded(f.path); pane.render(); } else if (action === 'right') this.vimGo(pane, cur + 1);
+          else { pane.toggleExpanded(f.path); pane.render(); }
+        } else this.openFile(f);
+        return;
+      case 'expand': if (f instanceof TFolder && !pane.isExpanded(f.path)) { pane.toggleExpanded(f.path); pane.render(); } return;
+      case 'collapse': if (f instanceof TFolder && pane.isExpanded(f.path)) { pane.toggleExpanded(f.path); pane.render(); } return;
+      case 'expandAll': pane.expandAll(); return;
+      case 'collapseAll': pane.collapseAll(); return;
+      case 'openTab': files().forEach((x) => { if (x instanceof TFile) this.openFile(x, 'tab'); }); return;
+      case 'openSplit': files().forEach((x) => { if (x instanceof TFile) this.openFile(x, 'split'); }); return;
+      case 'copy': case 'cut': { const t = files(); this.vimSetSel(pane, new Set(t.map((x) => x.path))); this.copySelection(pane, action === 'cut'); return; }
+      case 'paste': this.pasteSmart(pane, this.settings.sortMode === 'manual' ? 'below' : undefined); return;
+      case 'pasteAbove': this.pasteSmart(pane, this.settings.sortMode === 'manual' ? 'above' : undefined); return;
+      case 'rename': if (f) pane.startRenameByPath(f.path); return;
+      case 'delete': { const t = files(); if (t.length) this.deleteFiles(t); return; }
+      case 'newNote': this.vimCreate(pane, 'note'); return;
+      case 'newFolder': this.vimCreate(pane, 'folder'); return;
+      case 'moveUp': case 'moveDown': { const t = files(); if (t.length) this.moveItems(pane, t, action === 'moveUp' ? -1 : 1); return; }
+      case 'copyPath': { const t = files(); if (t.length) this.copyPaths(t, false); return; }
+      case 'copyName': { const t = files(); if (t.length) this.copyNames(t); return; }
+      default: return;
+    }
+  },
+  async vimCreate(pane, kind) {
+    const f = pane.getSelectedFiles()[0], root = this.app.vault.getRoot();
+    if (!f) { this.promptCreate(pane.cfg.isZone ? root : this.treeBaseFolder(), kind); return; }
+    if (f instanceof TFolder) { this.promptCreate(f, kind); return; }
+    const parent = f.parent || root;
+    if (this.settings.sortMode === 'manual' && !pane.cfg.isZone) {
+      const pos = await this.askPlace('create', f);
+      if (!pos) return;
+      this.promptCreate(parent, kind, { ref: f, pos });
+    } else this.promptCreate(parent, kind);
+  },
+  vimPanel(panel, action, count, cur) {
+    const rows = panel.rows, r = rows[cur];
+    const isTags = panel instanceof TagPanel;
+    const rowEl = () => [...panel.bodyEl.querySelectorAll('.ffm-panel-row')].find((x) => r && x.dataset.key === r.path) || panel.bodyEl;
+    const setOpen = (open) => {
+      if (!r) return;
+      const key = isTags ? 'tagExpanded' : 'propExpanded';
+      if (!(r.type === 'folder' || r.hasKids)) return;
+      if (!this.settings[key]) this.settings[key] = {};
+      this.settings[key][r.path] = open; this.saveSoon(); panel.renderBody();
+    };
+    switch (action) {
+      case 'expand': setOpen(true); return;
+      case 'collapse': setOpen(false); return;
+      case 'left': if (r && (r.type === 'folder' || r.hasKids) && r.open) setOpen(false); else if (r && r.path.includes('/') && isTags) { const pi = rows.findIndex((x) => x.path === r.path.slice(0, r.path.lastIndexOf('/'))); if (pi >= 0) this.vimGo(panel, pi); } return;
+      case 'right': case 'open':
+        if (!r) return;
+        if ((r.type === 'folder' || r.hasKids) && !r.open) setOpen(true);
+        else if (r.type === 'file' && r.file) this.openFile(r.file);
+        else if (isTags && r.type === 'tag' && r.count > 0) this.toggleTagFiles([r.path]);
+        else if (action === 'right') this.vimGo(panel, cur + 1);
+        return;
+      case 'expandAll': panel.expandNext = 'expand'; panel.toggleAll(); return;
+      case 'collapseAll': panel.expandNext = 'collapse'; panel.toggleAll(); return;
+      case 'search': panel.searchOn = true; panel.render(); { const inp = panel.host.querySelector('.ffm-panel-search-input'); if (inp && inp.focus) inp.focus(); } return;
+      default: break;
+    }
+    const picked = () => { const t = this.vimTargets(panel, count); const set = new Set(t.map((x) => x.path)); this.vimSetSel(panel, set); return t; };
+    if (isTags) {
+      switch (action) {
+        case 'copy': picked(); panel.copy(false); return;
+        case 'copyHash': picked(); panel.copy(true); return;
+        case 'copyName': picked(); panel.copy(false); return;
+        case 'rename': if (r && r.type !== 'file') panel.startRename(r, rowEl()); return;
+        case 'delete': case 'cut': { const tags = picked().filter((x) => x.type === 'tag').map((x) => x.path); if (tags.length) new DeleteTagsModal(this.app, this, tags).open(); return; }
+        case 'merge': { const tags = picked().filter((x) => x.type === 'tag').map((x) => x.path); if (tags.length) new MergeTagsModal(this.app, this, tags).open(); return; }
+        case 'lock': { const tags = picked().filter((x) => x.type === 'tag').map((x) => x.path); if (tags.length) this.toggleTagLock(tags); return; }
+        case 'moveUp': case 'moveDown': { const tags = picked().filter((x) => x.type === 'tag').map((x) => x.path); if (tags.length) this.tagMove(panel, tags, action === 'moveUp' ? -1 : 1); return; }
+        default: return;
+      }
+    } else {
+      switch (action) {
+        case 'copy': case 'copyName': picked(); panel.copy('name'); return;
+        case 'rename': { const props = picked().filter((x) => x.type === 'prop').map((x) => x.path); if (props.length) new RenamePropsModal(this.app, this, props).open(); return; }
+        case 'delete': case 'cut': { const props = picked().filter((x) => x.type === 'prop').map((x) => x.path); if (props.length) new ConfirmModal(this.app, _t("Delete these {0} properties? They will be removed from all notes.", props.length), () => this.deleteProps(props)).open(); return; }
+        case 'moveUp': case 'moveDown': { const props = picked().filter((x) => x.type === 'prop').map((x) => x.path); if (props.length) this.propMove(panel, props, action === 'moveUp' ? -1 : 1); return; }
+        default: return;
+      }
+    }
+  },
+});
+(function wireVim() {
+  [Pane, TagPanel, PropPanel].forEach((C) => {
+    const old = C.prototype.onKey;
+    C.prototype.onKey = function (e) {
+      const t = e.target;
+      const typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
+      if (!typing && this.plugin.settings.contextMenuKey && this.plugin.matchesChord(e, this.plugin.settings.contextMenuKey)) { e.preventDefault(); e.stopPropagation(); this.plugin.vimContextMenu(this); return; }
+      if (this.plugin.vimHandle(this, e)) return;
+      return old.call(this, e);
+    };
+  });
+})();
+
+/* ---- 設定頁：Vim 風格按鍵 ---- */
+function buildVimSettings(tab) {
+  const el = tab.containerEl, p = tab.plugin, s = p.settings;
+  const save = async () => { p.vimBump(); await p.saveSettings(); };
+  const redraw = () => tab.display();
+  { const hs = new Setting(el).setName(_t("Vim-style keys")).setHeading(); hs.settingEl.dataset.ffmHead = 'Vim-style keys'; }
+  let status = false;
+  try { status = !!(p.app.vault.getConfig && p.app.vault.getConfig('vimMode')); } catch (e) { /* ignore */ }
+  new Setting(el).setName(_t("Vim keys in the panels"))
+    .setDesc(_t("Keyboard navigation for the file manager, tag manager and property manager (j k h l, gg, G, dd, yy, p, 5j …). Obsidian's own Vim mode is currently {0}", status ? _t("on") : _t("off")))
+    .addDropdown((d) => {
+      d.addOption('follow', _t("Follow Obsidian's Vim setting")); d.addOption('on', _t("Always on")); d.addOption('off', _t("Off"));
+      d.setValue(s.vimMode || 'follow'); d.onChange(async (v) => { s.vimMode = v; await save(); });
+    });
+  new Setting(el).setName(_t("Multi-key timeout (ms)")).setDesc(_t("How long to wait for the next key of a sequence such as gg or dd"))
+    .addText((t2) => t2.setValue(String(s.vimTimeout || 1000)).onChange(async (v) => { const n = Math.max(200, Math.min(5000, Number(v) || 1000)); s.vimTimeout = n; await save(); }));
+  const rcInfo = () => { const n = p._vimrc && p._vimrc.maps ? p._vimrc.maps.length : 0; return _t("{0} mappings loaded", n); };
+  const rcRow = new Setting(el).setName(_t("Read mappings from a vimrc file"))
+    .setDesc(_t("Reads nmap / nnoremap / map / noremap / unmap lines (and let mapleader) from the file below, for example the .obsidian.vimrc used by Vimrc Support. Only key-to-key mappings are used"));
+  rcRow.addToggle((t2) => t2.setValue(!!s.vimrcEnabled).onChange(async (v) => { s.vimrcEnabled = v; await p.saveSettings(); await p.loadVimrc(); redraw(); }));
+  new Setting(el).setName(_t("vimrc file path")).setDesc(rcInfo())
+    .addText((t2) => t2.setPlaceholder('.obsidian.vimrc').setValue(s.vimrcPath || '.obsidian.vimrc').onChange(async (v) => { s.vimrcPath = v.trim() || '.obsidian.vimrc'; await p.saveSettings(); }))
+    .addButton((b) => b.setButtonText(_t("Reload")).onClick(async () => { await p.loadVimrc(); redraw(); }));
+  new Setting(el).setName(_t("Key mappings")).setDesc(_t("Keys can be single keys (j), sequences (gg, dd, zR) or special keys such as <CR>, <Esc>, <Space>, <C-d>"));
+  (s.vimKeymap || []).forEach((row, idx) => {
+    new Setting(el)
+      .addText((t2) => t2.setValue(row.keys).onChange(async (v) => { row.keys = v; await save(); }))
+      .addDropdown((d) => {
+        VIM_ACTIONS.forEach(([id, label]) => d.addOption(id, _t(label)));
+        d.setValue(row.action); d.onChange(async (v) => { row.action = v; await save(); });
+      })
+      .addExtraButton((b) => b.setIcon('trash').setTooltip(_t("Remove this mapping")).onClick(async () => { s.vimKeymap.splice(idx, 1); await save(); redraw(); }));
+  });
+  new Setting(el)
+    .addButton((b) => b.setButtonText(_t("Add mapping")).onClick(async () => { s.vimKeymap.push({ keys: '', action: 'down' }); await save(); redraw(); }))
+    .addButton((b) => b.setButtonText(_t("Reset to defaults")).onClick(async () => { s.vimKeymap = DEFAULT_VIM_KEYMAP(); await save(); redraw(); }))
+    .addButton((b) => b.setButtonText(_t("Show the key help")).onClick(() => new VimHelpModal(p.app, p).open()));
+}
+(function wrapSettingsVim() {
+  const disp = FFMSettingTab.prototype.display;
+  FFMSettingTab.prototype.display = function () {
+    disp.call(this);
+    try { if (!this.catWanted || this.catWanted('keys')) { buildVimSettings(this); jumpToHeading(this); } } catch (e) { console.error(e); }
+  };
+})();
+
+// 大型視窗改成可以移動的浮動視窗（不擋住背後的筆記）
+function makeFloating(m) {
+  if (Platform.isMobile) return;
+  const p = m.plugin;
+  if (p && p.settings && p.settings.floatingDialogs === false) return;
+  const c = m.containerEl, box = m.modalEl, handle = m.titleEl;
+  if (!c || !box || !handle) return;
+  c.addClass('ffm-floating'); box.addClass('ffm-floating-box'); handle.addClass('ffm-drag-title');
+  let drag = false, sx = 0, sy = 0, ox = 0, oy = 0;
+  handle.addEventListener('pointerdown', (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    drag = true;
+    const r = box.getBoundingClientRect();
+    box.style.position = 'fixed'; box.style.margin = '0'; box.style.left = r.left + 'px'; box.style.top = r.top + 'px';
+    sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top;
+    if (handle.setPointerCapture && e.pointerId !== undefined) handle.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    box.style.left = Math.max(0, ox + e.clientX - sx) + 'px';
+    box.style.top = Math.max(0, oy + e.clientY - sy) + 'px';
+  });
+  const up = (e) => { drag = false; try { if (handle.releasePointerCapture && e.pointerId !== undefined) handle.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ } };
+  handle.addEventListener('pointerup', up); handle.addEventListener('pointercancel', up);
+}
+[BatchRenameModal, YamlEditModal, BatchCreateModal, MoveByTagsModal, MoveByYamlModal, QuickMoveModal, DedupeTagsModal, VimHelpModal].forEach((C) => {
+  const open = C.prototype.onOpen;
+  C.prototype.onOpen = function () { makeFloating(this); return open.apply(this, arguments); };
+});
+
+
+/* ---- 分頁關閉、最後修改時間、焦點與右鍵選單鍵 ---- */
+Object.assign(FocusFileManagerPlugin.prototype, {
+  async openInTab() {
+    const ws = this.app.workspace;
+    const leaf = ws.getLeaf('tab');
+    await leaf.setViewState({ type: VIEW_TYPE, active: true });
+    ws.revealLeaf(leaf);
+  },
+  addExternalMenuItems(menu, files) {
+    const ws = this.app.workspace;
+    if (typeof ws.trigger !== 'function') return;
+    try {
+      const multi = files.length > 1;
+      const evt = multi ? 'files-menu' : 'file-menu', arg = multi ? files : files[0];
+      const probe = new Menu();
+      ws.trigger(evt, probe, arg, 'file-explorer');
+      if (!(probe.items || []).length) return;
+      menu.addSeparator();
+      ws.trigger(evt, menu, arg, 'file-explorer');
+    } catch (e) { console.error(e); }
+  },
+  /* 關閉分頁後要切換到哪個分頁 */
+  initTabClose() {
+    const ws = this.app.workspace;
+    this._leafMru = []; this._tabSnap = null;
+    const snap = () => {
+      const act = ws.activeLeaf || (ws.getMostRecentLeaf && ws.getMostRecentLeaf());
+      const par = act && act.parent;
+      if (par && par.children) this._tabSnap = { parent: par, children: [...par.children], active: act };
+    };
+    this._snapTabs = snap;
+    this.registerEvent(ws.on('active-leaf-change', (leaf) => {
+      if (leaf) {
+        this._leafMru = this._leafMru.filter((l) => l !== leaf); this._leafMru.push(leaf);
+        if (this._leafMru.length > 60) this._leafMru.shift();
+        if (leaf.view && leaf.view.getViewType && leaf.view.getViewType() === 'markdown') this._lastEditorLeaf = leaf;
+      }
+      snap();
+    }));
+    this.registerEvent(ws.on('layout-change', () => this.onTabLayoutChange()));
+  },
+  pickTabAfterClose(sn, alive) {
+    const mode = this.settings.closeTabTo;
+    const idx = sn.children.indexOf(sn.active);
+    const nearest = (dir) => { for (let i = idx + dir; i >= 0 && i < sn.children.length; i += dir) if (alive.includes(sn.children[i])) return sn.children[i]; return null; };
+    if (mode === 'left') return nearest(-1) || nearest(1) || alive[0];
+    if (mode === 'right') return nearest(1) || nearest(-1) || alive[0];
+    for (let i = this._leafMru.length - 1; i >= 0; i--) { const l = this._leafMru[i]; if (l !== sn.active && alive.includes(l)) return l; }
+    return alive[0];
+  },
+  onTabLayoutChange() {
+    const sn = this._tabSnap;
+    const mode = this.settings.closeTabTo;
+    if (!sn || mode === 'default') { if (this._snapTabs) this._snapTabs(); return; }
+    const alive = sn.parent.children || [];
+    if (alive.length && !alive.includes(sn.active) && sn.children.filter((c) => !alive.includes(c)).length === 1) {
+      const target = this.pickTabAfterClose(sn, alive);
+      if (target) setTimeout(() => { try { this.app.workspace.setActiveLeaf(target, { focus: true }); } catch (e) { /* ignore */ } }, 0);
+    }
+    if (this._snapTabs) this._snapTabs();
+  },
+  /* 編輯筆記時更新「最後修改時間」屬性 */
+  initLastModified() {
+    this._lmTimers = new Map(); this._lmUntil = new Map();
+    this.registerEvent(this.app.vault.on('modify', (file) => this.queueLastModified(file)));
+  },
+  queueLastModified(file) {
+    const s = this.settings;
+    if (!s.lastModEnabled || !(file instanceof TFile) || file.extension !== 'md') return;
+    const af = this.app.workspace.getActiveFile && this.app.workspace.getActiveFile();
+    if (!af || af.path !== file.path) return;
+    if (Date.now() < (this._lmUntil.get(file.path) || 0)) return;
+    clearTimeout(this._lmTimers.get(file.path));
+    this._lmTimers.set(file.path, setTimeout(() => this.touchLastModified(file), 2500));
+  },
+  async touchLastModified(file) {
+    const s = this.settings, key = String(s.lastModKey || '').trim();
+    if (!s.lastModEnabled || !key) return;
+    const val = obsidian.moment().format(s.lastModFormat || 'YYYY-MM-DD HH:mm:ss');
+    this._lmUntil.set(file.path, Date.now() + 3000);
+    try { await this.app.fileManager.processFrontMatter(file, (fm) => { if (String(fm[key]) !== val) fm[key] = val; }); } catch (e) { console.error(e); }
+  },
+  /* 焦點：筆記 ⇄ 文件管理 */
+  isFocusInManager() { const a = typeof document !== 'undefined' ? document.activeElement : null; return !!(a && a.closest && a.closest('.ffm-root')); },
+  focusFileManager() {
+    const ws = this.app.workspace, leaf = ws.getLeavesOfType(VIEW_TYPE)[0];
+    if (!leaf) { this.activateView('sidebar'); return; }
+    ws.revealLeaf(leaf);
+    const view = leaf.view, pane = view && view.treePane;
+    if (!pane || !pane.el) return;
+    if (pane.el.focus) pane.el.focus();
+    const af = ws.getActiveFile && ws.getActiveFile();
+    if (af && pane.rows && pane.rows.some((r) => r.path === af.path)) { pane.vimPath = af.path; pane.selection = new Set([af.path]); pane.updateSelection(); }
+    else if (pane.rows && pane.rows.length && !pane.selection.size) this.vimGo(pane, 0);
+  },
+  focusEditor() {
+    const ws = this.app.workspace;
+    const alive = [];
+    ws.iterateAllLeaves((l) => alive.push(l));
+    let leaf = this._lastEditorLeaf;
+    if (!leaf || !alive.includes(leaf)) leaf = ws.getMostRecentLeaf ? ws.getMostRecentLeaf() : null;
+    if (!leaf) return;
+    ws.setActiveLeaf(leaf, { focus: true });
+    const ed = leaf.view && leaf.view.editor;
+    if (ed && ed.focus) ed.focus();
+  },
+  /* 開啟右鍵選單的按鍵（例如 Alt+M） */
+  matchesChord(e, chord) {
+    const parts = String(chord || '').split('+').map((x) => x.trim().toLowerCase()).filter(Boolean);
+    if (!parts.length) return false;
+    const key = parts.pop();
+    const want = { ctrl: parts.includes('ctrl') || parts.includes('control'), alt: parts.includes('alt') || parts.includes('option'), shift: parts.includes('shift'), meta: parts.includes('meta') || parts.includes('cmd') || parts.includes('command') };
+    if (parts.includes('mod')) { if (typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform || '')) want.meta = true; else want.ctrl = true; }
+    if (!!e.ctrlKey !== want.ctrl || !!e.altKey !== want.alt || !!e.shiftKey !== want.shift || !!e.metaKey !== want.meta) return false;
+    const k = String(e.key || '').toLowerCase();
+    return k === key || (key === 'space' && k === ' ') || (key === 'enter' && k === 'enter') || (key === 'esc' && k === 'escape');
+  },
+  vimContextMenu(owner) {
+    const rows = this.vimRows(owner);
+    if (!rows.length) return;
+    let idx = this.vimIndex(owner);
+    const row = rows[idx];
+    if (!row) return;
+    const sel = this.vimSel(owner);
+    if (!sel.has(row.path)) this.vimSetSel(owner, new Set([row.path]));
+    owner.vimPath = row.path;
+    const root = owner.el || owner.bodyEl;
+    const rowEl = root && root.querySelectorAll ? [...root.querySelectorAll('.ffm-row, .ffm-panel-row')].find((x) => (x.dataset.path || x.dataset.key) === row.path) : null;
+    const r = rowEl && rowEl.getBoundingClientRect ? rowEl.getBoundingClientRect() : { left: 80, bottom: 80 };
+    const x = r.left + 24, y = r.bottom !== undefined ? r.bottom : r.top + (r.height || 20);
+    const evt = { clientX: x, clientY: y, pageX: x, pageY: y, x, y, target: rowEl || root, preventDefault() {}, stopPropagation() {} };
+    owner.showMenu(evt, owner.selection ? row : row);
+  },
+});
+
+/* ---- 右鍵選單：其他插件的項目、子選單、置頂排序、關閉分頁 ---- */
+function menuDummyItem() {
+  const info = {};
+  let menu;
+  const item = new Proxy({}, { get: (tt, k) => {
+    if (k === 'setTitle') return (v) => { info.title = typeof v === 'string' ? v : (v && v.textContent) || ''; return item; };
+    if (k === 'setIcon') return (v) => { info.icon = v; return item; };
+    if (k === 'setSubmenu') return () => menu;
+    return () => item;
+  } });
+  menu = new Proxy({}, { get: () => (cb) => { if (typeof cb === 'function') { try { cb(menuDummyItem().proxy); } catch (e) { /* ignore */ } } return menu; } });
+  return { proxy: item, info };
+}
+Object.assign(FocusFileManagerPlugin.prototype, {
+  // 其他插件（與 Obsidian 核心）透過 file-menu 事件加入的項目：先記錄它們的建立函式，之後可以放到任何位置
+  // 每個事件處理函式是由誰註冊的：插件透過 registerEvent 登記在 plugin._events；其餘視為 Obsidian 自己
+  menuHandlerOwners() {
+    const owners = new Map();
+    try {
+      Object.values((this.app.plugins && this.app.plugins.plugins) || {}).forEach((pl) => {
+        const name = (pl && pl.manifest && pl.manifest.name) || '?';
+        (pl._events || []).forEach((ref) => owners.set(ref, name));
+      });
+    } catch (e) { /* ignore */ }
+    return owners;
+  },
+  collectExternalItems(files) {
+    const ws = this.app.workspace;
+    if (typeof ws.trigger !== 'function' || !files || !files.length) return [];
+    const multi = files.length > 1, evt = multi ? 'files-menu' : 'file-menu', arg = multi ? files : files[0];
+    const rec = [];
+    const recorderFor = (owner) => {
+      const base = { addItem(cb) { rec.push({ cb, owner }); return proxy; }, addSeparator() { return proxy; }, items: [] };
+      const proxy = new Proxy(base, { get: (tt, k) => (k in tt ? tt[k] : () => proxy) });
+      return proxy;
+    };
+    try {
+      const refs = ws._ && Array.isArray(ws._[evt]) ? ws._[evt].slice() : null;
+      if (refs) {
+        const owners = this.menuHandlerOwners();
+        refs.forEach((ref) => {
+          try { ref.fn.call(ref.ctx, recorderFor(owners.has(ref) ? owners.get(ref) : 'core'), arg, 'file-explorer'); } catch (e) { /* a broken plugin must not break the menu */ }
+        });
+      } else ws.trigger(evt, recorderFor(''), arg, 'file-explorer');
+    } catch (e) { console.error(e); }
+    const out = [], seen = new Map();
+    rec.forEach(({ cb, owner }) => {
+      const d = menuDummyItem();
+      try { cb(d.proxy); } catch (e) { return; }
+      const title = String(d.info.title || '').trim();
+      if (!title) return;
+      let key = 'ext:' + title.toLowerCase();
+      const n = seen.get(key) || 0; seen.set(key, n + 1);
+      if (n) key += '#' + n;
+      out.push({ key, title, icon: d.info.icon || '', cb, owner });
+    });
+    return out;
+  },
+  noteExternalItems(ext) {
+    const s = this.settings;
+    if (!s.menuExtSeen) s.menuExtSeen = {};
+    let changed = false;
+    ext.forEach((x) => {
+      const old = s.menuExtSeen[x.key];
+      if (!old || old.title !== x.title || old.icon !== x.icon || old.owner !== x.owner) { s.menuExtSeen[x.key] = { title: x.title, icon: x.icon, owner: x.owner }; changed = true; }
+    });
+    return changed;
+  },
+  scanExternalMenuItems() {
+    const ws = this.app.workspace;
+    const file = (ws.getActiveFile && ws.getActiveFile()) || this.app.vault.getMarkdownFiles()[0];
+    if (!file) return 0;
+    const all = [...this.collectExternalItems([file]), ...(file.parent ? this.collectExternalItems([file.parent]) : [])];
+    this.noteExternalItems(all);
+    return all.length;
+  },
+  renderContextMenu(m, reg, ctx, ext, e) {
+    const s = this.settings, hidden = new Set(s.menuHidden || []), icons = s.menuIcons || {};
+    const explicitSep = !!s.menuSepExplicit;
+    const byId = new Map(reg.map((x) => [x.id, x]));
+    const extMap = new Map(ext.map((x) => [x.key, x]));
+    if (this.noteExternalItems(ext)) this.saveSoon();
+    let order = this.menuOrderList(reg.map((x) => x.id));
+    const fresh = ext.map((x) => x.key).filter((k) => !order.includes(k));
+    if (fresh.length) { order = [...fresh, 'sep:' + uid(), ...order]; s.menuOrder = order; this.saveSoon(); }
+    const folders = new Map((s.menuFolders || []).map((f) => [f.id, f]));
+    const assign = s.menuAssign || {};
+    const parentOf = (id) => { const f = assign[id]; return f && folders.has(f) ? f : null; };
+    const kids = (pid) => order.filter((id) => parentOf(id) === pid && (!id.startsWith('fol:') || folders.has(id.slice(4))));
+    const cache = new Map();
+    const itemsOf = (id) => {
+      if (!cache.has(id)) { const en = byId.get(id); cache.set(id, en && !hidden.has(id) && en.show() ? en.items() : []); }
+      return cache.get(id);
+    };
+    const visible = (id, seen) => {
+      if (id.startsWith('sep:')) return false;
+      if (id.startsWith('fol:')) {
+        const f = folders.get(id.slice(4));
+        if (!f || seen.has(id)) return false;
+        const next = new Set(seen).add(id);
+        return kids(f.id).some((k) => visible(k, next));
+      }
+      if (id.startsWith('ext:')) return extMap.has(id) && !hidden.has(id);
+      return itemsOf(id).length > 0;
+    };
+    // 停用的子選單：裡面的功能回到原本的選單（放在子選單原本的位置）
+    const expand = (ids, seen) => ids.flatMap((id) => {
+      if (id.startsWith('fol:')) {
+        const f = folders.get(id.slice(4));
+        if (f && f.enabled === false && !seen.has(id)) return expand(kids(f.id), new Set(seen).add(id));
+      }
+      return [id];
+    });
+    // Obsidian 會依「區段」排序並在區段之間畫分隔線：每一組（兩條分隔線之間）用自己的區段名稱，
+    // 名稱依序遞增，這樣順序照我們排的、分隔線也只出現在我們要的地方
+    const renderList = (menu, ids, depth) => {
+      let prevGroup = null, prev = null, pendingSep = false, sec = 0, canSection = true;
+      const tidy = (i) => { try { if (typeof i.setSection === 'function') i.setSection('ffm-' + String(sec).padStart(2, '0')); else canSection = false; } catch (err) { canSection = false; } };
+      for (const id of expand(ids, new Set())) {
+        if (id.startsWith('sep:')) { pendingSep = true; continue; }
+        if (!visible(id, new Set())) continue;
+        const en = byId.get(id);
+        if (prev !== null && (pendingSep || (!explicitSep && en && prevGroup !== null && en.group !== prevGroup))) { if (canSection) sec++; else menu.addSeparator(); }
+        pendingSep = false;
+        if (id.startsWith('fol:')) {
+          const f = folders.get(id.slice(4));
+          menu.addItem((i) => {
+            i.setTitle(f.name).setIcon(icons[id] || f.icon || 'folder');
+            tidy(i);
+            const sub = typeof i.setSubmenu === 'function' ? i.setSubmenu() : null;
+            if (sub) renderList(sub, kids(f.id), depth + 1);
+            else i.onClick((ev) => { const m2 = new Menu(); renderList(m2, kids(f.id), depth + 1); m2.showAtMouseEvent(ev && ev.clientX !== undefined ? ev : e); });
+          });
+          prev = id; prevGroup = null;
+        } else if (id.startsWith('ext:')) {
+          const x = extMap.get(id);
+          menu.addItem((i) => { try { x.cb(i); } catch (err) { console.error(err); } if (icons[id]) i.setIcon(icons[id]); tidy(i); });
+          prev = id; prevGroup = null;
+        } else {
+          itemsOf(id).forEach((x) => menu.addItem((i) => { i.setTitle(x.title).setIcon(icons[id] || x.icon).onClick(x.fn); tidy(i); }));
+          prev = id; prevGroup = en.group;
+        }
+      }
+    };
+    renderList(m, kids(null), 0);
+  },
+  // 置頂的項目：手動排序（拖曳、往上/往下、貼上位置）時，置頂項目之間的順序也要跟著變
+  syncPinnedFromManual(parent) {
+    const s = this.settings, pinned = s.pinned || [], order = s.manualOrder[parent.path];
+    if (!order) return;
+    const slots = [];
+    pinned.forEach((pp, k) => { if (parentPath(pp) === parent.path) slots.push(k); });
+    if (slots.length < 2) return;
+    const wanted = order.map((nm) => joinPath(parent.path, nm)).filter((pp) => pinned.includes(pp));
+    slots.forEach((slot, k) => { if (wanted[k]) pinned[slot] = wanted[k]; });
+  },
+  // 關閉分頁：在分頁被關閉「之前」記下當時的狀態，關閉後再切換到想要的分頁
+  initTabClose() {
+    const ws = this.app.workspace;
+    this._leafMru = this._leafMru || [];
+    this.registerEvent(ws.on('active-leaf-change', (leaf) => {
+      if (!leaf) return;
+      this._leafMru = this._leafMru.filter((l) => l !== leaf); this._leafMru.push(leaf);
+      if (this._leafMru.length > 60) this._leafMru.shift();
+      if (leaf.view && leaf.view.getViewType && leaf.view.getViewType() === 'markdown') this._lastEditorLeaf = leaf;
+    }));
+    let proto = null;
+    try { const l0 = ws.getLeaf ? ws.getLeaf(false) : null; proto = l0 ? Object.getPrototypeOf(l0) : null; } catch (e) { proto = null; }
+    if (!proto || typeof proto.detach !== 'function' || proto.__ffmDetach) return;
+    const orig = proto.detach, self = this;
+    proto.detach = function () { try { self.beforeTabDetach(this); } catch (e) { console.error(e); } return orig.apply(this, arguments); };
+    proto.__ffmDetach = true;
+    this.register(() => { proto.detach = orig; delete proto.__ffmDetach; });
+  },
+  beforeTabDetach(leaf) {
+    const mode = this.settings.closeTabTo, ws = this.app.workspace;
+    if (mode === 'default') return;
+    const par = leaf.parent;
+    if (!par || !Array.isArray(par.children) || par.children.length < 2) return;
+    const recent = ws.getMostRecentLeaf ? ws.getMostRecentLeaf() : null;
+    const wasActive = recent === leaf || ws.activeLeaf === leaf || this._leafMru[this._leafMru.length - 1] === leaf;
+    if (!wasActive) return;
+    const children = [...par.children], mru = [...this._leafMru];
+    setTimeout(() => {
+      const alive = par.children || [];
+      if (!alive.length || alive.includes(leaf)) return;
+      const target = this.pickTabAfterClose({ children, active: leaf }, alive, mru);
+      if (target) { try { ws.setActiveLeaf(target, { focus: true }); } catch (e) { /* ignore */ } }
+    }, 0);
+  },
+  pickTabAfterClose(sn, alive, mru) {
+    const mode = this.settings.closeTabTo;
+    const idx = sn.children.indexOf(sn.active);
+    const nearest = (dir) => { for (let i = idx + dir; i >= 0 && i < sn.children.length; i += dir) if (alive.includes(sn.children[i])) return sn.children[i]; return null; };
+    if (mode === 'left') return nearest(-1) || nearest(1) || alive[0];
+    if (mode === 'right') return nearest(1) || nearest(-1) || alive[0];
+    const list = mru || this._leafMru || [];
+    for (let i = list.length - 1; i >= 0; i--) { const l = list[i]; if (l !== sn.active && alive.includes(l)) return l; }
+    return alive[0];
+  },
+});
+// 從詢問視窗跳到設定頁的某個選項
+(function wrapSettingsJump() {
+  const disp = FFMSettingTab.prototype.display;
+  FFMSettingTab.prototype.display = function () {
+    disp.call(this);
+    const p = this.plugin, key = p._jumpKey;
+    if (!key) return;
+    p._jumpKey = null;
+    const tgt = this.containerEl.querySelector('.ffm-key-' + key);
+    if (!tgt) return;
+    setTimeout(() => { if (tgt.scrollIntoView) tgt.scrollIntoView({ block: 'center' }); tgt.addClass('ffm-flash'); setTimeout(() => tgt.removeClass('ffm-flash'), 1800); }, 50);
+  };
+})();
 
 module.exports = FocusFileManagerPlugin;
